@@ -13,5 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\klib">
+      <UniqueIdentifier>{7353287b-f69a-41ce-be0e-88cf0fedc1aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\klib">
+      <UniqueIdentifier>{20a73f1c-9f59-4546-98fd-205da6557884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\klabkit">
+      <UniqueIdentifier>{4da48cec-3946-4b23-908e-677b07fe7418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\klabkit">
+      <UniqueIdentifier>{e921add3-b77d-4f13-a7f5-af7a1219cc0e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\klib\file.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Wall.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Project.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\constants.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\kkit_gfx.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klib\gfx.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\klib\file.cpp">
+      <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Wall.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Project.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\kkit_gfx.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\gfx.cpp">
+      <Filter>Source Files\klib</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
