@@ -10,7 +10,7 @@ int main(int argc, char* args[]) {
 	}
 
 	kkit::Project project("C:/Users/Kai/Downloads/klabkit");
-	kkit::gfx::project_walls_to_bmps(project);
+	//kkit::gfx::project_walls_to_bmps(project);
 
 	return 0;
 }

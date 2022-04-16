@@ -5,10 +5,14 @@
 
 namespace kkit {
 
+	enum class Wall_type { Cube, Plane, Direction };
+
 	using byte = unsigned char;
 
 	class Wall {
 
+		Wall_type wall_type;
+		bool blast, inside;
 		std::vector<std::vector<byte>> image;
 
 	public:
