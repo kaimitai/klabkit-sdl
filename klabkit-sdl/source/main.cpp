@@ -16,7 +16,9 @@ int main(int argc, char* args[]) {
 
 	//for (int i{ 0 }; i < 30; ++i) kkit::gfx::project_map_to_bmp(project, i);
 
-	auto v = project.get_board_bytes();
+	//auto v = project.get_board_bytes();
+
+	auto v = project.get_wall_bytes();
 	klib::file::write_bytes_to_file(v, "C:/Users/Kai/Downloads/klabkit/out.dat");
 
 	return 0;

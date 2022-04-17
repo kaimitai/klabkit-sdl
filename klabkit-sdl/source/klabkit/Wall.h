@@ -18,6 +18,10 @@ namespace kkit {
 	public:
 		Wall(const std::vector<byte>& p_bytes, byte p_flags);
 		byte get_palette_index(int p_x, int p_y) const;
+
+		// logical getters
+		byte get_header_byte(void) const;
+		std::vector<byte> get_image_bytes(void) const;
 	};
 
 }

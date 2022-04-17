@@ -93,3 +93,20 @@ std::vector<byte> kkit::Project::get_board_bytes(void) const {
 
 	return result;
 }
+
+std::vector<byte> kkit::Project::get_wall_bytes(void) const {
+	std::vector<byte> result;
+
+	for (const auto& wall : this->walls)
+		result.push_back(wall.get_header_byte());
+
+	while (result.size() < 1024)
+		result.push_back(0);
+
+	for (const auto& wall : this->walls) {
+		auto l_wall_bytes = wall.get_image_bytes();
+		result.insert(end(result), begin(l_wall_bytes), end(l_wall_bytes));
+	}
+
+	return result;
+}

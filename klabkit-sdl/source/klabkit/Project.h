@@ -31,6 +31,7 @@ namespace kkit {
 
 		// logical getters
 		std::vector<byte> get_board_bytes(void) const;
+		std::vector<byte> get_wall_bytes(void) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;

@@ -20,12 +20,12 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 			// 11th bit is inside indicator
 			bool l_inside = (l_value & 0b10000000000) >> 10;
 			// 12th bit is blast indicator
-			bool l_blast = (l_value & 0b100000000000) >> 10;
+			bool l_blast = (l_value & 0b100000000000) >> 11;
+			// 13th bit is player start sq indicator
+			bool l_player_sq = (l_value & 0b1000000000000) >> 12;
 			// 14th bit is vertical indicator
 			bool l_vertical = (l_value & 0b10000000000000) >> 13;
 
-			// 13th bit is player start sq indicator
-			bool l_player_sq = (l_value & 0b1000000000000) >> 12;
 			if (l_player_sq) {
 				this->player_x = j;
 				this->player_y = i;
@@ -65,7 +65,7 @@ std::vector<byte> kkit::Board::get_bytes(void) const {
 
 	for (int j{ 0 }; j < this->tiles.size(); ++j)
 		for (int i{ 0 }; i < this->tiles[j].size(); ++i) {
-			
+
 			if (j == this->player_x && i == this->player_y) {
 
 				int l_result = 0b1000000000000;

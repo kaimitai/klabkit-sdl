@@ -23,3 +23,27 @@ kkit::Wall::Wall(const std::vector<byte>& bytes, byte p_flags) {
 byte kkit::Wall::get_palette_index(int p_x, int p_y) const {
 	return this->image.at(p_x).at(p_y);
 }
+
+byte kkit::Wall::get_header_byte(void) const {
+	byte result{ 0 };
+	if (this->wall_type == Wall_type::Plane)
+		result = 1;
+	else if (this->wall_type == Wall_type::Direction)
+		result = 2;
+
+	if (inside)
+		result |= 0b1000;
+	if (blast)
+		result |= 0b10000;
+
+	return result;
+}
+
+std::vector<byte> kkit::Wall::get_image_bytes(void) const {
+	std::vector<byte> result;
+
+	for (int i{ 0 }; i < this->image.size(); ++i)
+		result.insert(end(result), begin(image[i]), end(image[i]));
+
+	return result;
+}
