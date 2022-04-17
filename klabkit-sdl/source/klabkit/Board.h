@@ -8,8 +8,12 @@ namespace kkit {
 
 	using byte = unsigned char;
 
+	enum class Player_direction { Up, Down, Left, Right };
+
 	class Board {
 
+		Player_direction player_direction{ Player_direction::Up };
+		int player_x{ 0 }, player_y{ 0 };
 		std::vector<std::vector<kkit::Map_tile>> tiles;
 
 	public:
