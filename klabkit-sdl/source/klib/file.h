@@ -10,9 +10,8 @@ namespace klib {
 		using byte = unsigned char;
 
 		std::vector<byte> read_file_as_bytes(const std::string& p_file_name);
+		void write_bytes_to_file(const std::vector<byte>&, const std::string&);
 
-		// bytes
-		int uint16_le(byte p_b1, byte p_b2);
 	}
 }
 

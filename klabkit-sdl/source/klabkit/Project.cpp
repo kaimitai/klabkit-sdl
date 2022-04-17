@@ -82,3 +82,14 @@ const kkit::Wall& kkit::Project::get_wall(int p_frame_no) const {
 const kkit::Board& kkit::Project::get_board(int p_board_no) const {
 	return this->maps.at(p_board_no);
 }
+
+std::vector<byte> kkit::Project::get_board_bytes(void) const {
+	std::vector<byte> result;
+
+	for (int i{ 0 }; i < this->maps.size(); ++i) {
+		auto l_map_bytes = maps[i].get_bytes();
+		result.insert(end(result), begin(l_map_bytes), end(l_map_bytes));
+	}
+
+	return result;
+}

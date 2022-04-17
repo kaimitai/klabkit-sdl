@@ -17,6 +17,13 @@ std::vector<byte> klib::file::read_file_as_bytes(const std::string& p_file_name)
 	return result;
 }
 
-int klib::file::uint16_le(byte p_b1, byte p_b2) {
-	return p_b2 * 256 + p_b1;
+void klib::file::write_bytes_to_file(const std::vector<byte>& inp, const std::string& file_name) {
+	std::ofstream output(file_name, std::ios::binary | std::ios::out);
+
+	if (!output.fail())
+		output.write((const char*)(&inp[0]), inp.size());
+	else
+		throw std::exception("Could not write to file");
+
+	output.close();
 }

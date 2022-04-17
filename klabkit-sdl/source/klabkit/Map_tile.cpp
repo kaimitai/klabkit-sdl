@@ -13,3 +13,15 @@ bool kkit::Map_tile::empty(void) const {
 int kkit::Map_tile::get_tile_no(void) const {
 	return this->tile_no;
 }
+
+bool kkit::Map_tile::is_inside(void) const {
+	return this->inside;
+}
+
+bool kkit::Map_tile::is_blast(void) const {
+	return this->blast;
+}
+
+bool kkit::Map_tile::is_vertical(void) const {
+	return this->vertical;
+}

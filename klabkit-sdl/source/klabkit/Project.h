@@ -29,6 +29,9 @@ namespace kkit {
 	public:
 		Project(const std::string&);
 
+		// logical getters
+		std::vector<byte> get_board_bytes(void) const;
+
 		// getters
 		std::string get_bmp_folder(void) const;
 		std::string get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const;
