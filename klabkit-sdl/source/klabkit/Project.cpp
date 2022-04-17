@@ -23,7 +23,7 @@ void kkit::Project::initialize_palette(void) {
 }
 
 void kkit::Project::initialize_walls(void) {
-	auto wall_bytes = klib::file::read_file_as_bytes(get_dat_file_name("WALLS"));
+	auto wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
 
 	for (int i{ 0 }; i < l_num_walls; ++i) {
@@ -32,7 +32,7 @@ void kkit::Project::initialize_walls(void) {
 }
 
 void kkit::Project::initialize_maps(void) {
-	auto map_bytes = klib::file::read_file_as_bytes(get_dat_file_name("BOARDS"));
+	auto map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
 
 	for (int i{ 0 }; i < l_num_maps; ++i)
@@ -40,16 +40,30 @@ void kkit::Project::initialize_maps(void) {
 }
 
 // utility functions
+std::string  kkit::Project::get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no) const {
+	std::string result{ this->project_folder };
+	if (!p_subfolder.empty())
+		result += "/" + p_subfolder;
+
+	result += "/" + p_file_prefix + (p_frame_no == 0 ? "" : std::to_string(p_frame_no + 1)) + "." + p_file_ext;
+
+	return result;
+}
+
+std::string  kkit::Project::get_file_path(const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no) const {
+	return get_file_path(std::string(), p_file_prefix, p_file_ext, p_frame_no);
+}
+
 std::string kkit::Project::get_dat_file_name(const std::string& p_filename) const {
 	return project_folder + "/" + p_filename + ".DAT";
 }
 
-std::string kkit::Project::get_bmp_folder(void) const {
-	return project_folder + "/bmp";
+std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const {
+	return get_file_path(c::FILE_EXT_BMP, p_file_prefix, c::FILE_EXT_BMP, p_frame_no);
 }
 
-std::string kkit::Project::get_wall_bmp_file_path(int p_frame_no) const {
-	return this->get_bmp_folder() + "/WALL" + (p_frame_no > 0 ? std::to_string(p_frame_no + 1) : "") + ".bmp";
+std::string kkit::Project::get_bmp_folder(void) const {
+	return project_folder + "/" + c::FILE_EXT_BMP;
 }
 
 // getters
@@ -63,4 +77,8 @@ int kkit::Project::get_wall_image_count(void) const {
 
 const kkit::Wall& kkit::Project::get_wall(int p_frame_no) const {
 	return this->walls.at(p_frame_no);
+}
+
+const kkit::Board& kkit::Project::get_board(int p_board_no) const {
+	return this->maps.at(p_board_no);
 }

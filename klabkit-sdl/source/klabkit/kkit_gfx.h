@@ -15,9 +15,12 @@ namespace kkit {
 
 		// bmp functions
 		void project_walls_to_bmps(const kkit::Project& p_project);
+		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no);
+		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
 
 		// utility functions
 		std::vector<SDL_Color> tuple_to_sdl_palette(const std::vector<std::tuple<byte, byte, byte>>&);
+
 	}
 
 }

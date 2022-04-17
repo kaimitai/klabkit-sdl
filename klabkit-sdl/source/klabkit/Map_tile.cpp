@@ -9,3 +9,7 @@ kkit::Map_tile::Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vert
 bool kkit::Map_tile::empty(void) const {
 	return this->tile_no == -1;
 }
+
+int kkit::Map_tile::get_tile_no(void) const {
+	return this->tile_no;
+}

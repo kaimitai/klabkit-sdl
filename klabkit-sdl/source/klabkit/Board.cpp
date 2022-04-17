@@ -30,3 +30,11 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 		this->tiles.push_back(l_tiles);
 	}
 }
+
+bool kkit::Board::is_empty_tile(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).empty();
+}
+
+int kkit::Board::get_tile_no(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).get_tile_no();
+}

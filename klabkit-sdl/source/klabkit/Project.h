@@ -22,20 +22,22 @@ namespace kkit {
 		void initialize_maps(void);
 
 		// utility functions
+		std::string get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
+		std::string get_file_path(const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
 		std::string get_dat_file_name(const std::string& p_filename) const;
 
 	public:
 		Project(const std::string&);
 
 		// getters
-
 		std::string get_bmp_folder(void) const;
-		std::string get_wall_bmp_file_path(int p_frame_no) const;
+		std::string get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const;
 
 		// gfx
 		const std::vector<std::tuple<byte, byte, byte>>& get_palette(void) const;
 		int get_wall_image_count(void) const;
 		const kkit::Wall& get_wall(int p_frame_no) const;
+		const kkit::Board& get_board(int p_board_no) const;
 	};
 
 }

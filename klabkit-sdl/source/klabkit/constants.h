@@ -9,7 +9,15 @@ namespace kkit {
 
 		using byte = unsigned char;
 
-		// palette generator constants
+		// filename constants
+		constexpr char FILE_WALLS[]{ "WALLS" };
+		constexpr char FILE_BOARDS[]{ "BOARDS" };
+		constexpr char FILE_EXT_DAT[]{ "DAT" };
+		constexpr char FILE_EXT_BMP[]{ "bmp" };
+
+		// palette constants
+		constexpr int TRANSP_PAL_INDEX{ 255 };
+		// palette generator values
 		constexpr std::array<std::array<byte, 3>, 16> PAL_GEN{ {
 			{0,30,63},
 			{28,34,60},

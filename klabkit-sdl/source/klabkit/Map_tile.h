@@ -12,7 +12,10 @@ namespace kkit {
 
 	public:
 		Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vertical);
+		
+		// getters
 		bool empty(void) const;
+		int get_tile_no(void) const;
 	};
 
 }
