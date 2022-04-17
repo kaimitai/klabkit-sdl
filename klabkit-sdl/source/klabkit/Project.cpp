@@ -7,6 +7,7 @@ using byte = unsigned char;
 kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder } {
 	initialize_palette();
 	initialize_walls();
+	initialize_maps();
 }
 
 // initializers
@@ -28,6 +29,14 @@ void kkit::Project::initialize_walls(void) {
 	for (int i{ 0 }; i < l_num_walls; ++i) {
 		walls.push_back(kkit::Wall(std::vector<unsigned char>(begin(wall_bytes) + c::WALL_DATA_OFFSET + i * c::WALL_IMG_BYTES, begin(wall_bytes) + c::WALL_DATA_OFFSET + (i + 1) * c::WALL_IMG_BYTES), wall_bytes[i]));
 	}
+}
+
+void kkit::Project::initialize_maps(void) {
+	auto map_bytes = klib::file::read_file_as_bytes(get_dat_file_name("BOARDS"));
+	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
+
+	for (int i{ 0 }; i < l_num_maps; ++i)
+		maps.push_back(kkit::Board(std::vector<unsigned char>(begin(map_bytes) + i * c::MAP_BYTES, begin(map_bytes) + (i + 1) * c::MAP_BYTES)));
 }
 
 // utility functions

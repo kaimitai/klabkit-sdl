@@ -45,6 +45,12 @@
     <ClInclude Include="source\klib\gfx.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Board.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Map_tile.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -64,6 +70,12 @@
     </ClCompile>
     <ClCompile Include="source\klib\gfx.cpp">
       <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Map_tile.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Board.cpp">
+      <Filter>Source Files\klabkit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

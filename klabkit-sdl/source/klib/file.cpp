@@ -16,3 +16,7 @@ std::vector<byte> klib::file::read_file_as_bytes(const std::string& p_file_name)
 
 	return result;
 }
+
+int klib::file::uint16_le(byte p_b1, byte p_b2) {
+	return p_b2 * 256 + p_b1;
+}

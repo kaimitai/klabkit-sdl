@@ -10,7 +10,9 @@ namespace klib {
 		using byte = unsigned char;
 
 		std::vector<byte> read_file_as_bytes(const std::string& p_file_name);
-		void create_directory(const std::string& p_path);
+
+		// bytes
+		int uint16_le(byte p_b1, byte p_b2);
 	}
 }
 

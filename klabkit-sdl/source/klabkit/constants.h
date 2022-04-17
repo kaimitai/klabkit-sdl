@@ -36,6 +36,11 @@ namespace kkit {
 
 		constexpr int WALL_DATA_OFFSET{ 1024 };
 
+		// level files
+		constexpr int MAP_W{ 64 };
+		constexpr int MAP_H{ 64 };
+		constexpr int MAP_BYTES_PER_TILE{ 2 };
+		constexpr int MAP_BYTES{ MAP_W * MAP_H * MAP_BYTES_PER_TILE };
 	}
 }
 

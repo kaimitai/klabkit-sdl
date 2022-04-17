@@ -6,17 +6,20 @@
 #include <vector>
 
 #include "Wall.h"
+#include "Board.h"
 
 namespace kkit {
 
 	class Project {
 		std::string project_folder;
 		std::vector<Wall> walls;
+		std::vector<Board> maps;
 		std::vector<std::tuple<byte, byte, byte>> palette;
 
 		// initializers
 		void initialize_palette(void);
 		void initialize_walls(void);
+		void initialize_maps(void);
 
 		// utility functions
 		std::string get_dat_file_name(const std::string& p_filename) const;
