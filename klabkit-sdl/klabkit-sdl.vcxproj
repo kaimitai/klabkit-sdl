@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\klabkit\Board_window.h" />
     <ClInclude Include="source\klabkit\constants.h" />
     <ClInclude Include="source\klabkit\kkit_gfx.h" />
     <ClInclude Include="source\klabkit\Board.h" />
@@ -30,8 +31,10 @@
     <ClInclude Include="source\klabkit\Wall.h" />
     <ClInclude Include="source\klib\file.h" />
     <ClInclude Include="source\klib\gfx.h" />
+    <ClInclude Include="source\klib\User_input.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\klabkit\Board_window.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
     <ClCompile Include="source\klabkit\Map_tile.cpp" />
@@ -40,6 +43,7 @@
     <ClCompile Include="source\klabkit\Wall.cpp" />
     <ClCompile Include="source\klib\file.cpp" />
     <ClCompile Include="source\klib\gfx.cpp" />
+    <ClCompile Include="source\klib\User_input.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -147,7 +151,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -163,7 +167,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>

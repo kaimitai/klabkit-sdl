@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Project_drawer.h"
 #include "../klib/gfx.h"
 #include "kkit_gfx.h"
@@ -17,13 +19,69 @@ void kkit::Project_drawer::draw_tile(SDL_Renderer* p_rnd, int p_tile_no, int p_x
 }
 
 void kkit::Project_drawer::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_x, int p_y) const {
-	int l_tile_count = (board_zoom == -1 ? 16 : 8 / (1 << board_zoom));
-	int l_tile_spacing = (board_zoom == -1 ? 32 : 64 * (1 << board_zoom));
+	int l_tile_count = this->c_tile_cnt();
+	int l_tile_spacing = this->c_tile_pw();
 	const auto& board = p_project.get_board(this->board_ind);
 
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 0, 0, 0 }, 0);
+
 	for (int i{ 0 }; i < l_tile_count; ++i)
-		for (int j{ 0 }; j < l_tile_count; ++j) {
+		for (int j{ 0 }; j < l_tile_count; ++j)
 			if (!board.is_empty_tile(board_x + i, board_y + j))
 				this->draw_tile(p_rnd, board.get_tile_no(board_x + i, board_y + j), p_x + l_tile_spacing * i, p_y + l_tile_spacing * j);
-		}
+
+}
+
+void kkit::Project_drawer::move_grid_offset_x(int p_dx) {
+	this->board_x += p_dx;
+	this->validate_grid_offset();
+}
+
+void kkit::Project_drawer::move_grid_offset_y(int p_dy) {
+	this->board_y += p_dy;
+	this->validate_grid_offset();
+}
+
+void kkit::Project_drawer::move_grid_zoom(int p_dz) {
+	this->board_zoom += p_dz;
+	this->validate_grid_offset();
+}
+
+int kkit::Project_drawer::c_tile_pw(void) const {
+	if (board_zoom == -1)
+		return c::WALL_IMG_W / 2;
+	else
+		return c::WALL_IMG_W * (1 << board_zoom);
+}
+
+int kkit::Project_drawer::c_tile_cnt(void) const {
+	return BOARD_PW / this->c_tile_pw();
+}
+
+int kkit::Project_drawer::c_tile_offset_max(void) const {
+	return c::MAP_W - this->c_tile_cnt();
+}
+
+void kkit::Project_drawer::validate_grid_offset(void) {
+	if (board_zoom < -1)
+		board_zoom = -1;
+	else if (board_zoom > 2)
+		board_zoom = 2;
+
+	if (board_x < 0)
+		board_x = 0;
+	else if (board_x > c_tile_offset_max())
+		board_x = c_tile_offset_max();
+
+	if (board_y < 0)
+		board_y = 0;
+	else if (board_y > c_tile_offset_max())
+		board_y = c_tile_offset_max();
+}
+
+void kkit::Project_drawer::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const {
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, 128, 128, SDL_Color{ 0,0,0 }, 0);
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, 128, 128, SDL_Color{ 255,255,255 }, 2);
+
+	klib::gfx::draw_rect(p_rnd, p_x + board_x * 2, p_y + board_y * 2, c_tile_cnt() * 2, c_tile_cnt() * 2, SDL_Color{ 255,255,0 }, 2);
 }

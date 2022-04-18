@@ -3,6 +3,8 @@
 #include "./klabkit/Project.h"
 #include "./klabkit/Project_drawer.h"
 #include "klib/file.h"
+#include "klib/User_input.h"
+#include "klabkit/Board_window.h"
 
 int main(int argc, char* args[]) {
 
@@ -36,6 +38,14 @@ int main(int argc, char* args[]) {
 			kkit::Project project("C:/Users/Kai/Downloads/klabkit");
 			kkit::Project_drawer p_drawer(l_rnd, project);
 
+			// main window object to handle all logic and drawing
+			kkit::Board_window main_window;
+
+			// input handler
+			klib::User_input input;
+			int mouse_wheel_y{ 0 };
+			bool mw_used{ false };
+
 			uint32_t last_logic_time = SDL_GetTicks() - 1;
 			uint32_t last_draw_time = SDL_GetTicks() - 17;
 
@@ -48,20 +58,33 @@ int main(int argc, char* args[]) {
 
 				deltaDraw = tick_time - last_draw_time;
 				delta = tick_time - last_logic_time;
+				int32_t mw_y{ 0 };
 
+				mw_used = false;
 				SDL_PumpEvents();
 
 				if (SDL_PollEvent(&e) != 0)
 					if (e.type == SDL_QUIT)
 						l_exit = true;
+					else if (e.type == SDL_MOUSEWHEEL) {
+						mw_used = true;
+						mouse_wheel_y = e.wheel.y;
+					}
+
+				if (delta != 0) {
+					uint32_t realDelta = std::min(delta, 5u);
+
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
+					main_window.move(input, realDelta, project, p_drawer);
+
+					last_logic_time = tick_time;
+				}
 
 				if (deltaDraw >= 25) { // capped frame rate of ~40 is ok
 					//mainwindow.draw(input, &texture_manager);
 					last_draw_time = SDL_GetTicks();
 
-					for (int i = 0; i < 10; ++i)
-						for (int j = 0; j < 10; ++j)
-							p_drawer.draw_board(l_rnd, project, 20, 20);
+					main_window.draw(l_rnd, project, p_drawer);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);
