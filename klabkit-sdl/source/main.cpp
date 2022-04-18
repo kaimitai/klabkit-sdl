@@ -1,9 +1,8 @@
 #include <iostream>
 
 #include "./klabkit/Project.h"
-#include "./klabkit/kkit_gfx.h"
+#include "./klabkit/Project_drawer.h"
 #include "klib/file.h"
-#include "klib/gfx.h"
 
 int main(int argc, char* args[]) {
 
@@ -35,7 +34,7 @@ int main(int argc, char* args[]) {
 
 			// load resources
 			kkit::Project project("C:/Users/Kai/Downloads/klabkit");
-			auto v_txt = kkit::gfx::get_project_textures(l_rnd, project);
+			kkit::Project_drawer p_drawer(l_rnd, project);
 
 			uint32_t last_logic_time = SDL_GetTicks() - 1;
 			uint32_t last_draw_time = SDL_GetTicks() - 17;
@@ -62,7 +61,7 @@ int main(int argc, char* args[]) {
 
 					for (int i = 0; i < 10; ++i)
 						for (int j = 0; j < 10; ++j)
-							klib::gfx::blit(l_rnd, v_txt[200 + i * 10 + j], j * 64, i * 64);
+							p_drawer.draw_tile(l_rnd, 348 + i * 10 + j, i * 64, j * 64);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);

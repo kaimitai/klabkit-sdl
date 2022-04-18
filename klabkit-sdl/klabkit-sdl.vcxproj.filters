@@ -51,6 +51,9 @@
     <ClInclude Include="source\klabkit\Map_tile.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Project_drawer.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
     <ClCompile Include="source\klabkit\Board.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Project_drawer.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
   </ItemGroup>

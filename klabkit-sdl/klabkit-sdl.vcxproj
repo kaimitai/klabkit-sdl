@@ -26,6 +26,7 @@
     <ClInclude Include="source\klabkit\Project.h">
       <FileType>CppHeader</FileType>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Project_drawer.h" />
     <ClInclude Include="source\klabkit\Wall.h" />
     <ClInclude Include="source\klib\file.h" />
     <ClInclude Include="source\klib\gfx.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="source\klabkit\Board.cpp" />
     <ClCompile Include="source\klabkit\Map_tile.cpp" />
     <ClCompile Include="source\klabkit\Project.cpp" />
+    <ClCompile Include="source\klabkit\Project_drawer.cpp" />
     <ClCompile Include="source\klabkit\Wall.cpp" />
     <ClCompile Include="source\klib\file.cpp" />
     <ClCompile Include="source\klib\gfx.cpp" />
