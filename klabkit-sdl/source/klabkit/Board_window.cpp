@@ -25,4 +25,8 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		auto l_tcoords = p_pdrawer.get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		p_project.clear_tile(p_pdrawer.get_board(), l_tcoords.first, l_tcoords.second);
 	}
+	else if (p_input.mouse_held() &&
+		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW)) {
+		p_pdrawer.click_minimap(p_input.mx() - BW_MX, p_input.my() - BW_MY);
+	}
 }

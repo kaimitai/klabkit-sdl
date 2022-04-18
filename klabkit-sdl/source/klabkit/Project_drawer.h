@@ -37,7 +37,10 @@ namespace kkit {
 
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);
+		void set_grid_offset(int p_x, int p_y);
+		void click_minimap(int p_x, int p_y);
 		void move_grid_zoom(int p_dz);
+		void center_offset(void);
 
 		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
 

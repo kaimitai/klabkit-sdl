@@ -14,6 +14,10 @@ namespace kkit {
 	constexpr int BW_BY{ 20 };
 	constexpr int BW_BW{ c::WALL_IMG_W * 8 };
 
+	constexpr int BW_MX{ 20 };
+	constexpr int BW_MY{ 40 + 8 * 64 };
+	constexpr int BW_MW{ 128 };
+
 	class Board_window {
 
 	public:

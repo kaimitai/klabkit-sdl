@@ -44,6 +44,20 @@ void kkit::Project_drawer::move_grid_offset_y(int p_dy) {
 	this->validate_grid_offset();
 }
 
+void kkit::Project_drawer::set_grid_offset(int p_x, int p_y) {
+	this->board_x = p_x;
+	this->board_y = p_y;
+	this->validate_grid_offset();
+}
+
+void kkit::Project_drawer::click_minimap(int p_x, int p_y) {
+	this->set_grid_offset((p_x - c_tile_cnt()) / 2, (p_y - c_tile_cnt()) / 2);
+}
+
+void kkit::Project_drawer::center_offset(void) {
+	this->set_grid_offset((board_x - c_tile_cnt()) / 2, (board_y - c_tile_cnt()) / 2);
+}
+
 void kkit::Project_drawer::move_grid_zoom(int p_dz) {
 	this->board_zoom += p_dz;
 	this->validate_grid_offset();
