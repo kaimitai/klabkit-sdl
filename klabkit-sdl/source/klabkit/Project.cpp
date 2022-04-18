@@ -110,3 +110,7 @@ std::vector<byte> kkit::Project::get_wall_bytes(void) const {
 
 	return result;
 }
+
+void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
+	maps[p_board_no].clear_tile(p_x, p_y);
+}

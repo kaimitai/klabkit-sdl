@@ -2,6 +2,7 @@
 #define KLABKIT_PROJECT_DRAWER_H
 
 #include <SDL.h>
+#include <utility>
 #include "Project.h"
 #include "constants.h"
 
@@ -37,6 +38,10 @@ namespace kkit {
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);
 		void move_grid_zoom(int p_dz);
+
+		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
+
+		int get_board(void) const;
 	};
 
 }

@@ -4,9 +4,15 @@
 #include <SDL.h>
 #include "Project.h"
 #include "Project_drawer.h"
+#include "constants.h"
 #include "./../klib/User_input.h"
 
 namespace kkit {
+
+	// pixel dimension and coordinates of level board
+	constexpr int BW_BX{ 20 };
+	constexpr int BW_BY{ 20 };
+	constexpr int BW_BW{ c::WALL_IMG_W * 8 };
 
 	class Board_window {
 

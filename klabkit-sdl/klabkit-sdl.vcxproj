@@ -31,6 +31,7 @@
     <ClInclude Include="source\klabkit\Wall.h" />
     <ClInclude Include="source\klib\file.h" />
     <ClInclude Include="source\klib\gfx.h" />
+    <ClInclude Include="source\klib\klib_util.h" />
     <ClInclude Include="source\klib\User_input.h" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +44,7 @@
     <ClCompile Include="source\klabkit\Wall.cpp" />
     <ClCompile Include="source\klib\file.cpp" />
     <ClCompile Include="source\klib\gfx.cpp" />
+    <ClCompile Include="source\klib\klib_util.cpp" />
     <ClCompile Include="source\klib\User_input.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>

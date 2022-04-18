@@ -30,6 +30,8 @@ void kkit::Project_drawer::draw_board(SDL_Renderer* p_rnd, const kkit::Project& 
 			if (!board.is_empty_tile(board_x + i, board_y + j))
 				this->draw_tile(p_rnd, board.get_tile_no(board_x + i, board_y + j), p_x + l_tile_spacing * i, p_y + l_tile_spacing * j);
 
+	// draw outline
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 255,255,255 }, 2);
 }
 
 void kkit::Project_drawer::move_grid_offset_x(int p_dx) {
@@ -84,4 +86,15 @@ void kkit::Project_drawer::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) c
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, 128, 128, SDL_Color{ 255,255,255 }, 2);
 
 	klib::gfx::draw_rect(p_rnd, p_x + board_x * 2, p_y + board_y * 2, c_tile_cnt() * 2, c_tile_cnt() * 2, SDL_Color{ 255,255,0 }, 2);
+}
+
+// the board was clicked, get its global coordinates from the pixels
+// input pixel coordinates must be relative to the top left of the grid
+// and do not call this function if clicking outside the actual level grid
+std::pair<int, int> kkit::Project_drawer::get_tile_pos(int p_x, int p_y) const {
+	return std::make_pair(board_x + p_x / c_tile_pw(), board_y + p_y / c_tile_pw());
+}
+
+int kkit::Project_drawer::get_board(void) const {
+	return this->board_ind;
 }

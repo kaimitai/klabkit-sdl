@@ -66,6 +66,9 @@
     <ClInclude Include="source\klabkit\Board_window.h">
       <Filter>Header Files\klabkit\windows</Filter>
     </ClInclude>
+    <ClInclude Include="source\klib\klib_util.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -100,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Board_window.cpp">
       <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\klib_util.cpp">
+      <Filter>Source Files\klib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

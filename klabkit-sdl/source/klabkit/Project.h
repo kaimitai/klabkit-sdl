@@ -42,6 +42,10 @@ namespace kkit {
 		int get_wall_image_count(void) const;
 		const kkit::Wall& get_wall(int p_frame_no) const;
 		const kkit::Board& get_board(int p_board_no) const;
+
+		// manipulators
+		// map tiles
+		void clear_tile(int p_board_no, int p_x, int p_y);
 	};
 
 }

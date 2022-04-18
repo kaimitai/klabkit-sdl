@@ -25,6 +25,9 @@ namespace kkit {
 		// logical getters
 		bool is_empty_tile(int p_x, int p_y) const;
 		std::vector<byte> get_bytes(void) const;
+
+		// manipulators
+		void clear_tile(int p_x, int p_y);
 	};
 
 }
