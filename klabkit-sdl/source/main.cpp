@@ -61,7 +61,7 @@ int main(int argc, char* args[]) {
 
 					for (int i = 0; i < 10; ++i)
 						for (int j = 0; j < 10; ++j)
-							p_drawer.draw_tile(l_rnd, 348 + i * 10 + j, i * 64, j * 64);
+							p_drawer.draw_board(l_rnd, project, 20, 20);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);

@@ -10,6 +10,26 @@ void klib::gfx::blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p
 	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
 }
 
+// blit the given texture at t_x, t_y and scale it by an integral factor
+// factor of 0 means half the size
+void klib::gfx::blit_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_scale) {
+	SDL_Rect target_rect;
+	target_rect.x = p_x;
+	target_rect.y = p_y;
+	SDL_QueryTexture(p_texture, nullptr, nullptr, &target_rect.w, &target_rect.h);
+
+	if (p_scale == 0) {
+		target_rect.w /= 2;
+		target_rect.h /= 2;
+	}
+	else {
+		target_rect.w *= p_scale;
+		target_rect.h *= p_scale;
+	}
+
+	SDL_RenderCopy(p_rnd, p_texture, nullptr, &target_rect);
+}
+
 // utility functions
 SDL_Texture* klib::gfx::surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface) {
 	SDL_Texture* result = SDL_CreateTextureFromSurface(p_rnd, p_srf);
