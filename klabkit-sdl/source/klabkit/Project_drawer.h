@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <utility>
 #include "Project.h"
+#include "Map_tile.h"
 #include "constants.h"
 
 namespace kkit {
@@ -14,7 +15,9 @@ namespace kkit {
 	class Project_drawer {
 
 		// internal variables for level board position
-		int board_ind{ 17 }, board_x{ 0 }, board_y{ 0 }, board_zoom{ -1 };
+		int board_ind{ 0 }, board_x{ 0 }, board_y{ 0 }, board_zoom{ -1 };
+		// internal variables for tile picker position
+		int tile_x{ 0 }, tile_y{ 0 };
 
 		std::vector<SDL_Texture*> wall_tiles;
 
@@ -34,6 +37,7 @@ namespace kkit {
 
 		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_x, int p_y) const;
 		void draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const;
+		void draw_tile_picker(SDL_Renderer* p_rnd, int p_x, int p_y) const;
 
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);
@@ -42,9 +46,12 @@ namespace kkit {
 		void move_grid_zoom(int p_dz);
 		void center_offset(void);
 
+		void click_tile_picker(int p_x, int p_y);
+
 		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
 
 		int get_board(void) const;
+		kkit::Map_tile get_selected_tile(const kkit::Project& p_project) const;
 	};
 
 }

@@ -108,3 +108,7 @@ std::vector<byte> kkit::Board::get_bytes(void) const {
 void kkit::Board::clear_tile(int p_x, int p_y) {
 	tiles.at(p_x).at(p_y) = kkit::Map_tile(-1, false, false, false);
 }
+
+void kkit::Board::set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile) {
+	tiles.at(p_x).at(p_y) = p_tile;
+}

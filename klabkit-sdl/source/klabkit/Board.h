@@ -28,6 +28,7 @@ namespace kkit {
 
 		// manipulators
 		void clear_tile(int p_x, int p_y);
+		void set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile);
 	};
 
 }

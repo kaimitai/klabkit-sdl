@@ -102,6 +102,37 @@ void kkit::Project_drawer::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) c
 	klib::gfx::draw_rect(p_rnd, p_x + board_x * 2, p_y + board_y * 2, c_tile_cnt() * 2, c_tile_cnt() * 2, SDL_Color{ 255,255,0 }, 2);
 }
 
+void kkit::Project_drawer::draw_tile_picker(SDL_Renderer* p_rnd, int p_x, int p_y) const {
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, 32 * 12, 32 * 16, SDL_Color{ 0,0,0 }, 0);
+
+	for (int i{ 0 }; i < static_cast<int>(c::TILES.size()); ++i) {
+		int l_y = i / 12;
+		int l_x = i % 12;
+		int l_index = c::TILES[i];
+		if (l_index >= 0)
+			klib::gfx::blit_scale(p_rnd, this->wall_tiles.at(l_index), p_x + l_x * 32, p_y + l_y * 32, 0);
+	}
+
+	klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * tile_y, 32, 32, SDL_Color{ 255, 255, 0 }, 2);
+}
+
+// get selected tile
+// need the project to fetch metadata
+kkit::Map_tile kkit::Project_drawer::get_selected_tile(const kkit::Project& p_project) const {
+	int l_tile_no = c::TILES.at(tile_y * 12 + tile_x);
+	return kkit::Map_tile(l_tile_no, false, false, false);
+}
+
+void kkit::Project_drawer::click_tile_picker(int p_x, int p_y) {
+	int l_x = p_x / 32;
+	int l_y = p_y / 32;
+	int l_index = l_y * 12 + l_x;
+	if (l_index < c::TILES.size() && c::TILES[l_index] >= -1) {
+		this->tile_x = l_x;
+		this->tile_y = l_y;
+	}
+}
+
 // the board was clicked, get its global coordinates from the pixels
 // input pixel coordinates must be relative to the top left of the grid
 // and do not call this function if clicking outside the actual level grid

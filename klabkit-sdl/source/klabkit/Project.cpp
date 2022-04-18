@@ -1,3 +1,4 @@
+#include <map>
 #include "Project.h"
 #include "constants.h"
 #include "./../klib/file.h"
@@ -8,6 +9,17 @@ kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder }
 	initialize_palette();
 	initialize_walls();
 	initialize_maps();
+
+	// TODO: Remove analytics
+	/*
+	std::map<int, int> wall_count;
+	for (int i = 0; i < maps.size(); ++i)
+		for (int x = 0; x < 64; ++x)
+			for (int y = 0; y < 64; ++y)
+				if (maps[i].get_tile_no(x, y) != -1)
+					wall_count[maps[i].get_tile_no(x, y)+1]++;
+					*/
+
 }
 
 // initializers
@@ -113,4 +125,8 @@ std::vector<byte> kkit::Project::get_wall_bytes(void) const {
 
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 	maps[p_board_no].clear_tile(p_x, p_y);
+}
+
+void kkit::Project::set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_tile& p_tile) {
+	maps[p_board_no].set_tile(p_x, p_y, p_tile);
 }

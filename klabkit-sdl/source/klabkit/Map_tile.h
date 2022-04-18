@@ -11,8 +11,8 @@ namespace kkit {
 		int tile_no;
 
 	public:
-		Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vertical);
-		
+		Map_tile(int p_tile_no = -1, bool p_inside = false, bool p_blast = false, bool p_vertical = false);
+
 		// logical getters
 		bool empty(void) const;
 
