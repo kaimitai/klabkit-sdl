@@ -5,16 +5,26 @@
 #include "./../klib/gfx.h"
 #include "constants.h"
 
-void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
+std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
+	std::vector<SDL_Texture*> result;
+
+	auto l_palette = p_project.get_palette();
+
 	for (int i{ 0 }; i < p_project.get_wall_image_count(); ++i) {
-		const auto& l_wall = p_project.get_wall(i);
+		SDL_Surface* l_bmp = image_to_sdl_surface(p_project.get_wall(i).get_image(), l_palette);
+		SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
+		result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
+	}
 
-		SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, c::WALL_IMG_W, c::WALL_IMG_H, 8, 0, 0, 0, 0);
-		set_surface_project_palette(l_bmp, p_project);
+	return result;
+}
 
-		for (int i{ 0 }; i < c::WALL_IMG_W; ++i)
-			for (int j = 0; j < c::WALL_IMG_H; ++j)
-				klib::gfx::put_pixel(l_bmp, i, j, l_wall.get_palette_index(i, j));
+void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
+	auto l_palette = p_project.get_palette();
+
+	for (int i{ 0 }; i < p_project.get_wall_image_count(); ++i) {
+		auto l_image = p_project.get_wall(i).get_image();
+		SDL_Surface* l_bmp = image_to_sdl_surface(l_image, l_palette);
 
 		std::filesystem::create_directory(p_project.get_bmp_folder());
 		std::string l_out_file = p_project.get_bmp_file_path(c::FILE_WALLS, i);
@@ -52,6 +62,25 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 	auto file_status = SDL_SaveBMP(l_bmp, l_out_file.c_str());
 
 	SDL_FreeSurface(l_bmp);
+}
+
+SDL_Surface* kkit::gfx::image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette) {
+	auto l_palette = tuple_to_sdl_palette(p_palette);
+	int l_h{ static_cast<int>(p_image.size()) };
+	int l_w{ static_cast<int>(p_image.size() > 0 ? p_image[0].size() : 0) };
+
+	SDL_Color out_palette[256];
+	for (int i{ 0 }; i < 256; ++i)
+		out_palette[i] = l_palette[i];
+
+	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, l_w, l_h, 8, 0, 0, 0, 0);
+	SDL_SetPaletteColors(l_bmp->format->palette, out_palette, 0, 256);
+
+	for (int i{ 0 }; i < l_w; ++i)
+		for (int j = 0; j < l_h; ++j)
+			klib::gfx::put_pixel(l_bmp, i, j, p_image[i][j]);
+
+	return l_bmp;
 }
 
 void kkit::gfx::set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project) {

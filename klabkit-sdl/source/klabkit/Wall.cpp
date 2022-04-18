@@ -24,6 +24,10 @@ byte kkit::Wall::get_palette_index(int p_x, int p_y) const {
 	return this->image.at(p_x).at(p_y);
 }
 
+const std::vector<std::vector<byte>>& kkit::Wall::get_image(void) const {
+	return this->image;
+}
+
 byte kkit::Wall::get_header_byte(void) const {
 	byte result{ 0 };
 	if (this->wall_type == Wall_type::Plane)
