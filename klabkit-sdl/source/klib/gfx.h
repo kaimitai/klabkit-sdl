@@ -10,6 +10,7 @@ namespace klib {
 		// texture blitting
 		void blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y);
 		void blit_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_scale);
+		void blit_p2_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_p2);
 
 		// surface and texture functions and procedures
 		SDL_Texture* surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface = true);

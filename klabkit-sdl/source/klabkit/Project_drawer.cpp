@@ -15,7 +15,7 @@ kkit::Project_drawer::~Project_drawer(void) {
 }
 
 void kkit::Project_drawer::draw_tile(SDL_Renderer* p_rnd, int p_tile_no, int p_x, int p_y) const {
-	klib::gfx::blit_scale(p_rnd, wall_tiles[p_tile_no], p_x, p_y, board_zoom == -1 ? 0 : 1 << board_zoom);
+	klib::gfx::blit_p2_scale(p_rnd, wall_tiles[p_tile_no], p_x, p_y, board_zoom);
 }
 
 void kkit::Project_drawer::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_x, int p_y) const {
@@ -64,10 +64,10 @@ void kkit::Project_drawer::move_grid_zoom(int p_dz) {
 }
 
 int kkit::Project_drawer::c_tile_pw(void) const {
-	if (board_zoom == -1)
-		return c::WALL_IMG_W / 2;
+	if (board_zoom < 0)
+		return c::WALL_IMG_W >> board_zoom * (-1);
 	else
-		return c::WALL_IMG_W * (1 << board_zoom);
+		return c::WALL_IMG_W << board_zoom;
 }
 
 int kkit::Project_drawer::c_tile_cnt(void) const {
@@ -79,10 +79,10 @@ int kkit::Project_drawer::c_tile_offset_max(void) const {
 }
 
 void kkit::Project_drawer::validate_grid_offset(void) {
-	if (board_zoom < -1)
-		board_zoom = -1;
-	else if (board_zoom > 2)
-		board_zoom = 2;
+	if (board_zoom < -3)
+		board_zoom = -3;
+	else if (board_zoom > 3)
+		board_zoom = 3;
 
 	if (board_x < 0)
 		board_x = 0;
@@ -110,7 +110,7 @@ void kkit::Project_drawer::draw_tile_picker(SDL_Renderer* p_rnd, int p_x, int p_
 		int l_x = i % 12;
 		int l_index = c::TILES[i];
 		if (l_index >= 0)
-			klib::gfx::blit_scale(p_rnd, this->wall_tiles.at(l_index), p_x + l_x * 32, p_y + l_y * 32, 0);
+			klib::gfx::blit_p2_scale(p_rnd, this->wall_tiles.at(l_index), p_x + l_x * 32, p_y + l_y * 32, -1);
 	}
 
 	klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * tile_y, 32, 32, SDL_Color{ 255, 255, 0 }, 2);

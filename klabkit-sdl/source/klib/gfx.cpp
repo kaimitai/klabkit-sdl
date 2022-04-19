@@ -10,6 +10,25 @@ void klib::gfx::blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p
 	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
 }
 
+// blit the given texture at t_x, t_y and scale it by a power of two, where param p_p2 is the exponent
+void klib::gfx::blit_p2_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_p2) {
+	SDL_Rect target_rect;
+	target_rect.x = p_x;
+	target_rect.y = p_y;
+	SDL_QueryTexture(p_texture, nullptr, nullptr, &target_rect.w, &target_rect.h);
+
+	if (p_p2 >= 0) {
+		target_rect.w <<= p_p2;
+		target_rect.h <<= p_p2;
+	}
+	else {
+		target_rect.w >>= (p_p2 * (-1));
+		target_rect.h >>= (p_p2 * (-1));
+	}
+
+	SDL_RenderCopy(p_rnd, p_texture, nullptr, &target_rect);
+}
+
 // blit the given texture at t_x, t_y and scale it by an integral factor
 // factor of 0 means half the size
 void klib::gfx::blit_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_scale) {
