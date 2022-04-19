@@ -1,6 +1,7 @@
 #include <map>
 #include "Project.h"
 #include "constants.h"
+#include "compression.h"
 #include "./../klib/file.h"
 
 using byte = unsigned char;
@@ -9,17 +10,6 @@ kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder }
 	initialize_palette();
 	initialize_walls();
 	initialize_maps();
-
-	// TODO: Remove analytics
-	/*
-	std::map<int, int> wall_count;
-	for (int i = 0; i < maps.size(); ++i)
-		for (int x = 0; x < 64; ++x)
-			for (int y = 0; y < 64; ++y)
-				if (maps[i].get_tile_no(x, y) != -1)
-					wall_count[maps[i].get_tile_no(x, y)+1]++;
-					*/
-
 }
 
 // initializers
@@ -35,7 +25,15 @@ void kkit::Project::initialize_palette(void) {
 }
 
 void kkit::Project::initialize_walls(void) {
-	auto wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
+	std::vector<byte> wall_bytes;
+
+	try {
+		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
+	}
+	catch (std::exception& ex) {
+		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)));
+	}
+
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
 
 	for (int i{ 0 }; i < l_num_walls; ++i) {
@@ -44,7 +42,15 @@ void kkit::Project::initialize_walls(void) {
 }
 
 void kkit::Project::initialize_maps(void) {
-	auto map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
+	std::vector<byte> map_bytes;
+	
+	try {
+		map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
+	}
+	catch (const std::exception& ex) {
+		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)));
+	}
+
 	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
 
 	for (int i{ 0 }; i < l_num_maps; ++i)

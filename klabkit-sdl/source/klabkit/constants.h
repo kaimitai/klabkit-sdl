@@ -13,6 +13,7 @@ namespace kkit {
 		constexpr char FILE_WALLS[]{ "WALLS" };
 		constexpr char FILE_BOARDS[]{ "BOARDS" };
 		constexpr char FILE_EXT_DAT[]{ "DAT" };
+		constexpr char FILE_EXT_KZP[]{ "KZP" };
 		constexpr char FILE_EXT_BMP[]{ "bmp" };
 
 		// palette constants
