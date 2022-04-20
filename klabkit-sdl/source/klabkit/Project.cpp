@@ -133,12 +133,38 @@ std::vector<byte> kkit::Project::get_wall_bytes(void) const {
 	return result;
 }
 
+// generate map tile based on walls metadata
+// input is wall index. We leave the vertical indicator false in any case, but the caller can change this based on its own logic
+// which is not accessible here
+kkit::Map_tile kkit::Project::gen_map_tile(int p_tile_no) const {
+	if (p_tile_no == -1)
+		return kkit::Map_tile();
+	else
+		return kkit::Map_tile(p_tile_no, this->is_inside(p_tile_no), this->is_blast(p_tile_no), false);
+}
+
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 	maps[p_board_no].clear_tile(p_x, p_y);
 }
 
 void kkit::Project::set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_tile& p_tile) {
 	maps[p_board_no].set_tile(p_x, p_y, p_tile);
+}
+
+void kkit::Project::toggle_mt_direction(int p_board_no, int p_x, int p_y) {
+	// verify that the wall metadata lists this as a directional tile before chaning the direction
+	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0 && get_wall_type(maps.at(p_board_no).get_tile_no(p_x, p_y)) == kkit::Wall_type::Direction)
+		maps[p_board_no].toggle_direction(p_x, p_y);
+}
+
+void kkit::Project::toggle_mt_blast(int p_board_no, int p_x, int p_y) {
+	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0)
+		maps[p_board_no].toggle_blast(p_x, p_y);
+}
+
+void kkit::Project::toggle_mt_inside(int p_board_no, int p_x, int p_y) {
+	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0)
+		maps[p_board_no].toggle_inside(p_x, p_y);
 }
 
 // wall attribute getters

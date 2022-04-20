@@ -124,3 +124,15 @@ void kkit::Board::clear_tile(int p_x, int p_y) {
 void kkit::Board::set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile) {
 	tiles.at(p_x).at(p_y) = p_tile;
 }
+
+void kkit::Board::toggle_direction(int p_x, int p_y) {
+	tiles.at(p_x).at(p_y).toggle_direction();
+}
+
+void kkit::Board::toggle_blast(int p_x, int p_y) {
+	tiles.at(p_x).at(p_y).toggle_blast();
+}
+
+void kkit::Board::toggle_inside(int p_x, int p_y) {
+	tiles.at(p_x).at(p_y).toggle_inside();
+}

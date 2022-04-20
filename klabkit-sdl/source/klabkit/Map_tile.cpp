@@ -25,3 +25,16 @@ bool kkit::Map_tile::is_blast(void) const {
 bool kkit::Map_tile::is_vertical(void) const {
 	return this->vertical;
 }
+
+// manipulators
+void kkit::Map_tile::toggle_direction(void) {
+	this->vertical = !this->vertical;
+}
+
+void kkit::Map_tile::toggle_blast(void) {
+	this->blast = !this->blast;
+}
+
+void kkit::Map_tile::toggle_inside(void) {
+	this->inside = !this->inside;
+}

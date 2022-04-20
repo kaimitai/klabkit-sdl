@@ -32,6 +32,7 @@ namespace kkit {
 		// logical getters
 		std::vector<byte> get_board_bytes(void) const;
 		std::vector<byte> get_wall_bytes(void) const;
+		kkit::Map_tile gen_map_tile(int p_tile_no) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;
@@ -53,6 +54,9 @@ namespace kkit {
 		// map tiles
 		void clear_tile(int p_board_no, int p_x, int p_y);
 		void set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_tile& p_tile);
+		void toggle_mt_direction(int p_board_no, int p_x, int p_y);
+		void toggle_mt_blast(int p_board_no, int p_x, int p_y);
+		void toggle_mt_inside(int p_board_no, int p_x, int p_y);
 	};
 
 }

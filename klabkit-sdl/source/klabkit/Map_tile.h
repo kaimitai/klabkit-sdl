@@ -21,6 +21,11 @@ namespace kkit {
 		bool is_inside(void) const;
 		bool is_blast(void) const;
 		bool is_vertical(void) const;
+
+		// manipulators
+		void toggle_direction(void);
+		void toggle_blast(void);
+		void toggle_inside(void);
 	};
 
 }

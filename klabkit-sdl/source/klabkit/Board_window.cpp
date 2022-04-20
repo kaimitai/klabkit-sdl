@@ -15,7 +15,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 	// draw title
 	//klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
 
-	klib::gfx::draw_rect(p_rnd, 300, BW_MY, 450, 90, klib::gc::COL_BLUE, 0);
+	klib::gfx::draw_rect(p_rnd, 300, BW_MY, 450, 120, klib::gc::COL_BLUE, 0);
 
 	// draw selected tile (on board grid)
 	int l_tile_no = p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
@@ -103,6 +103,12 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MY, 20, 12 * 32, 16 * 32)) {
 		this->click_tile_picker(p_input.mx() - BW_MY, p_input.my() - 20);
 	}
+	else if (p_input.is_pressed(SDL_SCANCODE_B))
+		p_project.toggle_mt_blast(board_ind, sel_tile_x, sel_tile_y);
+	else if (p_input.is_pressed(SDL_SCANCODE_C))
+		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
+	else if (p_input.is_pressed(SDL_SCANCODE_D))
+		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
 
 }
 
@@ -211,7 +217,7 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 // need the project to fetch metadata
 kkit::Map_tile kkit::Board_window::get_selected_tile(const kkit::Project& p_project) const {
 	int l_tile_no = c::TILES.at(tile_y * 12 + tile_x);
-	return kkit::Map_tile(l_tile_no, false, false, false);
+	return p_project.gen_map_tile(l_tile_no);
 }
 
 void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
