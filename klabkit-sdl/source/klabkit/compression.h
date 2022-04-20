@@ -29,6 +29,7 @@ namespace kkit {
 		std::vector<byte> decompress_story_kzp(const std::vector<byte>& p_bytes);
 
 		std::vector<byte> compress_lab3d_kzp(const std::vector<std::vector<byte>>& p_file_bytes);
+		std::vector<byte> compress_story_kzp(const std::vector<byte>& p_bytes);
 
 		std::vector<byte> decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int header_size = 0, int out_header_size = 0);
 	}

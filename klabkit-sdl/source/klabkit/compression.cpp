@@ -198,3 +198,48 @@ std::vector<byte> kkit::compression::compress_lab3d_kzp(const std::vector<std::v
 
 	return result;
 }
+
+std::vector<byte> kkit::compression::compress_story_kzp(const std::vector<byte>& p_bytes) {
+	std::vector<byte> result(256, 0);
+
+	// initialize with first offset: 256
+	result[0] = 0;
+	result[1] = 1;
+
+
+	byte dat_old{ 0 };
+	int cnt{ 256 };
+	std::size_t ind{ 0 }, j{ 2 };
+	byte dat{ p_bytes.at(ind++) };
+	bool l_read{ true };
+
+	while (l_read) {
+
+		if (dat != 10 && dat != 92) {
+			dat ^= dat_old;
+			result.push_back(dat);
+			dat_old = dat;
+			dat = 0;
+			++cnt;
+		}
+		if (dat == 92) {
+			dat = dat_old;
+			result.push_back(dat);
+			dat_old = 0;
+			++cnt;
+			result[j++] = cnt % 256;
+			result[j++] = cnt / 256;
+			++ind;
+			++ind;
+		}
+		if (ind < p_bytes.size()) {
+			dat = p_bytes.at(ind);
+			l_read = true;
+			++ind;
+		}
+		else
+			l_read = false;
+	}
+
+	return result;
+}
