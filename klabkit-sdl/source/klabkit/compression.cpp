@@ -40,7 +40,7 @@ std::vector<byte> kkit::compression::decompress_story_kzp(const std::vector<byte
 		std::vector<byte> c_story(begin(p_bytes) + l_offsets[l_story_no], begin(p_bytes) + l_offsets[l_story_no] + l_length);
 		dat = 0;
 
-		for (int i{ 0 }; i < l_length; ++i) {
+		for (int i{ 0 }; i < l_length - 1; ++i) {
 			dat_old = dat;
 			dat = c_story[i];
 			byte l_out_byte{ static_cast<byte>(dat_old ^ dat) };
