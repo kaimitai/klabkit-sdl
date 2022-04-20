@@ -1,4 +1,5 @@
 #include "compression.h"
+#include "../klib/klib_util.h"
 
 using byte = unsigned char;
 
@@ -50,10 +51,10 @@ int kkit::compression::get_file_offset(const std::vector<int> p_comp_lengths, in
 }
 
 std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte>& p_input) {
-	std::vector<byte> result(4096, 0);
-	std::vector<int> lzwbuf(4096, 0);
-	std::vector<int> lzwbuf2(4096, 0);
-	std::vector<int> stack(4096, 0);
+	std::vector<byte> result(LZW_UNCOMPRESSED_BLOCK_SIZE, 0);
+	std::vector<int> lzwbuf(LZW_DICT_SIZE, 0);
+	std::vector<int> lzwbuf2(LZW_DICT_SIZE, 0);
+	std::vector<int> stack(LZW_DICT_SIZE, 0);
 	std::vector<byte> tempbuf(std::vector<byte>(begin(p_input) + 2, end(p_input)));
 	tempbuf.push_back(0);
 	tempbuf.push_back(0);
@@ -99,7 +100,7 @@ std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte
 
 		while (stackp > 0) {
 			stackp--;
-			if (bytecnt1 < 4096)
+			if (bytecnt1 < LZW_UNCOMPRESSED_BLOCK_SIZE)
 				result[bytecnt1++] = static_cast<byte>(stack[stackp]);
 		}
 
@@ -110,6 +111,45 @@ std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte
 		}
 
 	} while (currstr <= strtot);
+
+	return result;
+}
+
+std::vector<std::vector<byte>> kkit::compression::decompress_lab3d_kzp(const std::vector<byte>& p_bytes) {
+	return replace_lab3d_headers(p_bytes, std::vector<byte>(begin(HEADER_LAB3D), end(HEADER_LAB3D)), std::vector<byte>(begin(HEADER_GIF), end(HEADER_GIF)));
+}
+
+// lab3d.kzp consists of consecutive gif-files, where the gif header has been replaced
+// the offsets to the images are hard coded in the original ken3d executable so this file cannot easily be modified
+// idea: update a source port to determine the offsets by looking for the LAB3D!-header instead of relying on hard coded offsets
+// this function will do both "compression" and "decompression", based on which header to find and which to replace it with
+std::vector<std::vector<byte>> kkit::compression::replace_lab3d_headers(const std::vector<byte>& p_bytes, const std::vector<byte>& p_from_header, const std::vector<byte>& to_header) {
+	std::vector<std::vector<byte>> result;
+	std::vector<std::size_t> l_offsets;
+	std::size_t l_offset{ 0 };
+
+	// find the offsets to the from-header in the file
+	while (l_offset < p_bytes.size()) {
+		std::size_t l_next_offset = klib::util::find_subvector(p_bytes, std::vector<byte>(begin(p_from_header), end(p_from_header)), l_offset);
+		l_offsets.push_back(l_next_offset);
+		l_offset = l_next_offset + 1;
+	}
+
+	for (std::size_t i{ 0 }; i < l_offsets.size() - 1; ++i) {
+		result.push_back(std::vector<byte>(begin(p_bytes) + l_offsets[i], begin(p_bytes) + l_offsets[i + 1]));
+		std::copy(begin(to_header), end(to_header), begin(result[i]));
+	}
+
+	return result;
+}
+
+std::vector<byte> kkit::compression::compress_lab3d_kzp(const std::vector<std::vector<byte>>& p_file_bytes) {
+	std::vector<byte> result;
+
+	for (std::vector<byte> p_bytes : p_file_bytes) {
+		std::copy(begin(HEADER_LAB3D), end(HEADER_LAB3D), begin(p_bytes));
+		result.insert(end(result), begin(p_bytes), end(p_bytes));
+	}
 
 	return result;
 }

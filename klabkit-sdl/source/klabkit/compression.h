@@ -1,6 +1,7 @@
 #ifndef KLABKIT_COMPRESSION_H
 #define KLABKIT_COMPRESSION_H
 
+#include <array>
 #include <vector>
 
 namespace kkit {
@@ -9,15 +10,24 @@ namespace kkit {
 
 	namespace compression {
 
+		constexpr int LZW_DICT_SIZE{ 4096 };
+		constexpr int LZW_UNCOMPRESSED_BLOCK_SIZE{ 4096 };
+		constexpr std::array<byte, 6> HEADER_LAB3D{ { 'L', 'A', 'B', '3', 'D', '!'} };
+		constexpr std::array<byte, 6> HEADER_GIF{ {'G','I','F','8','7','a'} };
+
 		// core compression routines
 		std::vector<byte> decompress_lzw_block(const std::vector<byte>& p_input);
 
 		// utility functions
 		int get_file_offset(const std::vector<int> p_comp_lengths, int p_block_no);
+		std::vector<std::vector<byte>> replace_lab3d_headers(const std::vector<byte>& p_bytes, const std::vector<byte>& p_from_header, const std::vector<byte>& to_header);
 
 		// concrete implementations based on file type we're handling
 		std::vector<byte> decompress_walls_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> decompress_boards_kzp(const std::vector<byte>& p_bytes);
+		std::vector<std::vector<byte>> decompress_lab3d_kzp(const std::vector<byte>& p_bytes);
+
+		std::vector<byte> compress_lab3d_kzp(const std::vector<std::vector<byte>>& p_file_bytes);
 
 		std::vector<byte> decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int header_size = 0, int out_header_size = 0);
 	}
