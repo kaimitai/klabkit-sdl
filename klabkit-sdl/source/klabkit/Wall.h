@@ -21,6 +21,9 @@ namespace kkit {
 
 		// getters
 		const std::vector<std::vector<byte>>& get_image(void) const;
+		bool is_blast(void) const;
+		bool is_inside(void) const;
+		kkit::Wall_type get_wall_type(void) const;
 
 		// logical getters
 		byte get_header_byte(void) const;

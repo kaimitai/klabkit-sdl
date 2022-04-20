@@ -21,6 +21,10 @@ namespace kkit {
 
 		// getters
 		int get_tile_no(int p_x, int p_y) const;
+		bool is_inside(int p_x, int p_y) const;
+		bool is_blast(int p_x, int p_y) const;
+		bool is_vertical(int p_x, int p_y) const;
+
 
 		// logical getters
 		bool is_empty_tile(int p_x, int p_y) const;

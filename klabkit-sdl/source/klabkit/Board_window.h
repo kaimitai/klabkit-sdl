@@ -45,12 +45,13 @@ namespace kkit {
 		// handle clicks on the various screen elements
 		void click_tile_picker(int p_x, int p_y);
 		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
+		std::pair<int, int> get_pixel_pos(int p_x, int p_y) const;
 
 		kkit::Map_tile get_selected_tile(const kkit::Project& p_project) const;
 
 		// internal calculations
 		int c_max_offset(void) const;
-		int c_tile_pw(void) const;
+		int c_bb_pixel_width(void) const;
 
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);

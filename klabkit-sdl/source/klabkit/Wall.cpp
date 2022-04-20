@@ -51,3 +51,15 @@ std::vector<byte> kkit::Wall::get_image_bytes(void) const {
 
 	return result;
 }
+
+bool kkit::Wall::is_blast(void) const {
+	return this->blast;
+}
+
+bool kkit::Wall::is_inside(void) const {
+	return this->inside;
+}
+
+kkit::Wall_type kkit::Wall::get_wall_type(void) const {
+	return this->wall_type;
+}

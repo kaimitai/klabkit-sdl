@@ -38,6 +38,11 @@ namespace kkit {
 		std::string get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const;
 		int get_board_count(void) const;
 
+		// wall attribute getters
+		bool is_blast(int p_wall_no) const;
+		bool is_inside(int p_wall_no) const;
+		kkit::Wall_type get_wall_type(int p_wall_no) const;
+
 		// gfx
 		const std::vector<std::tuple<byte, byte, byte>>& get_palette(void) const;
 		int get_wall_image_count(void) const;

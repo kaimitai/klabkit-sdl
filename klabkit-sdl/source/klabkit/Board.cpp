@@ -60,6 +60,18 @@ int kkit::Board::get_tile_no(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).get_tile_no();
 }
 
+bool kkit::Board::is_inside(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_inside();
+}
+
+bool kkit::Board::is_blast(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_blast();
+}
+
+bool kkit::Board::is_vertical(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_vertical();
+}
+
 std::vector<byte> kkit::Board::get_bytes(void) const {
 	std::vector<byte> result;
 

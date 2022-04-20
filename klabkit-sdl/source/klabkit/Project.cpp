@@ -43,7 +43,7 @@ void kkit::Project::initialize_walls(void) {
 
 void kkit::Project::initialize_maps(void) {
 	std::vector<byte> map_bytes;
-	
+
 	try {
 		map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 	}
@@ -139,4 +139,17 @@ void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 
 void kkit::Project::set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_tile& p_tile) {
 	maps[p_board_no].set_tile(p_x, p_y, p_tile);
+}
+
+// wall attribute getters
+bool kkit::Project::is_blast(int p_wall_no) const {
+	return walls.at(p_wall_no).is_blast();
+}
+
+bool kkit::Project::is_inside(int p_wall_no) const {
+	return walls.at(p_wall_no).is_inside();
+}
+
+kkit::Wall_type kkit::Project::get_wall_type(int p_wall_no) const {
+	return walls.at(p_wall_no).get_wall_type();
 }
