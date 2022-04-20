@@ -3,8 +3,8 @@
 #include "./../klib/klib_util.h"
 #include "./../klib/gfx.h"
 
-void kkit::Board_window::draw_tile(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_tile_no, int p_x, int p_y) const {
-	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(p_tile_no), p_x, p_y, board_zoom);
+kkit::Board_window::Board_window(SDL_Renderer* p_rnd) {
+	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
 }
 
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
@@ -13,7 +13,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 	draw_tile_picker(p_rnd, p_gfx, BW_MY, 20);
 
 	// draw title
-	//klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
+	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
 
 	// draw selected tile (on board grid)
 	std::string l_sel_tile{ "Tile: " + std::to_string(p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y)) };
@@ -25,22 +25,22 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 
 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		this->move_grid_zoom(1);
-		this->center_offset(l_tcoords);
+		this->move_grid_zoom(0.2);
+		//this->center_offset(l_tcoords);
 	}
 	else 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_down()) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		this->move_grid_zoom(-1);
-		this->center_offset(l_tcoords);
+		this->move_grid_zoom(-0.2);
+		//this->center_offset(l_tcoords);
 	}
 	else if (p_input.is_pressed(SDL_SCANCODE_UP) || p_input.mw_up())
-		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? -4 : -1);
+		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? -4 * 64 : -64);
 	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || p_input.mw_down())
-		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? 4 : 1);
+		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? 4 * 64 : 64);
 	else if (p_input.is_pressed(SDL_SCANCODE_LEFT))
-		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? -4 : -1);
+		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? -4 * 64 : -1 * 64);
 	else if (p_input.is_pressed(SDL_SCANCODE_RIGHT))
-		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? 4 : 1);
+		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? 4 * 64 : 1 * 64);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_MINUS))
 		this->move_grid_zoom(-1);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
@@ -74,53 +74,46 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 
 
 // internal calculations
-int kkit::Board_window::c_tile_pw(void) const {
-	if (board_zoom < 0)
-		return c::WALL_IMG_W >> board_zoom * (-1);
-	else
-		return c::WALL_IMG_W << board_zoom;
-}
-
-int kkit::Board_window::c_tile_cnt(void) const {
-	return BOARD_PW / this->c_tile_pw();
-}
-
-int kkit::Board_window::c_tile_offset_max(void) const {
-	return c::MAP_W - this->c_tile_cnt();
+int kkit::Board_window::c_max_offset(void) const {
+	return static_cast<int>(4096.0f - static_cast<float>(BW_BW) / this->zoom_factor);
 }
 
 void kkit::Board_window::validate_grid_offset(void) {
-	board_zoom = klib::util::validate(board_zoom, -3, 2);
-	board_x = klib::util::validate(board_x, 0, c_tile_offset_max());
-	board_y = klib::util::validate(board_y, 0, c_tile_offset_max());
+	zoom_factor = klib::util::validate(zoom_factor, 0.125f, 2.0f);
+	board_px = klib::util::validate(board_px, 0, c_max_offset());
+	board_py = klib::util::validate(board_py, 0, c_max_offset());
 }
 
 void kkit::Board_window::move_grid_offset_x(int p_dx) {
-	this->board_x += p_dx;
+	this->board_px += p_dx;
 	this->validate_grid_offset();
 }
 
 void kkit::Board_window::move_grid_offset_y(int p_dy) {
-	this->board_y += p_dy;
+	this->board_py += p_dy;
 	this->validate_grid_offset();
 }
 
 void kkit::Board_window::set_grid_offset(int p_x, int p_y) {
-	this->board_x = p_x;
-	this->board_y = p_y;
+	this->board_px = p_x;
+	this->board_py = p_y;
 	this->validate_grid_offset();
 }
 
 void kkit::Board_window::click_minimap(int p_x, int p_y) {
-	this->set_grid_offset((p_x - c_tile_cnt()) / 2, (p_y - c_tile_cnt()) / 2);
+	float f_x = p_x / static_cast<float>(BW_MW);
+	float f_y = p_y / static_cast<float>(BW_MW);
+	this->set_grid_offset((4096 * f_x), (4096 * f_y));
 }
 
 void kkit::Board_window::center_offset(void) {
 	// TODO: Fix this function, the problem is centering tiles near the right and bottom edges
-	int l_dx = std::min(c_tile_cnt() / 2, (64 - board_x) / c_tile_cnt());
-	int l_dy = std::min(c_tile_cnt() / 2, (64 - board_y) / c_tile_cnt());
+	//int l_dx = std::min(c_tile_cnt() / 2, (64 - board_x) / c_tile_cnt());
+	//int l_dy = std::min(c_tile_cnt() / 2, (64 - board_y) / c_tile_cnt());
+	int l_dx = 0;
+	int l_dy = 0;
 
-	this->set_grid_offset(board_x - l_dx, board_y - l_dy);
+	this->set_grid_offset(board_px - l_dx, board_py - l_dy);
 }
 
 void kkit::Board_window::center_offset(std::pair<int, int> p_coords) {
@@ -128,37 +121,41 @@ void kkit::Board_window::center_offset(std::pair<int, int> p_coords) {
 	this->center_offset();
 }
 
-void kkit::Board_window::move_grid_zoom(int p_dz) {
-	this->board_zoom += p_dz;
+void kkit::Board_window::move_grid_zoom(float p_dz) {
+	this->zoom_factor += p_dz;
 	this->validate_grid_offset();
 }
 
-
 void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
-	int l_tile_count = this->c_tile_cnt();
-	int l_tile_spacing = this->c_tile_pw();
+	//int l_tile_count = this->c_tile_cnt();
+	//int l_tile_spacing = this->c_tile_pw();
 	const auto& board = p_project.get_board(this->board_ind);
 
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 0, 0, 0 }, 0);
+	SDL_SetRenderTarget(p_rnd, grid_texture);
+	for (int i{ 0 }; i < 64; ++i)
+		for (int j{ 0 }; j < 64; ++j)
+			if (!board.is_empty_tile(i, j))
+				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(board.get_tile_no(i, j)), 64 * i, 64 * j);
 
-	for (int i{ 0 }; i < l_tile_count; ++i)
-		for (int j{ 0 }; j < l_tile_count; ++j)
-			if (!board.is_empty_tile(board_x + i, board_y + j))
-				this->draw_tile(p_rnd, p_gfx, board.get_tile_no(board_x + i, board_y + j), p_x + l_tile_spacing * i, p_y + l_tile_spacing * j);
+	// draw selected tile
+	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64, SDL_Color{ 255,255,0 }, 2);
+
+	SDL_SetRenderTarget(p_rnd, nullptr);
+
+	klib::gfx::blit_full_spec(p_rnd, this->grid_texture, BW_BX, BW_BY, BW_BW, BW_BW, board_px, board_py, BW_BW / zoom_factor, BW_BW / zoom_factor);
 
 	// draw outline
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 255,255,255 }, 2);
 }
 
 
-
-
-
 void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const {
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, 128, 128, SDL_Color{ 0,0,0 }, 0);
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, 128, 128, SDL_Color{ 255,255,255 }, 2);
 
-	klib::gfx::draw_rect(p_rnd, p_x + board_x * 2, p_y + board_y * 2, c_tile_cnt() * 2, c_tile_cnt() * 2, SDL_Color{ 255,255,0 }, 2);
+	float l_sel_factor = 16.0f / zoom_factor;
+
+	klib::gfx::draw_rect(p_rnd, p_x + board_px * (128.0f / 4096.0f), p_y + board_py * (128.0f / 4096.0f), l_sel_factor, l_sel_factor, SDL_Color{ 255,255,0 }, 2);
 }
 
 void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
@@ -192,11 +189,17 @@ void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
 	}
 }
 
+int  kkit::Board_window::c_tile_pw(void) const {
+	return static_cast<int>(64.0f * zoom_factor);
+}
+
 // the board was clicked, get its global coordinates from the pixels
 // input pixel coordinates must be relative to the top left of the grid
 // and do not call this function if clicking outside the actual level grid
 std::pair<int, int> kkit::Board_window::get_tile_pos(int p_x, int p_y) const {
-	return std::make_pair(board_x + p_x / c_tile_pw(), board_y + p_y / c_tile_pw());
+	int l_tx = board_px + p_x / zoom_factor;
+	int l_ty = board_py + p_y / zoom_factor;
+	return std::make_pair(l_tx / 64, l_ty / 64);
 }
 
 std::string kkit::Board_window::get_board_title(void) const {
