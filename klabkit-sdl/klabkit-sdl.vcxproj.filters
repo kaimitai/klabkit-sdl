@@ -72,6 +72,9 @@
     <ClInclude Include="source\klabkit\Project_gfx.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
+    <ClInclude Include="source\klib\Font.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -112,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Project_gfx.cpp">
       <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\Font.cpp">
+      <Filter>Source Files\klib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

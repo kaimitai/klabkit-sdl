@@ -54,8 +54,8 @@ std::vector<byte> kkit::compression::decompress_story_kzp(const std::vector<byte
 			break;
 
 		result.push_back('\\');
-		result.push_back(10);
 		result.push_back(13);
+		result.push_back(10);
 	}
 
 	return result;

@@ -54,6 +54,8 @@ namespace kkit {
 		void center_offset(std::pair<int, int> p_coords);
 		void validate_grid_offset(void);
 
+		std::string get_board_title(void) const;
+
 	public:
 		Board_window(void) = default;
 		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project);

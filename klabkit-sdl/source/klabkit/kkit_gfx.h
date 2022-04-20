@@ -6,7 +6,6 @@
 #include <vector>
 #include "Project.h"
 
-
 namespace kkit {
 
 	using byte = unsigned char;

@@ -11,6 +11,9 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 	draw_tile_picker(p_rnd, p_gfx, BW_MY, 20);
+
+	// draw title
+	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
@@ -197,4 +200,11 @@ void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
 // and do not call this function if clicking outside the actual level grid
 std::pair<int, int> kkit::Board_window::get_tile_pos(int p_x, int p_y) const {
 	return std::make_pair(board_x + p_x / c_tile_pw(), board_y + p_y / c_tile_pw());
+}
+
+std::string kkit::Board_window::get_board_title(void) const {
+	int l_episode_no{ board_ind / 10 + 1 };
+	int l_map_no{ board_ind % 10 + 1 };
+
+	return std::string("E" + std::to_string(l_episode_no) + "M" + std::to_string(l_map_no));
 }

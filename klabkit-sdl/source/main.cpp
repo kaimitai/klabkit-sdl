@@ -2,8 +2,8 @@
 
 #include "./klabkit/Project.h"
 #include "./klabkit/Project_gfx.h"
-#include "klib/User_input.h"
 #include "klabkit/Board_window.h"
+#include "klib/User_input.h"
 
 int main(int argc, char* args[]) {
 

@@ -112,3 +112,34 @@ void  klib::gfx::put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel) {
 
 	SDL_UnlockSurface(srf);
 }
+
+std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, SDL_Color p_trans_col, int p_w, int p_h, bool p_destroy_surface) {
+	std::vector<SDL_Texture*> result;
+
+	SDL_Rect tmpRectangle;
+	tmpRectangle.w = p_w;
+	tmpRectangle.h = p_h;
+
+	for (int j = 0; j < full_surface->h; j += p_h)
+		for (int i = 0; i < full_surface->w; i += p_w) {
+			tmpRectangle.x = i;
+			tmpRectangle.y = j;
+
+			SDL_Surface* tmp = SDL_CreateRGBSurface(0, p_w, p_h, 24, 0, 0, 0, 0);
+			SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_trans_col.r, p_trans_col.g, p_trans_col.b));
+
+			SDL_BlitSurface(full_surface, &tmpRectangle, tmp, nullptr);
+
+			result.push_back(surface_to_texture(rnd, tmp, p_destroy_surface));
+		}
+
+	return(result);
+}
+
+void klib::gfx::draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_msg, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col, SDL_Color p_bg_col) {
+	draw_rect(p_rnd, p_x, p_y, p_w, p_h, p_bg_col, 0);
+
+	int l_offset_x = (p_w - static_cast<int>(p_msg.size()) * p_font.w()) / 2;
+	int l_offset_y = (p_h - p_font.h()) / 2;
+	p_font.write_text(p_rnd, p_msg, p_x + l_offset_x, p_y + l_offset_y, p_text_col);
+}
