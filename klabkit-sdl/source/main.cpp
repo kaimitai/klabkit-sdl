@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "./klabkit/Project.h"
-#include "./klabkit/Project_drawer.h"
-#include "klib/file.h"
+#include "./klabkit/Project_gfx.h"
 #include "klib/User_input.h"
 #include "klabkit/Board_window.h"
 
@@ -35,8 +34,8 @@ int main(int argc, char* args[]) {
 			}
 
 			// load resources
-			kkit::Project project("C:/Users/Kai/Downloads/klabkit");
-			kkit::Project_drawer p_drawer(l_rnd, project);
+			kkit::Project project("C:/Users/kfrol/Downloads/klabkit");
+			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing
 			kkit::Board_window main_window;
@@ -75,7 +74,7 @@ int main(int argc, char* args[]) {
 					uint32_t realDelta = std::min(delta, 5u);
 
 					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
-					main_window.move(input, realDelta, project, p_drawer);
+					main_window.move(input, realDelta, project);
 
 					last_logic_time = tick_time;
 				}
@@ -84,7 +83,7 @@ int main(int argc, char* args[]) {
 					//mainwindow.draw(input, &texture_manager);
 					last_draw_time = SDL_GetTicks();
 
-					main_window.draw(l_rnd, project, p_drawer);
+					main_window.draw(l_rnd, project, p_gfx);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);
@@ -97,22 +96,6 @@ int main(int argc, char* args[]) {
 
 
 	}
-
-
-
-
-
-	//kkit::gfx::project_walls_to_bmps(project);
-
-	//for (int i{ 0 }; i < 30; ++i) kkit::gfx::project_map_to_bmp(project, i);
-
-	/*
-	auto v_boards = project.get_board_bytes();
-	klib::file::write_bytes_to_file(v_boards, "C:/Users/Kai/Downloads/klabkit/boards_out.dat");
-
-	auto v_walls = project.get_wall_bytes();
-	klib::file::write_bytes_to_file(v_walls, "C:/Users/Kai/Downloads/klabkit/walls_out.dat");
-	*/
 
 	// Destroy window
 	SDL_DestroyWindow(l_window);

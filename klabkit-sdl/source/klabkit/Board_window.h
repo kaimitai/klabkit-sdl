@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include "Project.h"
-#include "Project_drawer.h"
+#include "Project_gfx.h"
 #include "constants.h"
 #include "./../klib/User_input.h"
 
@@ -13,17 +13,51 @@ namespace kkit {
 	constexpr int BW_BX{ 20 };
 	constexpr int BW_BY{ 20 };
 	constexpr int BW_BW{ c::WALL_IMG_W * 8 };
+	constexpr int BOARD_TILE_W{ 8 };
+	constexpr int BOARD_PW{ BOARD_TILE_W * c::WALL_IMG_W };
 
+	// pixel dimensions and coordinates of minimap
 	constexpr int BW_MX{ 20 };
 	constexpr int BW_MY{ 40 + 8 * 64 };
 	constexpr int BW_MW{ 128 };
 
 	class Board_window {
 
+		// internal variables for level board position
+		int board_ind{ 0 }, board_x{ 0 }, board_y{ 0 }, board_zoom{ -1 };
+		// internal variables for tile picker position
+		int tile_x{ 0 }, tile_y{ 0 };
+
+		// drawing routines
+		void draw_tile(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_tile_no, int p_x, int p_y) const;
+		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
+		void draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const;
+		void draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
+
+		// handle clicks on the various screen elements
+		void click_tile_picker(int p_x, int p_y);
+		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
+
+		kkit::Map_tile get_selected_tile(const kkit::Project& p_project) const;
+
+		// internal calculations
+		int c_tile_pw(void) const;
+		int c_tile_cnt(void) const;
+		int c_tile_offset_max(void) const;
+
+		void move_grid_offset_x(int p_dx);
+		void move_grid_offset_y(int p_dy);
+		void set_grid_offset(int p_x, int p_y);
+		void click_minimap(int p_x, int p_y);
+		void move_grid_zoom(int p_dz);
+		void center_offset(void);
+		void center_offset(std::pair<int, int> p_coords);
+		void validate_grid_offset(void);
+
 	public:
 		Board_window(void) = default;
-		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_drawer& p_pdrawer);
-		void draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_drawer& p_pdrawer) const;
+		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project);
+		void draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 	};
 }
 

@@ -57,9 +57,6 @@
     <ClInclude Include="source\klabkit\Map_tile.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
-    <ClInclude Include="source\klabkit\Project_drawer.h">
-      <Filter>Header Files\klabkit</Filter>
-    </ClInclude>
     <ClInclude Include="source\klib\User_input.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
@@ -70,6 +67,9 @@
       <Filter>Header Files\klib</Filter>
     </ClInclude>
     <ClInclude Include="source\klabkit\compression.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Project_gfx.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
   </ItemGroup>
@@ -98,9 +98,6 @@
     <ClCompile Include="source\klabkit\Board.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
-    <ClCompile Include="source\klabkit\Project_drawer.cpp">
-      <Filter>Source Files\klabkit</Filter>
-    </ClCompile>
     <ClCompile Include="source\klib\User_input.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
@@ -111,6 +108,9 @@
       <Filter>Source Files\klib</Filter>
     </ClCompile>
     <ClCompile Include="source\klabkit\compression.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Project_gfx.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
   </ItemGroup>

@@ -80,6 +80,10 @@ std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, 
 	return get_file_path(c::FILE_EXT_BMP, p_file_prefix, c::FILE_EXT_BMP, p_frame_no);
 }
 
+int kkit::Project::get_board_count(void) const {
+	return static_cast<int>(this->maps.size());
+}
+
 std::string kkit::Project::get_bmp_folder(void) const {
 	return project_folder + "/" + c::FILE_EXT_BMP;
 }
