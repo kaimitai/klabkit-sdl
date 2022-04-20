@@ -26,6 +26,7 @@ namespace kkit {
 		std::vector<byte> decompress_walls_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> decompress_boards_kzp(const std::vector<byte>& p_bytes);
 		std::vector<std::vector<byte>> decompress_lab3d_kzp(const std::vector<byte>& p_bytes);
+		std::vector<byte> decompress_story_kzp(const std::vector<byte>& p_bytes);
 
 		std::vector<byte> compress_lab3d_kzp(const std::vector<std::vector<byte>>& p_file_bytes);
 

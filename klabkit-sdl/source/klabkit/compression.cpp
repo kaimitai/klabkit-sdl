@@ -16,6 +16,51 @@ std::vector<byte> kkit::compression::decompress_boards_kzp(const std::vector<byt
 	return decompress_file_contents(p_bytes, 30 * 2);
 }
 
+std::vector<byte> kkit::compression::decompress_story_kzp(const std::vector<byte>& p_bytes) {
+	std::vector<byte> result;
+
+	std::vector<int> l_offsets;
+	for (int i{ 0 }; i < 128; ++i)
+		l_offsets.push_back(p_bytes.at(2 * i) + 256 * p_bytes.at(2 * i + 1));
+	l_offsets.push_back(0);
+
+	bool l_last{ false };
+	int l_length{ 0 };
+	byte dat{ 0 }, dat_old{ 0 };
+
+	for (int l_story_no{ 0 }; l_story_no < static_cast<int>(l_offsets.size()) - 1; ++l_story_no) {
+
+		if (l_offsets[l_story_no + 1] == 0) {
+			l_last = true;
+			l_length = static_cast<int>(p_bytes.size()) - l_offsets[l_story_no];
+		}
+		else
+			l_length = l_offsets[l_story_no + 1] - l_offsets[l_story_no];
+
+		std::vector<byte> c_story(begin(p_bytes) + l_offsets[l_story_no], begin(p_bytes) + l_offsets[l_story_no] + l_length);
+		dat = 0;
+
+		for (int i{ 0 }; i < l_length; ++i) {
+			dat_old = dat;
+			dat = c_story[i];
+			byte l_out_byte{ static_cast<byte>(dat_old ^ dat) };
+
+			result.push_back(l_out_byte);
+			if (l_out_byte == 13)
+				result.push_back(10);
+		}
+
+		if (l_last)
+			break;
+
+		result.push_back('\\');
+		result.push_back(10);
+		result.push_back(13);
+	}
+
+	return result;
+}
+
 std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size) {
 	std::vector<byte> result(std::vector<byte>(begin(p_bytes), begin(p_bytes) + p_header_size));
 	while (result.size() < p_out_header_size)
