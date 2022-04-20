@@ -14,6 +14,16 @@ namespace klib {
 
 		// equivalent of std::string::find for vector<byte> - look for headers etc
 		std::size_t find_subvector(const std::vector<byte>& p_bytes, const std::vector<byte>& p_search, std::size_t p_offset);
+
+		template <class T>
+		T validate(T p_input, T p_min_val, T p_max_val) {
+			if (p_input < p_min_val)
+				return p_min_val;
+			else if (p_input > p_max_val)
+				return p_max_val;
+			else
+				return p_input;
+		}
 	}
 
 }

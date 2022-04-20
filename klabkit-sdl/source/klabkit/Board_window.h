@@ -25,6 +25,10 @@ namespace kkit {
 
 		// internal variables for level board position
 		int board_ind{ 0 }, board_x{ 0 }, board_y{ 0 }, board_zoom{ -1 };
+
+		// internal variables for selected tile position
+		int sel_tile_x{ 0 }, sel_tile_y{ 0 };
+
 		// internal variables for tile picker position
 		int tile_x{ 0 }, tile_y{ 0 };
 

@@ -13,7 +13,11 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 	draw_tile_picker(p_rnd, p_gfx, BW_MY, 20);
 
 	// draw title
-	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
+	//klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
+
+	// draw selected tile (on board grid)
+	std::string l_sel_tile{ "Tile: " + std::to_string(p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y)) };
+	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_sel_tile, 300, BW_MY, 200, 30);
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
@@ -48,10 +52,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP) && board_ind < p_project.get_board_count() - 1)
 		++board_ind;
 
-	if (p_input.mouse_held() && mouse_over_board_grid) {
+	if (p_input.mouse_held(false) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		//p_project.clear_tile(p_pdrawer.get_board(), l_tcoords.first, l_tcoords.second);
 		p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project));
+	}
+	else if (p_input.mouse_held(true) && mouse_over_board_grid) {
+		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
+		sel_tile_x = l_tcoords.first;
+		sel_tile_y = l_tcoords.second;
 	}
 	else if (p_input.mouse_held() &&
 		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW)) {
@@ -82,20 +90,9 @@ int kkit::Board_window::c_tile_offset_max(void) const {
 }
 
 void kkit::Board_window::validate_grid_offset(void) {
-	if (board_zoom < -3)
-		board_zoom = -3;
-	else if (board_zoom > 2)
-		board_zoom = 2;
-
-	if (board_x < 0)
-		board_x = 0;
-	else if (board_x > c_tile_offset_max())
-		board_x = c_tile_offset_max();
-
-	if (board_y < 0)
-		board_y = 0;
-	else if (board_y > c_tile_offset_max())
-		board_y = c_tile_offset_max();
+	board_zoom = klib::util::validate(board_zoom, -3, 2);
+	board_x = klib::util::validate(board_x, 0, c_tile_offset_max());
+	board_y = klib::util::validate(board_y, 0, c_tile_offset_max());
 }
 
 void kkit::Board_window::move_grid_offset_x(int p_dx) {

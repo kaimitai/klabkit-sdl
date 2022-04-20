@@ -66,8 +66,10 @@ void klib::gfx::draw_rect(SDL_Renderer* p_rnd, int p_x, int p_y, int p_w, int p_
 		r.y = p_y + i;
 		r.w = p_w - 2 * i;
 		r.h = p_h - 2 * i;
-		if (p_thickness == 0)
+		if (p_thickness == 0) {
 			SDL_RenderFillRect(p_rnd, &r);
+			return;
+		}
 		else
 			SDL_RenderDrawRect(p_rnd, &r);
 	}
