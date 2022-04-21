@@ -9,6 +9,10 @@
 
 namespace kkit {
 
+	// min and max values for interacting with the grid
+	constexpr float ZOOM_MIN{ 0.125f };
+	constexpr float ZOOM_MAX{ 2.0f };
+
 	// pixel dimension and coordinates of level board
 	constexpr int BW_BX{ 20 };
 	constexpr int BW_BY{ 20 };

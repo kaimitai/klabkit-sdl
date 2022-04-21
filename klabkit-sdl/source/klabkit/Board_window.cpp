@@ -58,12 +58,16 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 
 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
+		if (zoom_factor >= ZOOM_MAX)
+			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		this->move_grid_zoom(0.2f);
 		//this->center_offset(l_tcoords);
 		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
-	else 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_down()) {
+	else if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_down()) {
+		if (zoom_factor <= ZOOM_MIN)
+			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		this->move_grid_zoom(-0.2f);
 		//this->center_offset(l_tcoords);
@@ -121,7 +125,7 @@ int kkit::Board_window::c_max_offset(void) const {
 }
 
 void kkit::Board_window::validate_grid_offset(void) {
-	zoom_factor = klib::util::validate(zoom_factor, 0.125f, 2.0f);
+	zoom_factor = klib::util::validate(zoom_factor, ZOOM_MIN, ZOOM_MAX);
 	board_px = klib::util::validate(board_px, 0, c_max_offset());
 	board_py = klib::util::validate(board_py, 0, c_max_offset());
 }
@@ -208,7 +212,10 @@ void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) con
 
 	int l_sel_factor = static_cast<int>(16.0f / zoom_factor);
 
-	klib::gfx::draw_rect(p_rnd, p_x + board_px * (128.0f / 4096.0f), p_y + board_py * (128.0f / 4096.0f), l_sel_factor, l_sel_factor, SDL_Color{ 255,255,0 }, 2);
+	int l_x = p_x + static_cast<int>(board_px * (128.0f / 4096.0f));
+	int l_y = p_y + static_cast<int>(board_py * (128.0f / 4096.0f));
+
+	klib::gfx::draw_rect(p_rnd, l_x, l_y, l_sel_factor, l_sel_factor, SDL_Color{ 255,255,0 }, 2);
 }
 
 void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {

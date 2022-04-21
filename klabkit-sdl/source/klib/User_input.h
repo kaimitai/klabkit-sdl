@@ -31,7 +31,7 @@ namespace klib {
 
 	namespace c {
 		// mousewheel repeat time (in ms)
-		constexpr int MOUSE_WHEEL_DELAY{ 25 };
+		constexpr int MOUSE_WHEEL_DELAY{ 15 };
 		// keyboard repeat times (in ms) - a key will not be considered pressed unless X amount of ms have elapsed since last time it was pressed - use 0 ms for things like ctrl/shift etc
 		constexpr int DEFAULT_KRV{ 100 }; // the default time a key will have to wait until it is considered re-pressed
 		const std::map<SDL_Scancode, int> KEY_DELAYS{ {SDL_SCANCODE_LEFT, DEFAULT_KRV}, {SDL_SCANCODE_DOWN, DEFAULT_KRV}, {SDL_SCANCODE_RIGHT, DEFAULT_KRV}, {SDL_SCANCODE_UP, DEFAULT_KRV}, {SDL_SCANCODE_PAGEDOWN, DEFAULT_KRV},{SDL_SCANCODE_PAGEUP, DEFAULT_KRV}, {SDL_SCANCODE_HOME, DEFAULT_KRV},{SDL_SCANCODE_END, DEFAULT_KRV}, {SDL_SCANCODE_KP_MINUS, DEFAULT_KRV}, {SDL_SCANCODE_KP_PLUS, DEFAULT_KRV}, // movement keys
