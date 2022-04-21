@@ -60,12 +60,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		this->move_grid_zoom(0.2f);
-		this->center_offset(l_tcoords);
+		//this->center_offset(l_tcoords);
+		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
 	else 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_down()) {
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		this->move_grid_zoom(-0.2f);
-		this->center_offset(l_tcoords);
+		//this->center_offset(l_tcoords);
+		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
 	else if (p_input.is_pressed(SDL_SCANCODE_UP) || p_input.mw_up())
 		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? -4 * 64 : -64);
@@ -122,6 +124,16 @@ void kkit::Board_window::validate_grid_offset(void) {
 	zoom_factor = klib::util::validate(zoom_factor, 0.125f, 2.0f);
 	board_px = klib::util::validate(board_px, 0, c_max_offset());
 	board_py = klib::util::validate(board_py, 0, c_max_offset());
+}
+
+// (p_gx, p_gy) is a given pixel on the board map (0<p_gx,p_gy<4096)
+// (p_sx, p_sy) is a given pixel on the visible grid (0<p_sx,p_sy<BW_BW)
+// update the top left grid offset so that (p_gx, p_gy) will be drawn at (p_sx, p_sy) - if possible
+void kkit::Board_window::translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy) {
+	float l_fac = 1.0f / zoom_factor;
+	float l_tx = l_fac * p_sx;
+	float l_ty = l_fac * p_sy;
+	this->set_grid_offset(static_cast<int>(p_gx - l_tx), static_cast<int>(p_gy - l_ty));
 }
 
 void kkit::Board_window::move_grid_offset_x(int p_dx) {

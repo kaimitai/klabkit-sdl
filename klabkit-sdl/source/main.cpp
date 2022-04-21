@@ -5,7 +5,14 @@
 #include "klabkit/Board_window.h"
 #include "klib/User_input.h"
 
+// #include "klib/file.h"
+// #include "klabkit/compression.h"
+
 int main(int argc, char* args[]) {
+
+	//auto v = klib::file::read_file_as_bytes("c:/users/kfrol/downloads/klabkit/songs.kzp");
+	//auto w = kkit::compression::decompress_songs_kzp(v);
+	//return 0;
 
 	SDL_Window* l_window{ nullptr };
 	SDL_Renderer* l_rnd{ nullptr };

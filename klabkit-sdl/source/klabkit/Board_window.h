@@ -62,6 +62,9 @@ namespace kkit {
 		void center_offset(std::pair<int, int> p_coords);
 		void validate_grid_offset(void);
 
+		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
+		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
+
 		std::string get_board_title(void) const;
 
 	public:
