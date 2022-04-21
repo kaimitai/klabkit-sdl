@@ -21,3 +21,11 @@ std::size_t klib::util::find_subvector(const std::vector<byte>& total, const std
 
 	return total.size();
 }
+
+int klib::util::uint_le(const std::vector<byte>& p_bytes, std::size_t p_offset, int p_num_bytes) {
+	int result{ 0 };
+	for (int i{ p_num_bytes - 1 }; i >= 0; --i)
+		result = result * 256 + p_bytes.at(p_offset + i);
+
+	return result;
+}

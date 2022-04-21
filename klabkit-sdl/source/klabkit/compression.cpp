@@ -61,6 +61,32 @@ std::vector<byte> kkit::compression::decompress_story_kzp(const std::vector<byte
 	return result;
 }
 
+std::vector<std::pair<std::string, std::vector<byte>>> kkit::compression::decompress_songs_kzp(const std::vector<byte>& p_bytes) {
+	std::vector<std::pair<std::string, std::vector<byte>>> result;
+	std::vector<std::string> l_filenames;
+	std::vector<int> l_offsets;
+
+	std::size_t l_file_count = klib::util::uint_le(p_bytes, 0, 2);
+
+	for (std::size_t i{ 0 }; i < l_file_count; ++i) {
+		std::size_t l_offset{ 2 + 12 * i };
+		std::string l_filename;
+		auto l_fn = std::vector<byte>(begin(p_bytes) + l_offset, begin(p_bytes) + l_offset + 8);
+		for (std::size_t j{ 0 }; j < l_fn.size() && l_fn[j] != 0; ++j)
+			l_filename.push_back(l_fn[j]);
+		l_filenames.push_back(l_filename);
+		l_offsets.push_back(klib::util::uint_le(p_bytes, l_offset + 8, 4));
+	}
+
+	l_offsets.push_back(static_cast<int>(p_bytes.size()));
+
+	for (std::size_t i{ 0 }; i < l_file_count; ++i)
+		result.push_back(std::make_pair(l_filenames[i], std::vector<byte>(begin(p_bytes) + l_offsets[i], begin(p_bytes) + l_offsets[i + 1])));
+
+	return result;
+}
+
+
 std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size) {
 	std::vector<byte> result(std::vector<byte>(begin(p_bytes), begin(p_bytes) + p_header_size));
 	while (result.size() < p_out_header_size)
