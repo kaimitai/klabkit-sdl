@@ -269,3 +269,29 @@ std::vector<byte> kkit::compression::compress_story_kzp(const std::vector<byte>&
 
 	return result;
 }
+
+std::vector<byte> kkit::compression::compress_songs_kzp(const std::vector<std::pair<std::string, std::vector<byte>>>& p_file_bytes) {
+	// start by writing the file count as uint16le
+	int l_file_count = static_cast<int>(p_file_bytes.size());
+	std::vector<byte> result(klib::util::from_uint_le(l_file_count, 2));
+
+	// write file info; file names and file offsets
+	int l_offset{ 2 + 12 * l_file_count };
+
+	for (int i{ 0 }; i < l_file_count; ++i) {
+		result.insert(end(result), begin(p_file_bytes[i].first), end(p_file_bytes[i].first));
+
+		for (int l_pad{ 0 }; l_pad < 8 - static_cast<int>(p_file_bytes[i].first.size()); ++l_pad)
+			result.push_back(0);
+
+		auto l_offset_bytes = klib::util::from_uint_le(l_offset, 4);
+		result.insert(end(result), begin(l_offset_bytes), end(l_offset_bytes));
+		l_offset += static_cast<int>(p_file_bytes[i].second.size());
+	}
+
+	// write all actual file contents
+	for (const auto& l_v : p_file_bytes)
+		result.insert(end(result), begin(l_v.second), end(l_v.second));
+
+	return result;
+}

@@ -29,3 +29,17 @@ int klib::util::uint_le(const std::vector<byte>& p_bytes, std::size_t p_offset, 
 
 	return result;
 }
+
+std::vector<byte> klib::util::from_uint_le(int p_int, int p_byte_count) {
+	std::vector<byte> result;
+
+	while (p_int > 0) {
+		result.push_back(static_cast<byte>(p_int % 256));
+		p_int /= 256;
+	}
+
+	while (static_cast<int>(result.size()) < p_byte_count)
+		result.push_back(0);
+
+	return result;
+}

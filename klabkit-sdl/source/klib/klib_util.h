@@ -16,7 +16,9 @@ namespace klib {
 		std::size_t find_subvector(const std::vector<byte>& p_bytes, const std::vector<byte>& p_search, std::size_t p_offset);
 
 		// get uint_le value from a vector starting at a certain offset, and of a certain byte length
-		int uint_le(const std::vector<byte>& p_bytes, std::size_t p_offset, int p_num_bytes);
+		int uint_le(const std::vector<byte>& p_bytes, std::size_t p_offset, int p_byte_count);
+
+		std::vector<byte> from_uint_le(int p_int, int p_byte_no);
 
 		template <class T>
 		T validate(T p_input, T p_min_val, T p_max_val) {
