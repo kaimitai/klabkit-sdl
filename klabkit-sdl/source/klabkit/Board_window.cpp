@@ -5,6 +5,7 @@
 
 kkit::Board_window::Board_window(SDL_Renderer* p_rnd) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
+	timers.push_back(klib::Timer(70, 10, true));
 }
 
 void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
@@ -60,6 +61,9 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
+	for (auto& timer : timers)
+		timer.move(p_delta_ms);
+
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 
 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
@@ -99,7 +103,13 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 
 	if (p_input.mouse_held(false) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project));
+		if (p_project.get_player_start_pos(board_ind) != l_tcoords) {
+			int l_stile_no{ this->get_selected_tile_no() };
+			if (l_stile_no == -2)
+				p_project.set_player_start_position(board_ind, l_tcoords.first, l_tcoords.second);
+			else
+				p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
+		}
 	}
 	else if (p_input.mouse_held(true) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
@@ -188,6 +198,7 @@ void kkit::Board_window::move_grid_zoom(float p_dz) {
 
 void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
 	const auto& board = p_project.get_board(this->board_ind);
+	float l_shrink_factor = 0.25f + static_cast<float>(timers[0].get_frame()) / 100.0f;
 
 	SDL_SetRenderTarget(p_rnd, grid_texture);
 	SDL_SetRenderDrawColor(p_rnd, BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, 0);
@@ -200,12 +211,12 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 				bool l_directional = p_project.is_directional(l_tile_no);
 				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
 				if (l_directional)
-					klib::gfx::blit(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 0 : 1), 64 * i, 64 * j);
+					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 			}
 
 	// draw player start
-	int l_px = 64 * board.get_player_start_x();
-	int l_py = 64 * board.get_player_start_y();
+	int l_px = 64 * board.get_player_start_x() + 32;
+	int l_py = 64 * board.get_player_start_y() + 32;
 	kkit::Player_direction l_pdir = board.get_player_start_direction();
 	int l_pstart_sprite_no{ 2 };
 	if (l_pdir == kkit::Player_direction::Left)
@@ -215,7 +226,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	else if (l_pdir == kkit::Player_direction::Right)
 		l_pstart_sprite_no = 5;
 
-	klib::gfx::blit(p_rnd, p_gfx.get_app_texture(l_pstart_sprite_no), l_px, l_py);
+	klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(l_pstart_sprite_no), l_px, l_py, l_shrink_factor);
 
 	// draw selected tile
 	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64, SDL_Color{ 255,255,0 }, 4);
@@ -249,6 +260,8 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 		int l_index = c::TILES[i];
 		if (l_index >= 0)
 			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_index), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
+		else if (l_index == -2)
+			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_app_texture(2), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
 	}
 
 	klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * tile_y, 32, 32, SDL_Color{ 255, 255, 0 }, 2);
@@ -261,24 +274,29 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 		bool l_blast = p_project.is_blast(l_tile_no);
 		l_tile_md = std::to_string(l_tile_no) + ":" + (l_blast ? "Destruct" : "Nodestruct") + "," + (l_clip ? "Clip" : "Noclip") + "," + p_project.get_block_type_as_string(l_tile_no);
 	}
-	else
-		l_tile_md = "No tile selected";
+	else if (l_tile_no == -1)
+		l_tile_md = "Empty tile";
+	else if (l_tile_no == -2)
+		l_tile_md = "Start Position";
 
 	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_tile_md, p_x - 1, p_y + BW_TPH, BW_TPW + 2, klib::gc::BUTTON_H, klib::gc::COL_WHITE, klib::gc::COL_BLUE);
 }
 
 // get selected tile
 // need the project to fetch metadata
-kkit::Map_tile kkit::Board_window::get_selected_tile(const kkit::Project& p_project) const {
-	int l_tile_no = c::TILES.at(tile_y * BW_TPR + tile_x);
-	return p_project.gen_map_tile(l_tile_no);
+kkit::Map_tile kkit::Board_window::get_selected_tile(const kkit::Project& p_project, int p_tile_no) const {
+	return p_project.gen_map_tile(p_tile_no);
+}
+
+int kkit::Board_window::get_selected_tile_no(void) const {
+	return c::TILES.at(tile_y * BW_TPR + tile_x);
 }
 
 void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
 	int l_x = p_x / BW_TP_TW;
 	int l_y = p_y / BW_TP_TW;
 	int l_index = l_y * BW_TPR + l_x;
-	if (l_index < c::TILES.size() && c::TILES[l_index] >= -1) {
+	if (l_index < c::TILES.size() && c::TILES[l_index] >= -2) {
 		this->tile_x = l_x;
 		this->tile_y = l_y;
 	}

@@ -7,6 +7,7 @@
 #include "../klib/gfx.h"
 #include "constants.h"
 #include "./../klib/User_input.h"
+#include "../klib/Timer.h"
 
 namespace kkit {
 
@@ -69,6 +70,9 @@ namespace kkit {
 		// internal variables for tile picker position
 		int tile_x{ 0 }, tile_y{ 0 };
 
+		// window elements
+		std::vector<klib::Timer> timers;
+
 		// drawing routines
 		//void draw_tile(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_tile_no, int p_x, int p_y) const;
 		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
@@ -81,7 +85,8 @@ namespace kkit {
 		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
 		std::pair<int, int> get_pixel_pos(int p_x, int p_y) const;
 
-		kkit::Map_tile get_selected_tile(const kkit::Project& p_project) const;
+		kkit::Map_tile get_selected_tile(const kkit::Project& p_project, int p_tile_no) const;
+		int get_selected_tile_no(void) const;
 
 		// internal calculations
 		int c_max_offset(void) const;

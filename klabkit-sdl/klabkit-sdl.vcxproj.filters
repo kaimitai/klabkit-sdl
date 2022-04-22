@@ -75,6 +75,9 @@
     <ClInclude Include="source\klib\Font.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\klib\Timer.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -117,6 +120,9 @@
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
     <ClCompile Include="source\klib\Font.cpp">
+      <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\Timer.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,7 +7,7 @@ namespace kkit {
 
 	class Map_tile {
 
-		bool inside, blast, vertical;
+		bool inside, blast, horizontal;
 		int tile_no;
 
 	public:

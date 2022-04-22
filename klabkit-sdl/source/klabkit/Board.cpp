@@ -153,6 +153,13 @@ void kkit::Board::set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile) {
 	tiles.at(p_x).at(p_y) = p_tile;
 }
 
+void kkit::Board::set_player_start_position(int p_x, int p_y, kkit::Player_direction p_direction) {
+	tiles.at(p_x).at(p_y) = kkit::Map_tile();
+	this->player_x = p_x;
+	this->player_y = p_y;
+	this->player_direction = p_direction;
+}
+
 void kkit::Board::toggle_player_start_direction(void) {
 	if (this->player_direction == kkit::Player_direction::Up)
 		this->player_direction = kkit::Player_direction::Right;

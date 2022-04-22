@@ -3,7 +3,7 @@
 using byte = unsigned char;
 
 kkit::Map_tile::Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vertical) :
-	tile_no{ p_tile_no }, inside{ p_inside }, blast{ p_blast }, vertical{ p_vertical }
+	tile_no{ p_tile_no }, inside{ p_inside }, blast{ p_blast }, horizontal{ p_vertical }
 { }
 
 bool kkit::Map_tile::empty(void) const {
@@ -23,12 +23,12 @@ bool kkit::Map_tile::is_blast(void) const {
 }
 
 bool kkit::Map_tile::is_vertical(void) const {
-	return this->vertical;
+	return !this->horizontal;
 }
 
 // manipulators
 void kkit::Map_tile::toggle_direction(void) {
-	this->vertical = !this->vertical;
+	this->horizontal = !this->horizontal;
 }
 
 void kkit::Map_tile::toggle_blast(void) {

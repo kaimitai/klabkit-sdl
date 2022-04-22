@@ -152,6 +152,10 @@ std::string kkit::Project::get_block_type_as_string(int p_tile_no) const {
 		return "Dir";
 }
 
+std::pair<int, int> kkit::Project::get_player_start_pos(int p_board_no) const {
+	return std::make_pair(maps.at(p_board_no).get_player_start_x(), maps.at(p_board_no).get_player_start_y());
+}
+
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 	maps[p_board_no].clear_tile(p_x, p_y);
 }
@@ -177,6 +181,10 @@ void kkit::Project::toggle_mt_blast(int p_board_no, int p_x, int p_y) {
 void kkit::Project::toggle_mt_inside(int p_board_no, int p_x, int p_y) {
 	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0)
 		maps[p_board_no].toggle_inside(p_x, p_y);
+}
+
+void kkit::Project::set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction) {
+	maps.at(p_board_no).set_player_start_position(p_x, p_y, p_direction);
 }
 
 // wall attribute getters

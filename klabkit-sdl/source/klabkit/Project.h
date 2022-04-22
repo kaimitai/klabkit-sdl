@@ -34,6 +34,7 @@ namespace kkit {
 		std::vector<byte> get_wall_bytes(void) const;
 		kkit::Map_tile gen_map_tile(int p_tile_no) const;
 		std::string get_block_type_as_string(int p_tile_no) const;
+		std::pair<int, int> get_player_start_pos(int p_board_no) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;
@@ -59,6 +60,7 @@ namespace kkit {
 		void toggle_mt_direction(int p_board_no, int p_x, int p_y);
 		void toggle_mt_blast(int p_board_no, int p_x, int p_y);
 		void toggle_mt_inside(int p_board_no, int p_x, int p_y);
+		void set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction = kkit::Player_direction::Up);
 	};
 
 }
