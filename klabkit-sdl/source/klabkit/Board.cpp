@@ -129,7 +129,7 @@ std::vector<byte> kkit::Board::get_bytes(void) const {
 					l_result |= 0b10000000000;
 				if (tiles[j][i].is_blast())
 					l_result |= 0b100000000000;
-				if (tiles[j][i].is_vertical())
+				if (!tiles[j][i].is_vertical())
 					l_result |= 0b10000000000000;
 
 				byte b1 = static_cast<byte>(l_result % 256);

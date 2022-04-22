@@ -42,8 +42,6 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kki
 	else
 		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), "Empty tile", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H * 3,
 			klib::gc::COL_WHITE, BG_COLOR);
-
-	//BW_SBT_LBL_DESTR_X
 }
 
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
@@ -115,7 +113,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
 		this->move_grid_zoom(1);
 	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S))
-		klib::file::write_bytes_to_file(p_project.get_board_bytes(), "BOARDS.DAT");
+		p_project.save_boards_kzp();
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
 		--board_ind;
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP) && board_ind < p_project.get_board_count() - 1)

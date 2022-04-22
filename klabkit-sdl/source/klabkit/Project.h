@@ -61,6 +61,9 @@ namespace kkit {
 		void toggle_mt_blast(int p_board_no, int p_x, int p_y);
 		void toggle_mt_inside(int p_board_no, int p_x, int p_y);
 		void set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction = kkit::Player_direction::Up);
+
+		// save and load
+		void save_boards_kzp(void) const;
 	};
 
 }

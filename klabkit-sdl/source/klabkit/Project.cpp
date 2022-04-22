@@ -12,6 +12,11 @@ kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder }
 	initialize_maps();
 }
 
+void kkit::Project::save_boards_kzp(void) const {
+	auto l_board_lzw_bytes = kkit::compression::compress_boards_kzp(this->get_board_bytes());
+	klib::file::write_bytes_to_file(l_board_lzw_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP));
+}
+
 // initializers
 void kkit::Project::initialize_palette(void) {
 	for (int i{ 0 }; i < 16; ++i) {
