@@ -24,6 +24,7 @@ namespace kkit {
 		~Project_gfx(void);
 
 		SDL_Texture* get_tile_texture(int p_frame_no) const;
+		SDL_Texture* get_app_texture(int p_frame_no) const;
 		const klib::Font& get_font(void) const;
 	};
 

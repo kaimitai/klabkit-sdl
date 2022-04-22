@@ -10,7 +10,7 @@
 
 int main(int argc, char* args[]) {
 
-	//auto v = klib::file::read_file_as_bytes("c:/users/kfrol/downloads/klabkit/songs.kzp");
+	//auto v = klib::file::read_file_as_bytes("c:/users/kai/downloads/klabkit/songs.kzp");
 	//auto w = kkit::compression::decompress_songs_kzp(v);
 	//return 0;
 
@@ -41,7 +41,7 @@ int main(int argc, char* args[]) {
 			}
 
 			// load resources
-			kkit::Project project("C:/Users/kfrol/Downloads/klabkit");
+			kkit::Project project("C:/Users/kai/Downloads/klabkit");
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing

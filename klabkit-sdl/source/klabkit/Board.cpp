@@ -72,6 +72,18 @@ bool kkit::Board::is_vertical(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).is_vertical();
 }
 
+int kkit::Board::get_player_start_x(void) const {
+	return this->player_x;
+}
+
+int kkit::Board::get_player_start_y(void) const {
+	return this->player_y;
+}
+
+kkit::Player_direction kkit::Board::get_player_start_direction(void) const {
+	return this->player_direction;
+}
+
 bool  kkit::Board::is_start_tile(int p_x, int p_y) const {
 	return this->player_x == p_x && this->player_y == p_y;
 }

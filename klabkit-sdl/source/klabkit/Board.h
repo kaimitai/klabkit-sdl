@@ -25,6 +25,9 @@ namespace kkit {
 		bool is_inside(int p_x, int p_y) const;
 		bool is_blast(int p_x, int p_y) const;
 		bool is_vertical(int p_x, int p_y) const;
+		int get_player_start_x(void) const;
+		int get_player_start_y(void) const;
+		kkit::Player_direction get_player_start_direction(void) const;
 
 
 		// logical getters

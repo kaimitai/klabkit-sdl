@@ -120,7 +120,6 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
 	else if (p_input.is_pressed(SDL_SCANCODE_D))
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
-
 }
 
 
@@ -196,8 +195,27 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 
 	for (int i{ 0 }; i < 64; ++i)
 		for (int j{ 0 }; j < 64; ++j)
-			if (!board.is_empty_tile(i, j))
-				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(board.get_tile_no(i, j)), 64 * i, 64 * j);
+			if (!board.is_empty_tile(i, j)) {
+				int l_tile_no = board.get_tile_no(i, j);
+				bool l_directional = p_project.is_directional(l_tile_no);
+				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
+				if (l_directional)
+					klib::gfx::blit(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 0 : 1), 64 * i, 64 * j);
+			}
+
+	// draw player start
+	int l_px = 64 * board.get_player_start_x();
+	int l_py = 64 * board.get_player_start_y();
+	kkit::Player_direction l_pdir = board.get_player_start_direction();
+	int l_pstart_sprite_no{ 2 };
+	if (l_pdir == kkit::Player_direction::Left)
+		l_pstart_sprite_no = 3;
+	else if (l_pdir == kkit::Player_direction::Down)
+		l_pstart_sprite_no = 4;
+	else if (l_pdir == kkit::Player_direction::Right)
+		l_pstart_sprite_no = 5;
+
+	klib::gfx::blit(p_rnd, p_gfx.get_app_texture(l_pstart_sprite_no), l_px, l_py);
 
 	// draw selected tile
 	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64, SDL_Color{ 255,255,0 }, 4);

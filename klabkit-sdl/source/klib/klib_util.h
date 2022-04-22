@@ -20,6 +20,24 @@ namespace klib {
 
 		std::vector<byte> from_uint_le(int p_int, int p_byte_no);
 
+		template<class T>
+		void rot_sq_matrix_ccw(std::vector<std::vector<T>>& p_input) {
+
+			auto cyclic_roll = [](T& a, T& b, T& c, T& d) {
+				T temp = a;
+				a = b;
+				b = c;
+				c = d;
+				d = temp;
+			};
+
+			int n{ static_cast<int>(p_input.size()) };
+
+			for (int i{ 0 }; i < n / 2; i++)
+				for (int j{ 0 }; j < (n + 1) / 2; j++)
+					cyclic_roll(p_input[i][j], p_input[n - 1 - j][i], p_input[n - 1 - i][n - 1 - j], p_input[j][n - 1 - i]);
+		}
+
 		template <class T>
 		T validate(T p_input, T p_min_val, T p_max_val) {
 			if (p_input < p_min_val)

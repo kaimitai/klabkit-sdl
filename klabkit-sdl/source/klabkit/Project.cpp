@@ -191,3 +191,7 @@ bool kkit::Project::is_inside(int p_wall_no) const {
 kkit::Wall_type kkit::Project::get_wall_type(int p_wall_no) const {
 	return walls.at(p_wall_no).get_wall_type();
 }
+
+bool kkit::Project::is_directional(int p_wall_no) const {
+	return this->get_wall_type(p_wall_no) == kkit::Wall_type::Direction;
+}

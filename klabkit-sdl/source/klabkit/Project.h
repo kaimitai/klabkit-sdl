@@ -43,6 +43,7 @@ namespace kkit {
 		// wall attribute getters
 		bool is_blast(int p_wall_no) const;
 		bool is_inside(int p_wall_no) const;
+		bool is_directional(int p_wall_no) const;
 		kkit::Wall_type get_wall_type(int p_wall_no) const;
 
 		// gfx
