@@ -35,6 +35,19 @@ namespace kkit {
 	constexpr int BW_SBTW{ BW_BW - BW_MW - 1 };
 	constexpr int BW_SBTH{ BW_MW };
 
+	// pixel dimensions and coordinates of selected metadata tile
+	constexpr int BW_TPX{ BW_BX + BW_BW + 20 };
+	constexpr int BW_TPY{ BW_BY };
+
+	constexpr int BW_TP_TW{ 32 }; // tile picker tile width/height
+	constexpr int BW_TPR{ 14 }; // tiles per row
+	constexpr int BW_TPC{ 12 }; // tiles per column
+
+	constexpr int BW_TPW{ BW_TP_TW * BW_TPR };
+	constexpr int BW_TPH{ BW_TP_TW * BW_TPC };
+	//constexpr int BW_TH {1}
+	
+
 	// buttons and labels pixel sizes and offsets
 	constexpr int BW_SBT_LBL_DESTR_X{ BW_SBTX + BW_MW };
 	constexpr int BW_SBT_LBL_DESTR_Y{ BW_SBTY };
@@ -60,7 +73,7 @@ namespace kkit {
 		//void draw_tile(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_tile_no, int p_x, int p_y) const;
 		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
 		void draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const;
-		void draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
+		void draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
 		void draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 
 		// handle clicks on the various screen elements

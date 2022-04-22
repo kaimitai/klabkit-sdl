@@ -52,33 +52,11 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
-	draw_tile_picker(p_rnd, p_gfx, BW_MY, 20);
+
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H);
+	draw_tile_picker(p_rnd, p_project, p_gfx, BW_TPX, BW_TPY);
 
 	draw_selected_board_tile(p_rnd, p_project, p_gfx);
-
-	return;
-
-
-	klib::gfx::draw_rect(p_rnd, 300, BW_MY, 450, 120, klib::gc::COL_BLUE, 0);
-
-	// draw selected tile (from tile picker)
-	int l_ptile_no = c::TILES.at(tile_y * 12 + tile_x);
-	if (l_ptile_no >= 0) {
-		bool l_pblast = p_project.is_blast(l_ptile_no);
-		bool l_pinside = p_project.is_inside(l_ptile_no);
-		kkit::Wall_type l_ptype = p_project.get_wall_type(l_ptile_no);
-
-		std::string l_stype = "Cube";
-		if (l_ptype == kkit::Wall_type::Direction)
-			l_stype = "Direction";
-		else if (l_ptype == kkit::Wall_type::Plane)
-			l_stype = "Plane";
-
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), std::to_string(l_ptile_no), 550, BW_MY, 200, 30);
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), (l_pinside ? "Clip" : "Noclip"), 550, BW_MY + 30, 200, 30);
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_stype, 550, BW_MY + 60, 200, 30);
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), (l_pblast ? "Destruct" : "Nodestruct"), 550, BW_MY + 90, 200, 30);
-	}
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
@@ -133,8 +111,8 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->click_minimap(p_input.mx() - BW_MX, p_input.my() - BW_MY);
 	}
 	else if (p_input.mouse_held() &&
-		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MY, 20, 12 * 32, 16 * 32)) {
-		this->click_tile_picker(p_input.mx() - BW_MY, p_input.my() - 20);
+		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH)) {
+		this->click_tile_picker(p_input.mx() - BW_TPX, p_input.my() - BW_TPY);
 	}
 	else if (p_input.is_pressed(SDL_SCANCODE_B))
 		p_project.toggle_mt_blast(board_ind, sel_tile_x, sel_tile_y);
@@ -244,31 +222,44 @@ void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) con
 	klib::gfx::draw_rect(p_rnd, l_x, l_y, l_sel_factor, l_sel_factor, SDL_Color{ 255,255,0 }, 2);
 }
 
-void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, 32 * 12, 32 * 16, SDL_Color{ 0,0,0 }, 0);
+void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_TPW, BW_TPH, SDL_Color{ 0,0,0 }, 0);
 
-	for (int i{ 0 }; i < static_cast<int>(c::TILES.size()); ++i) {
-		int l_y = i / 12;
-		int l_x = i % 12;
+	for (int i{ 0 }; i < static_cast<int>(c::TILES.size()) && i < BW_TPR * BW_TPC; ++i) {
+		int l_y = i / BW_TPR;
+		int l_x = i % BW_TPR;
 		int l_index = c::TILES[i];
 		if (l_index >= 0)
-			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_index), p_x + l_x * 32, p_y + l_y * 32, -1);
+			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_index), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
 	}
 
 	klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * tile_y, 32, 32, SDL_Color{ 255, 255, 0 }, 2);
+
+	std::string l_tile_md;
+	int l_tile_no = c::TILES.at(tile_y * BW_TPR + tile_x);
+
+	if (l_tile_no >= 0) {
+		bool l_clip = p_project.is_inside(l_tile_no);
+		bool l_blast = p_project.is_blast(l_tile_no);
+		l_tile_md = std::to_string(l_tile_no) + ":" + (l_blast ? "Destruct" : "Nodestruct") + "," + (l_clip ? "Clip" : "Noclip") + "," + p_project.get_block_type_as_string(l_tile_no);
+	}
+	else
+		l_tile_md = "No tile selected";
+
+	klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_tile_md, p_x - 1, p_y + BW_TPH, BW_TPW + 2, klib::gc::BUTTON_H, klib::gc::COL_WHITE, klib::gc::COL_BLUE);
 }
 
 // get selected tile
 // need the project to fetch metadata
 kkit::Map_tile kkit::Board_window::get_selected_tile(const kkit::Project& p_project) const {
-	int l_tile_no = c::TILES.at(tile_y * 12 + tile_x);
+	int l_tile_no = c::TILES.at(tile_y * BW_TPR + tile_x);
 	return p_project.gen_map_tile(l_tile_no);
 }
 
 void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
-	int l_x = p_x / 32;
-	int l_y = p_y / 32;
-	int l_index = l_y * 12 + l_x;
+	int l_x = p_x / BW_TP_TW;
+	int l_y = p_y / BW_TP_TW;
+	int l_index = l_y * BW_TPR + l_x;
 	if (l_index < c::TILES.size() && c::TILES[l_index] >= -1) {
 		this->tile_x = l_x;
 		this->tile_y = l_y;

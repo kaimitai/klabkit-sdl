@@ -33,6 +33,7 @@ namespace kkit {
 		std::vector<byte> get_board_bytes(void) const;
 		std::vector<byte> get_wall_bytes(void) const;
 		kkit::Map_tile gen_map_tile(int p_tile_no) const;
+		std::string get_block_type_as_string(int p_tile_no) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;

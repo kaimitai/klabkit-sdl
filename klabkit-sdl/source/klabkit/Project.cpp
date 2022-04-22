@@ -143,6 +143,15 @@ kkit::Map_tile kkit::Project::gen_map_tile(int p_tile_no) const {
 		return kkit::Map_tile(p_tile_no, this->is_inside(p_tile_no), this->is_blast(p_tile_no), false);
 }
 
+std::string kkit::Project::get_block_type_as_string(int p_tile_no) const {
+	if (this->walls.at(p_tile_no).get_wall_type() == kkit::Wall_type::Cube)
+		return "Cube";
+	else if (this->walls.at(p_tile_no).get_wall_type() == kkit::Wall_type::Plane)
+		return "Plane";
+	else
+		return "Dir";
+}
+
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 	maps[p_board_no].clear_tile(p_x, p_y);
 }
