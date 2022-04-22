@@ -186,6 +186,110 @@ std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte
 	return result;
 }
 
+std::vector<byte> kkit::compression::compress_lzw_block(const std::vector<byte>& buf1) {
+	std::vector<byte> result;
+	std::vector<byte> value(4360, 0), buf1x(4096, 0), buf2(20000, 0);
+	std::vector<uint16_t> child(4360, 0), sibly(4360, 0);
+
+	for (std::size_t i{ 0 }; i < 256; ++i) {
+		value[i] = static_cast<byte>(i);
+		child[i] = 65535;
+		sibly[i] = (i + 1) & 255;
+	}
+
+	int addrcnt{ 256 }, bytecnt1{ 0 }, bytecnt2{ 0 }, dat{ 0 }, numbits{ 9 }, addr{ 0 }, newaddr{ 0 };
+	byte bitcnt{ 0 };
+
+	do {
+		addr = buf1[bytecnt1];
+		do {
+			++bytecnt1;
+			if (bytecnt1 == LZW_UNCOMPRESSED_BLOCK_SIZE)
+				break;
+			if (child[addr] == 65535) {
+				child[addr] = addrcnt;
+				break;
+			}
+			newaddr = child[addr];
+			while (value[newaddr] != buf1[bytecnt1])
+			{
+				if (sibly[newaddr] == 65535)
+				{
+					sibly[newaddr] = addrcnt;
+					break;
+				}
+				newaddr = sibly[newaddr];
+			}
+			if (sibly[newaddr] == addrcnt)
+				break;
+			addr = newaddr;
+		} while (addr >= 0);
+
+		if (bytecnt1 < buf1.size())
+			value[addrcnt] = buf1[bytecnt1];
+
+		child[addrcnt] = 65535;
+		sibly[addrcnt] = 65535;
+		for (int i{ 0 }; i < numbits; i++)
+		{
+			if ((addr & (1 << i)) > 0)
+				dat += (1 << bitcnt);
+			bitcnt++;
+			if (bitcnt == 8)
+			{
+				bitcnt = 0;
+				buf2[bytecnt2] = dat;
+				bytecnt2++;
+				dat = 0;
+			}
+		}
+		addrcnt++;
+		if ((addrcnt == 512) || (addrcnt == 1024) || (addrcnt == 2048) || (addrcnt == 4096))
+			numbits++;
+
+	} while (bytecnt1 < 4096);
+
+	for (int i{ 0 }; i < numbits; i++) {
+		if ((addr & (1 << i)) > 0)
+			dat += (1 << bitcnt);
+		bitcnt++;
+		if (bitcnt == 8) {
+			bitcnt = 0;
+			buf2[bytecnt2] = dat;
+			bytecnt2++;
+			dat = 0;
+		}
+	}
+
+	result.push_back(addrcnt % 256);
+	result.push_back(addrcnt / 256);
+
+	if (bytecnt2 < 4096) {
+		result.insert(end(result), begin(buf2), begin(buf2) + bytecnt2);
+	}
+	else {
+		addrcnt = 0;
+		bytecnt2 = LZW_UNCOMPRESSED_BLOCK_SIZE;
+		result.insert(end(result), begin(buf1), begin(buf1) + bytecnt2);
+	}
+
+	return result;
+}
+
+std::vector<byte> kkit::compression::compress_boards_kzp(const std::vector<byte>& p_bytes) {
+	int l_num_half_boards = static_cast<int>(p_bytes.size()) / LZW_UNCOMPRESSED_BLOCK_SIZE;
+
+	std::vector<byte> result(l_num_half_boards * 2, 0);
+	for (int i{ 0 }; i < l_num_half_boards; ++i) {
+		auto l_cmp_data = compress_lzw_block(std::vector<byte>(begin(p_bytes) + i * LZW_UNCOMPRESSED_BLOCK_SIZE, begin(p_bytes) + (i + 1) * LZW_UNCOMPRESSED_BLOCK_SIZE));
+		result[2 * i] = (l_cmp_data.size() - 2) % 256;
+		result[2 * i + 1] = static_cast<byte>((l_cmp_data.size() - 2) / 256);
+		result.insert(end(result), begin(l_cmp_data), end(l_cmp_data));
+	}
+
+	return result;
+}
+
 std::vector<std::vector<byte>> kkit::compression::decompress_lab3d_kzp(const std::vector<byte>& p_bytes) {
 	return replace_lab3d_headers(p_bytes, std::vector<byte>(begin(HEADER_LAB3D), end(HEADER_LAB3D)), std::vector<byte>(begin(HEADER_GIF), end(HEADER_GIF)));
 }

@@ -19,6 +19,7 @@ namespace kkit {
 
 		// core compression routines
 		std::vector<byte> decompress_lzw_block(const std::vector<byte>& p_input);
+		std::vector<byte> compress_lzw_block(const std::vector<byte>& p_input);
 
 		// utility functions
 		int get_file_offset(const std::vector<int> p_comp_lengths, int p_block_no);
@@ -33,6 +34,7 @@ namespace kkit {
 		std::vector<std::pair<std::string, std::vector<byte>>> decompress_songs_kzp(const std::vector<byte>& p_bytes);
 
 		// compression / archiving / encryption
+		std::vector<byte> compress_boards_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> compress_lab3d_kzp(const std::vector<std::vector<byte>>& p_file_bytes);
 		std::vector<byte> compress_story_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> compress_songs_kzp(const std::vector<std::pair<std::string, std::vector<byte>>>& p_file_bytes);
