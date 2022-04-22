@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Board_window.h"
 #include "./../klib/file.h"
 #include "./../klib/klib_util.h"
@@ -100,6 +102,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		//this->center_offset(l_tcoords);
 		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
+	else if (p_input.mw_up() && mouse_over_tile_picker)
+		tile_row = klib::util::validate(tile_row - 1, 0, c_tile_row_max());
+	else if (p_input.mw_down() && mouse_over_tile_picker)
+		tile_row = klib::util::validate(tile_row + 1, 0, c_tile_row_max());
 	else if (p_input.is_pressed(SDL_SCANCODE_UP) || p_input.mw_up())
 		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? -4 * 64 : -64);
 	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || p_input.mw_down())
@@ -271,9 +277,9 @@ void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) con
 void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_TPW, BW_TPH, SDL_Color{ 0,0,0 }, 0);
 
-	for (int i{ 0 }; i < static_cast<int>(c::TILES.size()) && i < BW_TPR * BW_TPC; ++i) {
-		int l_y = i / BW_TPR;
-		int l_x = i % BW_TPR;
+	for (int i{ tile_row * BW_TPR }; i < static_cast<int>(c::TILES.size()) && i < (BW_TPR * (BW_TPC + tile_row)); ++i) {
+		int l_y = (i - tile_row * BW_TPR) / BW_TPR;
+		int l_x = (i - tile_row * BW_TPR) % BW_TPR;
 		int l_index = c::TILES[i];
 		if (l_index >= 0)
 			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_index), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
@@ -281,7 +287,8 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_app_texture(2), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
 	}
 
-	klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * tile_y, 32, 32, SDL_Color{ 255, 255, 0 }, 2);
+	if (tile_y >= tile_row && tile_y < tile_row + BW_TPC)
+		klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * (tile_y - tile_row), 32, 32, SDL_Color{ 255, 255, 0 }, 2);
 
 	std::string l_tile_md;
 	int l_tile_no = c::TILES.at(tile_y * BW_TPR + tile_x);
@@ -312,7 +319,7 @@ int kkit::Board_window::get_selected_tile_no(void) const {
 int kkit::Board_window::get_mouseover_tile_no(int p_x, int p_y) const {
 	int l_x = p_x / BW_TP_TW;
 	int l_y = p_y / BW_TP_TW;
-	int l_index = l_y * BW_TPR + l_x;
+	int l_index = (l_y + tile_row) * BW_TPR + l_x;
 
 	if (l_index < c::TILES.size())
 		return c::TILES[l_index];
@@ -322,7 +329,7 @@ int kkit::Board_window::get_mouseover_tile_no(int p_x, int p_y) const {
 
 void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
 	int l_x = p_x / BW_TP_TW;
-	int l_y = p_y / BW_TP_TW;
+	int l_y = p_y / BW_TP_TW + tile_row;
 	int l_index = l_y * BW_TPR + l_x;
 	if (l_index < c::TILES.size() && c::TILES[l_index] >= -2) {
 		this->tile_x = l_x;
@@ -332,6 +339,10 @@ void kkit::Board_window::click_tile_picker(int p_x, int p_y) {
 
 int  kkit::Board_window::c_bb_pixel_width(void) const {
 	return static_cast<int>(8.0f * 64.0f / zoom_factor);
+}
+
+int kkit::Board_window::c_tile_row_max(void) const {
+	return std::max(0, (static_cast<int>(c::TILES.size()) % BW_TPC == 0 ? 0 : 1) + static_cast<int>(c::TILES.size()) / BW_TPR - BW_TPC);
 }
 
 // the board was clicked, get its global coordinates from the pixels

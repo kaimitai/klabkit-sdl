@@ -41,7 +41,7 @@ int main(int argc, char* args[]) {
 			}
 
 			// load resources
-			kkit::Project project("C:/Users/kai/Downloads/klabkit");
+			kkit::Project project("C:/games/ken3d");
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing

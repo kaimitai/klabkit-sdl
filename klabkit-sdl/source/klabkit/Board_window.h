@@ -68,6 +68,7 @@ namespace kkit {
 		int sel_tile_x{ 0 }, sel_tile_y{ 0 };
 
 		// internal variables for tile picker position
+		int tile_row{ 0 };
 		int tile_x{ 0 }, tile_y{ 0 };
 
 		// window elements
@@ -92,6 +93,7 @@ namespace kkit {
 		// internal calculations
 		int c_max_offset(void) const;
 		int c_bb_pixel_width(void) const;
+		int c_tile_row_max(void) const;
 
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);
