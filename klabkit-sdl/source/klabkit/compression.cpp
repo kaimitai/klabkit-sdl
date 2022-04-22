@@ -277,13 +277,23 @@ std::vector<byte> kkit::compression::compress_lzw_block(const std::vector<byte>&
 }
 
 std::vector<byte> kkit::compression::compress_boards_kzp(const std::vector<byte>& p_bytes) {
-	int l_num_half_boards = static_cast<int>(p_bytes.size()) / LZW_UNCOMPRESSED_BLOCK_SIZE;
+	return compress_file_contents(p_bytes);
+}
 
-	std::vector<byte> result(l_num_half_boards * 2, 0);
-	for (int i{ 0 }; i < l_num_half_boards; ++i) {
-		auto l_cmp_data = compress_lzw_block(std::vector<byte>(begin(p_bytes) + i * LZW_UNCOMPRESSED_BLOCK_SIZE, begin(p_bytes) + (i + 1) * LZW_UNCOMPRESSED_BLOCK_SIZE));
-		result[2 * i] = (l_cmp_data.size() - 2) % 256;
-		result[2 * i + 1] = static_cast<byte>((l_cmp_data.size() - 2) / 256);
+std::vector<byte> kkit::compression::compress_walls_kzp(const std::vector<byte>& p_bytes) {
+	return compress_file_contents(p_bytes, 1024);
+}
+
+std::vector<byte> kkit::compression::compress_file_contents(const std::vector<byte>& p_bytes, int p_header_size) {
+	int l_block_count = (static_cast<int>(p_bytes.size()) - p_header_size) / LZW_UNCOMPRESSED_BLOCK_SIZE;
+	int l_out_header_size = (p_header_size == 0 ? 0 : l_block_count);
+	std::vector<byte> result(l_out_header_size + l_block_count * 2, 0);
+	std::copy(begin(p_bytes), begin(p_bytes) + l_block_count, begin(result));
+
+	for (int i{ 0 }; i < l_block_count; ++i) {
+		auto l_cmp_data = compress_lzw_block(std::vector<byte>(begin(p_bytes) + p_header_size + i * LZW_UNCOMPRESSED_BLOCK_SIZE, begin(p_bytes) + p_header_size + (i + 1) * LZW_UNCOMPRESSED_BLOCK_SIZE));
+		result[l_out_header_size + 2 * i] = (l_cmp_data.size() - 2) % 256;
+		result[l_out_header_size + 2 * i + 1] = static_cast<byte>((l_cmp_data.size() - 2) / 256);
 		result.insert(end(result), begin(l_cmp_data), end(l_cmp_data));
 	}
 
