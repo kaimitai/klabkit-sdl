@@ -152,8 +152,11 @@ void kkit::Project::set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_t
 }
 
 void kkit::Project::toggle_mt_direction(int p_board_no, int p_x, int p_y) {
-	// verify that the wall metadata lists this as a directional tile before chaning the direction
-	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0 && get_wall_type(maps.at(p_board_no).get_tile_no(p_x, p_y)) == kkit::Wall_type::Direction)
+	// if this is the start tile, we change the direction the player is facing, otherwise it changes between horizontal/vertical for directional tile types
+	if (maps.at(p_board_no).is_start_tile(p_x, p_y))
+		maps[p_board_no].toggle_player_start_direction();
+	// verify that the wall metadata actually lists this as a directional tile before changing the direction
+	else if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0 && get_wall_type(maps.at(p_board_no).get_tile_no(p_x, p_y)) == kkit::Wall_type::Direction)
 		maps[p_board_no].toggle_direction(p_x, p_y);
 }
 

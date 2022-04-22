@@ -4,10 +4,14 @@
 #include <SDL.h>
 #include "Project.h"
 #include "Project_gfx.h"
+#include "../klib/gfx.h"
 #include "constants.h"
 #include "./../klib/User_input.h"
 
 namespace kkit {
+
+	// colors
+	constexpr SDL_Color BG_COLOR{ 72, 56, 28 };
 
 	// min and max values for interacting with the grid
 	constexpr float ZOOM_MIN{ 0.125f };
@@ -15,15 +19,27 @@ namespace kkit {
 
 	// pixel dimension and coordinates of level board
 	constexpr int BW_BX{ 20 };
-	constexpr int BW_BY{ 20 };
+	constexpr int BW_BY{ 80 };
 	constexpr int BW_BW{ c::WALL_IMG_W * 8 };
 	constexpr int BOARD_TILE_W{ 8 };
 	constexpr int BOARD_PW{ BOARD_TILE_W * c::WALL_IMG_W };
 
 	// pixel dimensions and coordinates of minimap
-	constexpr int BW_MX{ 20 };
-	constexpr int BW_MY{ 40 + 8 * 64 };
+	constexpr int BW_MX{ BW_BX };
+	constexpr int BW_MY{ BW_BY + BW_BW + klib::gc::BUTTON_H + 1 };
 	constexpr int BW_MW{ 128 };
+
+	// pixel dimensions and coordinates of selected board tile
+	constexpr int BW_SBTX{ BW_MX + BW_MW + 1 };
+	constexpr int BW_SBTY{ BW_MY };
+	constexpr int BW_SBTW{ BW_BW - BW_MW - 1 };
+	constexpr int BW_SBTH{ BW_MW };
+
+	// buttons and labels pixel sizes and offsets
+	constexpr int BW_SBT_LBL_DESTR_X{ BW_SBTX + BW_MW };
+	constexpr int BW_SBT_LBL_DESTR_Y{ BW_SBTY };
+	constexpr int BW_SBT_LBL_DESTR_W{ BW_SBTW - BW_MW };
+	constexpr int BW_SBT_LBL_DESTR_H{ BW_SBTH / 3 };
 
 	class Board_window {
 
@@ -45,6 +61,7 @@ namespace kkit {
 		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
 		void draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const;
 		void draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
+		void draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 
 		// handle clicks on the various screen elements
 		void click_tile_picker(int p_x, int p_y);
@@ -68,8 +85,6 @@ namespace kkit {
 
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
-
-		std::string get_board_title(void) const;
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);

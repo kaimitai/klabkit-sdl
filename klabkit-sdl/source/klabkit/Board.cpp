@@ -72,6 +72,22 @@ bool kkit::Board::is_vertical(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).is_vertical();
 }
 
+bool  kkit::Board::is_start_tile(int p_x, int p_y) const {
+	return this->player_x == p_x && this->player_y == p_y;
+}
+
+std::string kkit::Board::get_player_direction_as_string(void) const {
+	if (this->player_direction == kkit::Player_direction::Up)
+		return "Up";
+	else if (this->player_direction == kkit::Player_direction::Right)
+		return "Right";
+	if (this->player_direction == kkit::Player_direction::Down)
+		return "Down";
+	else
+		return "Left";
+}
+
+
 std::vector<byte> kkit::Board::get_bytes(void) const {
 	std::vector<byte> result;
 
@@ -123,6 +139,17 @@ void kkit::Board::clear_tile(int p_x, int p_y) {
 
 void kkit::Board::set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile) {
 	tiles.at(p_x).at(p_y) = p_tile;
+}
+
+void kkit::Board::toggle_player_start_direction(void) {
+	if (this->player_direction == kkit::Player_direction::Up)
+		this->player_direction = kkit::Player_direction::Right;
+	else if (this->player_direction == kkit::Player_direction::Right)
+		this->player_direction = kkit::Player_direction::Down;
+	else if (this->player_direction == kkit::Player_direction::Down)
+		this->player_direction = kkit::Player_direction::Left;
+	else
+		this->player_direction = kkit::Player_direction::Up;
 }
 
 void kkit::Board::toggle_direction(int p_x, int p_y) {

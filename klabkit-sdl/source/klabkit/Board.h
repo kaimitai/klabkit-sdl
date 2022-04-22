@@ -1,6 +1,7 @@
 #ifndef KLABKIT_LEVEL_H
 #define KLABKIT_LEVEL_H
 
+#include <string>
 #include <vector>
 #include "Map_tile.h"
 
@@ -29,10 +30,13 @@ namespace kkit {
 		// logical getters
 		bool is_empty_tile(int p_x, int p_y) const;
 		std::vector<byte> get_bytes(void) const;
+		bool is_start_tile(int p_x, int p_y) const;
+		std::string get_player_direction_as_string(void) const;
 
 		// manipulators
 		void clear_tile(int p_x, int p_y);
 		void set_tile(int p_x, int p_y, const kkit::Map_tile& p_tile);
+		void toggle_player_start_direction(void);
 		void toggle_direction(int p_x, int p_y);
 		void toggle_blast(int p_x, int p_y);
 		void toggle_inside(int p_x, int p_y);

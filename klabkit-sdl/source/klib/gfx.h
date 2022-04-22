@@ -10,8 +10,14 @@ namespace klib {
 
 	// gfx constants
 	namespace gc {
+		constexpr int BUTTON_H{ 28 };
+
+		constexpr SDL_Color COL_BLACK{ 0, 0, 0 };
 		constexpr SDL_Color COL_WHITE{ 255,255,255 };
 		constexpr SDL_Color COL_BLUE{ 0, 0, 255 };
+		constexpr SDL_Color COL_RED{ 255, 0, 0 };
+		constexpr SDL_Color COL_GREEN{ 0, 255, 0 };
+		constexpr SDL_Color COL_YELLOW{ 255, 255, 0 };
 	}
 
 	namespace gfx {
@@ -32,6 +38,7 @@ namespace klib {
 
 		// drawing routines
 		void draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string&, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE);
+		void draw_window(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_title, int p_x, int p_y, int p_w, int p_h, int p_header_h = gc::BUTTON_H, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE);
 	}
 
 }

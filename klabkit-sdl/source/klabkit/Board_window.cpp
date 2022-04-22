@@ -7,32 +7,59 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
 }
 
+void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+	int l_sel_tile_no = p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
+	bool l_is_start_tile = p_project.get_board(board_ind).is_start_tile(sel_tile_x, sel_tile_y);
+
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(),
+		"tile @ (" + std::to_string(sel_tile_x) + "," + std::to_string(sel_tile_y) + "): " + (l_sel_tile_no == -1 ? (l_is_start_tile ? "Start" : "None") : "#" + std::to_string(l_sel_tile_no)),
+		BW_SBTX - 1, BW_SBTY - klib::gc::BUTTON_H - 1, BW_SBTW + 2, BW_SBTH + 4 + klib::gc::BUTTON_H);
+
+	klib::gfx::draw_rect(p_rnd, BW_SBTX, BW_SBTY, 128, 128, BG_COLOR, 0);
+
+	if (l_sel_tile_no >= 0) {
+		klib::gfx::blit_full_spec(p_rnd, p_gfx.get_tile_texture(l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
+
+		bool l_blast = p_project.get_board(board_ind).is_blast(sel_tile_x, sel_tile_y);
+		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_blast ? "Destruct" : "Nodestruct", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H,
+			klib::gc::COL_BLACK, l_blast ? klib::gc::COL_GREEN : klib::gc::COL_RED);
+
+		bool l_inside = p_project.get_board(board_ind).is_inside(sel_tile_x, sel_tile_y);
+		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_inside ? "Clip" : "Noclip", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y + BW_SBT_LBL_DESTR_H, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H,
+			klib::gc::COL_BLACK, l_inside ? klib::gc::COL_GREEN : klib::gc::COL_RED);
+
+		bool l_vertical = p_project.get_board(board_ind).is_vertical(sel_tile_x, sel_tile_y);
+		bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
+		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_is_dir ? (l_vertical ? "Vertical" : "Horizontal") : "No direction", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y + 2 * BW_SBT_LBL_DESTR_H, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H,
+			klib::gc::COL_BLACK, l_is_dir ? klib::gc::COL_YELLOW : klib::gc::COL_RED);
+
+	}
+	else if (l_is_start_tile) {
+		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), "Face: " + p_project.get_board(board_ind).get_player_direction_as_string(), BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H * 3,
+			klib::gc::COL_BLACK, klib::gc::COL_YELLOW);
+	}
+	else
+		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), "Empty tile", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H * 3,
+			klib::gc::COL_WHITE, BG_COLOR);
+
+	//BW_SBT_LBL_DESTR_X
+}
+
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Board " + std::to_string(board_ind + 1) + "/" + std::to_string(p_project.get_board_count()), BW_BX - 1, BW_BY - klib::gc::BUTTON_H - 1, BW_BW + 2, BW_BW + 4 + klib::gc::BUTTON_H);
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
+
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 	draw_tile_picker(p_rnd, p_gfx, BW_MY, 20);
 
-	// draw title
-	//klib::gfx::draw_label(p_rnd, p_gfx.get_font(), this->get_board_title(), 300, BW_MY, 100, 25);
+	draw_selected_board_tile(p_rnd, p_project, p_gfx);
+
+	return;
+
 
 	klib::gfx::draw_rect(p_rnd, 300, BW_MY, 450, 120, klib::gc::COL_BLUE, 0);
-
-	// draw selected tile (on board grid)
-	int l_tile_no = p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
-	bool l_inside = p_project.get_board(board_ind).is_inside(sel_tile_x, sel_tile_y);
-	bool l_vertical = p_project.get_board(board_ind).is_vertical(sel_tile_x, sel_tile_y);
-	bool l_blast = p_project.get_board(board_ind).is_blast(sel_tile_x, sel_tile_y);
-
-	if (l_tile_no >= 0) {
-		bool l_is_dir = (p_project.get_wall_type(l_tile_no) == kkit::Wall_type::Direction);
-
-		std::string l_sel_tile{ "Tile: " + std::to_string(l_tile_no) };
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), l_sel_tile, 300, BW_MY, 200, 30);
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), (l_inside ? "Clip" : "Noclip"), 300, BW_MY + 30, 200, 30);
-		if (l_is_dir)
-			klib::gfx::draw_label(p_rnd, p_gfx.get_font(), (l_vertical ? "Vertical" : "Horizontal"), 300, BW_MY + 60, 200, 30);
-		klib::gfx::draw_label(p_rnd, p_gfx.get_font(), (l_blast ? "Destruct" : "Nodestruct"), 300, BW_MY + 90, 200, 30);
-	}
 
 	// draw selected tile (from tile picker)
 	int l_ptile_no = c::TILES.at(tile_y * 12 + tile_x);
@@ -186,7 +213,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	const auto& board = p_project.get_board(this->board_ind);
 
 	SDL_SetRenderTarget(p_rnd, grid_texture);
-	SDL_SetRenderDrawColor(p_rnd, 72, 56, 28, 0);
+	SDL_SetRenderDrawColor(p_rnd, BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, 0);
 	SDL_RenderClear(p_rnd);
 
 	for (int i{ 0 }; i < 64; ++i)
@@ -202,13 +229,12 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	klib::gfx::blit_full_spec(p_rnd, this->grid_texture, BW_BX, BW_BY, BW_BW, BW_BW, board_px, board_py, static_cast<int>(BW_BW / zoom_factor), static_cast<int>(BW_BW / zoom_factor));
 
 	// draw outline
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 255,255,255 }, 2);
+	//klib::gfx::draw_rect(p_rnd, p_x, p_y, BOARD_PW, BOARD_PW, SDL_Color{ 255,255,255 }, 2);
 }
 
 
 void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const {
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 0,0,0 }, 0);
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 255,255,255 }, 2);
 
 	int l_sel_factor = static_cast<int>(16.0f / zoom_factor);
 
@@ -266,11 +292,4 @@ std::pair<int, int> kkit::Board_window::get_pixel_pos(int p_x, int p_y) const {
 	int l_tx = board_px + static_cast<int>(p_x / zoom_factor);
 	int l_ty = board_py + static_cast<int>(p_y / zoom_factor);
 	return std::make_pair(l_tx, l_ty);
-}
-
-std::string kkit::Board_window::get_board_title(void) const {
-	int l_episode_no{ board_ind / 10 + 1 };
-	int l_map_no{ board_ind % 10 + 1 };
-
-	return std::string("E" + std::to_string(l_episode_no) + "M" + std::to_string(l_map_no));
 }
