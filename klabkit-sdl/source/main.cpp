@@ -90,7 +90,7 @@ int main(int argc, char* args[]) {
 					//mainwindow.draw(input, &texture_manager);
 					last_draw_time = SDL_GetTicks();
 
-					main_window.draw(l_rnd, project, p_gfx);
+					main_window.draw(l_rnd, input, project, p_gfx);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);

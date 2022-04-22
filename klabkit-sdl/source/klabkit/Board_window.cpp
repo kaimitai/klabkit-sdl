@@ -46,7 +46,8 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kki
 	//BW_SBT_LBL_DESTR_X
 }
 
-void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+	bool l_mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Board " + std::to_string(board_ind + 1) + "/" + std::to_string(p_project.get_board_count()), BW_BX - 1, BW_BY - klib::gc::BUTTON_H - 1, BW_BW + 2, BW_BW + 4 + klib::gc::BUTTON_H);
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
@@ -58,6 +59,24 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const kkit::Project& p_projec
 	draw_tile_picker(p_rnd, p_project, p_gfx, BW_TPX, BW_TPY);
 
 	draw_selected_board_tile(p_rnd, p_project, p_gfx);
+
+
+	if (l_mouse_over_tile_picker) {
+		int l_tile_index = get_mouseover_tile_no(p_input.mx() - BW_TPX, p_input.my() - BW_TPY);
+
+		if (l_tile_index >= -2) {
+			int l_x = BW_BX + BW_BW - 2 * c::WALL_IMG_W - 4;
+			int l_y = BW_BY + 4;
+			int l_w = 2 * c::WALL_IMG_W;
+			int l_h = 2 * c::WALL_IMG_H;
+
+			klib::gfx::draw_rect(p_rnd, l_x - 1, l_y - 1, l_w + 2, l_h + 2, klib::gc::COL_WHITE, 1);
+			klib::gfx::draw_rect(p_rnd, l_x, l_y, l_w, l_h, BG_COLOR, 0);
+
+			if (l_tile_index >= 0 || l_tile_index == -2)
+				klib::gfx::blit_p2_scale(p_rnd, l_tile_index >= 0 ? p_gfx.get_tile_texture(l_tile_index) : p_gfx.get_app_texture(2), l_x, l_y, 1);
+		}
+	}
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
@@ -65,6 +84,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		timer.move(p_delta_ms);
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
+	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
 	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
 		if (zoom_factor >= ZOOM_MAX)
@@ -120,8 +140,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW)) {
 		this->click_minimap(p_input.mx() - BW_MX, p_input.my() - BW_MY);
 	}
-	else if (p_input.mouse_held() &&
-		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH)) {
+	else if (p_input.mouse_held() && mouse_over_tile_picker) {
 		this->click_tile_picker(p_input.mx() - BW_TPX, p_input.my() - BW_TPY);
 	}
 	else if (p_input.is_pressed(SDL_SCANCODE_B))
@@ -290,6 +309,17 @@ kkit::Map_tile kkit::Board_window::get_selected_tile(const kkit::Project& p_proj
 
 int kkit::Board_window::get_selected_tile_no(void) const {
 	return c::TILES.at(tile_y * BW_TPR + tile_x);
+}
+
+int kkit::Board_window::get_mouseover_tile_no(int p_x, int p_y) const {
+	int l_x = p_x / BW_TP_TW;
+	int l_y = p_y / BW_TP_TW;
+	int l_index = l_y * BW_TPR + l_x;
+
+	if (l_index < c::TILES.size())
+		return c::TILES[l_index];
+	else
+		return -3;
 }
 
 void kkit::Board_window::click_tile_picker(int p_x, int p_y) {

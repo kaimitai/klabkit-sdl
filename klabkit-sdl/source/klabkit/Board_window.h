@@ -86,6 +86,7 @@ namespace kkit {
 		std::pair<int, int> get_pixel_pos(int p_x, int p_y) const;
 
 		kkit::Map_tile get_selected_tile(const kkit::Project& p_project, int p_tile_no) const;
+		int get_mouseover_tile_no(int p_x, int p_y) const;
 		int get_selected_tile_no(void) const;
 
 		// internal calculations
@@ -107,7 +108,7 @@ namespace kkit {
 	public:
 		Board_window(SDL_Renderer* p_rnd);
 		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project);
-		void draw(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
+		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 	};
 }
 
