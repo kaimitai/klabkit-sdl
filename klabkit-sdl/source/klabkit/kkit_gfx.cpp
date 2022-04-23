@@ -96,6 +96,8 @@ std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, c
 		result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
 	}
 
+	//bmp_to_lzw_file(l_palette, "C:\\Users\\Kai\\Documents\\star.bmp");
+
 	return result;
 }
 
@@ -123,6 +125,11 @@ std::vector<SDL_Texture*> kkit::gfx::get_program_textures(SDL_Renderer* p_rnd, c
 
 		klib::util::rot_sq_matrix_ccw(l_dir_sprite);
 	}
+
+	l_dir_sprite = flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_STAR), end(LZW_BYTES_STAR))));
+	l_bmp = image_to_sdl_surface(l_dir_sprite, l_palette);
+	SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
+	result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
 
 	return result;
 }

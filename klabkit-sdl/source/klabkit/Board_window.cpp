@@ -232,9 +232,13 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 			if (!board.is_empty_tile(i, j)) {
 				int l_tile_no = board.get_tile_no(i, j);
 				bool l_directional = p_project.is_directional(l_tile_no);
+				bool l_blast = board.is_blast(i, j);
+				bool l_clip = board.is_inside(i, j) && !p_project.is_inside(l_tile_no);
 				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
 				if (l_directional)
 					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 0 : 1), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				if(l_clip)
+					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 			}
 
 	// draw player start
