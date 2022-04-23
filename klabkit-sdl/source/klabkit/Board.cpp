@@ -182,3 +182,12 @@ void kkit::Board::toggle_blast(int p_x, int p_y) {
 void kkit::Board::toggle_inside(int p_x, int p_y) {
 	tiles.at(p_x).at(p_y).toggle_inside();
 }
+
+std::vector<std::vector<kkit::Map_tile>> kkit::Board::get_rectangle(int p_x, int p_y, int p_w, int p_h) const {
+	std::vector<std::vector<kkit::Map_tile>> result;
+
+	for (int j{ p_x }; j < p_x + p_w; ++j)
+		result.push_back(std::vector<kkit::Map_tile>(begin(tiles.at(j)) + p_y, begin(tiles.at(j)) + p_y + p_h));
+
+	return result;
+}

@@ -111,6 +111,18 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 				return;
 			}
 
+	if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_C)) {
+		this->copy_to_clipboard(p_project);
+		return;
+	}
+	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_V)) {
+		this->paste_from_clipboard(p_project);
+		return;
+	}
+	else if (p_input.is_shift_pressed() && p_input.is_pressed(SDL_SCANCODE_V)) {
+		this->show_selection_rectangle();
+		return;
+	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -410,4 +422,48 @@ std::pair<int, int> kkit::Board_window::get_pixel_pos(int p_x, int p_y) const {
 	int l_tx = board_px + static_cast<int>(p_x / zoom_factor);
 	int l_ty = board_py + static_cast<int>(p_y / zoom_factor);
 	return std::make_pair(l_tx, l_ty);
+}
+
+/***********************
+* Selection operations *
+************************/
+
+std::tuple<int, int, int, int> kkit::Board_window::get_selection_rectangle(void) const {
+	// we only have one tile selected
+	if (sel_tile_2_x < 0)
+		return std::make_tuple(sel_tile_x, sel_tile_y, 1, 1);
+	// we have a rectangular selection
+	else {
+		int l_x = std::min(sel_tile_x, sel_tile_2_x);
+		int l_y = std::min(sel_tile_y, sel_tile_2_y);
+		int l_w = abs(sel_tile_x - sel_tile_2_x) + 1;
+		int l_h = abs(sel_tile_y - sel_tile_2_y) + 1;
+		return std::make_tuple(l_x, l_y, l_w, l_h);
+	}
+}
+
+void kkit::Board_window::copy_to_clipboard(const kkit::Project& p_project) {
+	auto l_rect = this->get_selection_rectangle();
+
+	this->clipboard = p_project.get_board(board_ind).get_rectangle(std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+}
+
+void kkit::Board_window::paste_from_clipboard(kkit::Project& p_project) {
+	if (this->selection_fits()) {
+		for (int j{ 0 }; j < clipboard.size() && (sel_tile_x + j < 64); ++j)
+			for (int i{ 0 }; i < clipboard[j].size() && (sel_tile_y + i < 64); ++i) {
+				p_project.set_tile(board_ind, sel_tile_x + j, sel_tile_y + i, clipboard[j][i]);
+			}
+	}
+}
+
+bool kkit::Board_window::selection_fits(void) const {
+	return (sel_tile_x + clipboard.size() <= 64) && (clipboard.size() == 0 || (sel_tile_y + clipboard[0].size() <= 64));
+}
+
+void kkit::Board_window::show_selection_rectangle(void) {
+	if (this->selection_fits() && clipboard.size() > 0) {
+		sel_tile_2_x = sel_tile_x + static_cast<int>(clipboard.size()) - 1;
+		sel_tile_2_y = sel_tile_y + static_cast<int>(clipboard[0].size()) - 1;
+	}
 }

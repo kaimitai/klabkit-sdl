@@ -80,6 +80,9 @@ namespace kkit {
 		int tile_row{ 0 };
 		int tile_x{ 0 }, tile_y{ 0 };
 
+		// clipboard
+		std::vector<std::vector<kkit::Map_tile>> clipboard;
+
 		// window elements
 		std::vector<klib::Timer> timers;
 		std::vector<klib::Button> buttons;
@@ -120,6 +123,13 @@ namespace kkit {
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
 
 		void button_click(std::size_t p_button_no);
+
+		// selection operations, copy, paste, cut, flip, rotate etc
+		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
+		void copy_to_clipboard(const kkit::Project& p_project);
+		void paste_from_clipboard(kkit::Project& p_project);
+		bool selection_fits(void) const;
+		void show_selection_rectangle(void);
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);

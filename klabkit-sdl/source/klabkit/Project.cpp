@@ -188,7 +188,8 @@ void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 }
 
 void kkit::Project::set_tile(int p_board_no, int p_x, int p_y, const kkit::Map_tile& p_tile) {
-	maps[p_board_no].set_tile(p_x, p_y, p_tile);
+	if (p_x != maps.at(p_board_no).get_player_start_x() || p_y != maps.at(p_board_no).get_player_start_y())
+		maps[p_board_no].set_tile(p_x, p_y, p_tile);
 }
 
 void kkit::Project::toggle_mt_direction(int p_board_no, int p_x, int p_y) {
