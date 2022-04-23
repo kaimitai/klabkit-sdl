@@ -40,6 +40,7 @@
   <ItemGroup>
     <ClCompile Include="source\klabkit\Board_window.cpp" />
     <ClCompile Include="source\klabkit\compression.cpp" />
+    <ClCompile Include="source\klabkit\constants.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
     <ClCompile Include="source\klabkit\Map_tile.cpp" />

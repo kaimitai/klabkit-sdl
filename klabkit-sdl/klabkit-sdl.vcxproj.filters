@@ -125,5 +125,8 @@
     <ClCompile Include="source\klib\Timer.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
+    <ClCompile Include="source\klabkit\constants.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

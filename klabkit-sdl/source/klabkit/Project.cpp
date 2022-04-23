@@ -10,6 +10,8 @@ kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder }
 	initialize_palette();
 	initialize_walls();
 	initialize_maps();
+
+	kkit::c::populate_tilemap(this->get_wall_image_count());
 }
 
 void kkit::Project::save_boards_kzp(void) const {
@@ -53,6 +55,7 @@ void kkit::Project::initialize_maps(void) {
 		map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 	}
 	catch (const std::exception& ex) {
+		//map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path("BOARDS_orig", c::FILE_EXT_KZP)));
 		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)));
 	}
 
@@ -60,6 +63,25 @@ void kkit::Project::initialize_maps(void) {
 
 	for (int i{ 0 }; i < l_num_maps; ++i)
 		maps.push_back(kkit::Board(std::vector<unsigned char>(begin(map_bytes) + i * c::MAP_BYTES, begin(map_bytes) + (i + 1) * c::MAP_BYTES)));
+
+	// DEBUG/TODO: Analysis
+	/*
+	std::map<bool, int> cnt;
+	for (int i{ 0 }; i < 1; ++i) {
+		for (int j{ 0 }; j < 64; ++j)
+			for (int k{ 0 }; k < 64; ++k) {
+				int l_tile_no = maps[i].get_tile_no(j, k);
+
+				if(l_tile_no==-1)
+					cnt[maps[i].is_vertical(j, k)]++;
+
+				if (l_tile_no >= 0 && is_directional(l_tile_no))
+						cnt[maps[i].is_vertical(j, k)]++;
+
+			}
+
+	}
+	*/
 }
 
 // utility functions
