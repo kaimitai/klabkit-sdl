@@ -33,4 +33,8 @@ void kkit::c::populate_tilemap(int p_wall_count) {
 		if (std::find(begin(c::TILES), end(c::TILES), i) == end(c::TILES))
 			c::TILES.push_back(i);
 	}
+
+	for (int i{ 0 }; i < static_cast<int>(c::TILES.size()); ++i)
+		if (c::TILES[i] >= p_wall_count)
+			c::TILES[i] = -3;
 }
