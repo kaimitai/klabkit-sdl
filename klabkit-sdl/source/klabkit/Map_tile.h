@@ -7,11 +7,11 @@ namespace kkit {
 
 	class Map_tile {
 
-		bool inside, blast, horizontal;
+		bool inside, blast, vertical;
 		int tile_no;
 
 	public:
-		Map_tile(int p_tile_no = -1, bool p_inside = false, bool p_blast = false, bool p_vertical = false);
+		Map_tile(int p_tile_no = -1, bool p_inside = true, bool p_blast = false, bool p_vertical = false);
 
 		// logical getters
 		bool empty(void) const;
