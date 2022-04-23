@@ -78,6 +78,9 @@
     <ClInclude Include="source\klib\Timer.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\klib\Button.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\constants.cpp">
       <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\Button.cpp">
+      <Filter>Source Files\klib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

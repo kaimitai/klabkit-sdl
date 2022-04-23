@@ -200,8 +200,8 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 	return(result);
 }
 
-void klib::gfx::draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_msg, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col, SDL_Color p_bg_col) {
-	draw_rect(p_rnd, p_x, p_y, p_w, p_h, p_text_col, 1);
+void klib::gfx::draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_msg, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col, SDL_Color p_bg_col, SDL_Color p_outline_col) {
+	draw_rect(p_rnd, p_x, p_y, p_w, p_h, p_outline_col, 1);
 	draw_rect(p_rnd, p_x + 1, p_y + 1, p_w - 2, p_h - 2, p_bg_col, 0);
 
 	int l_offset_x = (p_w - static_cast<int>(p_msg.size()) * p_font.w()) / 2;

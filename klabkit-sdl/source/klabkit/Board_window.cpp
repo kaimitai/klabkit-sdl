@@ -5,9 +5,17 @@
 #include "./../klib/klib_util.h"
 #include "./../klib/gfx.h"
 
-kkit::Board_window::Board_window(SDL_Renderer* p_rnd) {
+kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool>(4, false)) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
 	timers.push_back(klib::Timer(70, 10, true));
+
+	buttons.push_back(klib::Button("Dir", BW_FBX, BW_FBY, BW_FBW, BW_FBH, klib::gc::COL_BLACK, klib::gc::COL_GREEN));
+	buttons.push_back(klib::Button("Destr", BW_FBX + 1 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
+	buttons.push_back(klib::Button("Clip", BW_FBX + 2 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
+	buttons.push_back(klib::Button("Tile", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
+
+	// direction indicator is turned on by default
+	toggles[0] = true;
 }
 
 void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
@@ -47,6 +55,10 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kki
 }
 
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+	for (const auto& button : buttons)
+		button.draw(p_rnd, p_gfx.get_font(), p_input);
+
+
 	bool l_mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Board " + std::to_string(board_ind + 1) + "/" + std::to_string(p_project.get_board_count()), BW_BX - 1, BW_BY - klib::gc::BUTTON_H - 1, BW_BW + 2, BW_BW + 4 + klib::gc::BUTTON_H);
@@ -79,9 +91,25 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	}
 }
 
+void kkit::Board_window::button_click(std::size_t p_button_no) {
+	if (p_button_no < 4) {
+		bool l_toggle = !toggles[p_button_no];
+		toggles[p_button_no] = l_toggle;
+		buttons[p_button_no].set_bg_color(l_toggle ? klib::gc::COL_GREEN : klib::gc::COL_GRAY);
+	}
+}
+
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
+
+	if (p_input.mouse_clicked())
+		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
+			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
+				button_click(i);
+				return;
+			}
+
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -231,13 +259,17 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 		for (int j{ 0 }; j < 64; ++j)
 			if (!board.is_empty_tile(i, j)) {
 				int l_tile_no = board.get_tile_no(i, j);
+
+				bool l_flash = toggles[1] && board.is_blast(i, j);
+				l_flash |= toggles[2] && board.is_inside(i, j) && !p_project.is_inside(l_tile_no);
+				l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no());
+
 				bool l_directional = p_project.is_directional(l_tile_no);
-				bool l_blast = board.is_blast(i, j);
-				bool l_clip = board.is_inside(i, j) && !p_project.is_inside(l_tile_no);
+
 				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
-				if (l_directional)
-					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 0 : 1), 64 * i + 32, 64 * j + 32, l_shrink_factor);
-				if(l_clip)
+				if (toggles[0] && l_directional)
+					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				if (l_flash)
 					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 			}
 

@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "./../klib/User_input.h"
 #include "../klib/Timer.h"
+#include "../klib/Button.h"
 
 namespace kkit {
 
@@ -47,13 +48,20 @@ namespace kkit {
 	constexpr int BW_TPW{ BW_TP_TW * BW_TPR };
 	constexpr int BW_TPH{ BW_TP_TW * BW_TPC };
 	//constexpr int BW_TH {1}
-	
+
 
 	// buttons and labels pixel sizes and offsets
 	constexpr int BW_SBT_LBL_DESTR_X{ BW_SBTX + BW_MW };
 	constexpr int BW_SBT_LBL_DESTR_Y{ BW_SBTY };
 	constexpr int BW_SBT_LBL_DESTR_W{ BW_SBTW - BW_MW };
 	constexpr int BW_SBT_LBL_DESTR_H{ BW_SBTH / 3 };
+
+	// flash buttons (used for direction, destructible, clip and tile no)
+	constexpr int BW_FBX{ BW_TPX };
+	constexpr int BW_FBY{ BW_TPY + BW_TPH + 40 };
+	constexpr int BW_FBW{ 100 };
+	constexpr int BW_FBH{ 28 };
+	constexpr int BW_FB_SPACING{ 15 };
 
 	class Board_window {
 
@@ -73,6 +81,9 @@ namespace kkit {
 
 		// window elements
 		std::vector<klib::Timer> timers;
+		std::vector<klib::Button> buttons;
+
+		std::vector<bool> toggles;
 
 		// drawing routines
 		//void draw_tile(SDL_Renderer* p_rnd, const kkit::Project_gfx& p_gfx, int p_tile_no, int p_x, int p_y) const;
@@ -106,6 +117,8 @@ namespace kkit {
 
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
+
+		void button_click(std::size_t p_button_no);
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);

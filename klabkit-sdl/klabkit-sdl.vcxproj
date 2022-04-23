@@ -30,6 +30,7 @@
     </ClInclude>
     <ClInclude Include="source\klabkit\Project_gfx.h" />
     <ClInclude Include="source\klabkit\Wall.h" />
+    <ClInclude Include="source\klib\Button.h" />
     <ClInclude Include="source\klib\file.h" />
     <ClInclude Include="source\klib\Font.h" />
     <ClInclude Include="source\klib\gfx.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="source\klabkit\Project.cpp" />
     <ClCompile Include="source\klabkit\Project_gfx.cpp" />
     <ClCompile Include="source\klabkit\Wall.cpp" />
+    <ClCompile Include="source\klib\Button.cpp" />
     <ClCompile Include="source\klib\file.cpp" />
     <ClCompile Include="source\klib\Font.cpp" />
     <ClCompile Include="source\klib\gfx.cpp" />

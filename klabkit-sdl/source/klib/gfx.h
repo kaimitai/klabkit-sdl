@@ -18,6 +18,7 @@ namespace klib {
 		constexpr SDL_Color COL_RED{ 255, 0, 0 };
 		constexpr SDL_Color COL_GREEN{ 0, 255, 0 };
 		constexpr SDL_Color COL_YELLOW{ 255, 255, 0 };
+		constexpr SDL_Color COL_GRAY{ 192, 192, 192 };
 	}
 
 	namespace gfx {
@@ -39,7 +40,7 @@ namespace klib {
 		std::vector<SDL_Texture*> split_surface(SDL_Renderer* p_rnd, SDL_Surface* srf, SDL_Color p_trans_col, int p_w, int p_h, bool p_destroy_surface = true);
 
 		// drawing routines
-		void draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string&, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE);
+		void draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string&, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE, SDL_Color p_outline_col = gc::COL_WHITE);
 		void draw_window(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_title, int p_x, int p_y, int p_w, int p_h, int p_header_h = gc::BUTTON_H, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE);
 	}
 
