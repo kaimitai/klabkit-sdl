@@ -28,6 +28,12 @@ namespace kkit {
 		// logical getters
 		byte get_header_byte(void) const;
 		std::vector<byte> get_image_bytes(void) const;
+
+		// manipulators
+		void toggle_blast(void);
+		void toggle_inside(void);
+		void toggle_type(void);
+		void set_image(const std::vector<std::vector<byte>>& p_image);
 	};
 
 }

@@ -63,3 +63,24 @@ bool kkit::Wall::is_inside(void) const {
 kkit::Wall_type kkit::Wall::get_wall_type(void) const {
 	return this->wall_type;
 }
+
+void kkit::Wall::toggle_blast(void) {
+	this->blast = !this->blast;
+}
+
+void kkit::Wall::toggle_inside(void) {
+	this->inside = !this->inside;
+}
+
+void kkit::Wall::toggle_type(void) {
+	if (this->wall_type == kkit::Wall_type::Cube)
+		this->wall_type = kkit::Wall_type::Direction;
+	else if (this->wall_type == kkit::Wall_type::Direction)
+		this->wall_type = kkit::Wall_type::Plane;
+	else
+		this->wall_type = kkit::Wall_type::Plane;
+}
+
+void kkit::Wall::set_image(const std::vector<std::vector<byte>>& p_image) {
+	this->image = p_image;
+}
