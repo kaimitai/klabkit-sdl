@@ -74,6 +74,7 @@ namespace kkit {
 
 		// internal variables for selected tile position
 		int sel_tile_x{ 0 }, sel_tile_y{ 0 };
+		int sel_tile_2_x{ -1 }, sel_tile_2_y{ 0 };
 
 		// internal variables for tile picker position
 		int tile_row{ 0 };

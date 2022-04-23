@@ -16,9 +16,11 @@ namespace klib {
 		constexpr SDL_Color COL_WHITE{ 255,255,255 };
 		constexpr SDL_Color COL_BLUE{ 0, 0, 255 };
 		constexpr SDL_Color COL_RED{ 255, 0, 0 };
+		constexpr SDL_Color COL_RED_DARK{ 171, 35, 40 };
 		constexpr SDL_Color COL_GREEN{ 0, 255, 0 };
 		constexpr SDL_Color COL_YELLOW{ 255, 255, 0 };
 		constexpr SDL_Color COL_GRAY{ 192, 192, 192 };
+		constexpr SDL_Color COL_ORANGE{ 255, 140, 0 };
 	}
 
 	namespace gfx {

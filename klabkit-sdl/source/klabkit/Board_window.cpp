@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 
 #include "Board_window.h"
 #include "./../klib/file.h"
@@ -163,10 +164,16 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 				p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
 		}
 	}
-	else if (p_input.mouse_held(true) && mouse_over_board_grid) {
+	else if (mouse_over_board_grid && p_input.mouse_held(true) && !p_input.is_shift_pressed()) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_x = l_tcoords.first;
 		sel_tile_y = l_tcoords.second;
+		sel_tile_2_x = -1;	// clear selection
+	}
+	else if (mouse_over_board_grid && p_input.mouse_held(true) && p_input.is_shift_pressed()) {
+		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
+		sel_tile_2_x = l_tcoords.first;
+		sel_tile_2_y = l_tcoords.second;
 	}
 	else if (p_input.mouse_held() &&
 		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW)) {
@@ -289,6 +296,15 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 
 	// draw selected tile
 	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64, SDL_Color{ 255,255,0 }, 4);
+
+	// draw full selection
+	if (sel_tile_2_x >= 0)
+		klib::gfx::draw_rect(p_rnd,
+			std::min(sel_tile_x, sel_tile_2_x) * 64,
+			std::min(sel_tile_y, sel_tile_2_y) * 64,
+			64 * (1 + abs(sel_tile_x - sel_tile_2_x)),
+			64 * (1 + abs(sel_tile_y - sel_tile_2_y)),
+			klib::gc::COL_ORANGE, 4);
 
 	SDL_SetRenderTarget(p_rnd, nullptr);
 
