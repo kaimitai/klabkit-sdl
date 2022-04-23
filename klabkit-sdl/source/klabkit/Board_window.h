@@ -130,6 +130,7 @@ namespace kkit {
 		void paste_from_clipboard(kkit::Project& p_project);
 		bool selection_fits(void) const;
 		void show_selection_rectangle(void);
+		void clear_selection(kkit::Project& p_project);
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);

@@ -123,6 +123,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->show_selection_rectangle();
 		return;
 	}
+	else if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
+		this->clear_selection(p_project);
+		return;
+	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -466,4 +470,11 @@ void kkit::Board_window::show_selection_rectangle(void) {
 		sel_tile_2_x = sel_tile_x + static_cast<int>(clipboard.size()) - 1;
 		sel_tile_2_y = sel_tile_y + static_cast<int>(clipboard[0].size()) - 1;
 	}
+}
+
+void kkit::Board_window::clear_selection(kkit::Project& p_project) {
+	auto l_rect = this->get_selection_rectangle();
+	for (int i{ std::get<0>(l_rect) }; i < std::get<0>(l_rect) + std::get<2>(l_rect); ++i)
+		for (int j{ std::get<1>(l_rect) }; j < std::get<1>(l_rect) + std::get<3>(l_rect); ++j)
+			p_project.clear_tile(board_ind, i, j);
 }
