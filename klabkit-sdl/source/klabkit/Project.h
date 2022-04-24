@@ -63,7 +63,7 @@ namespace kkit {
 		void set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction = kkit::Player_direction::Up);
 
 		// save and load
-		void save_boards_kzp(void) const;
+		int save_boards_kzp(void) const;
 	};
 
 }

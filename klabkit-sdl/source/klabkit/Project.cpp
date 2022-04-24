@@ -14,9 +14,10 @@ kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder }
 	kkit::c::populate_tilemap(this->get_wall_image_count());
 }
 
-void kkit::Project::save_boards_kzp(void) const {
+int kkit::Project::save_boards_kzp(void) const {
 	auto l_board_lzw_bytes = kkit::compression::compress_boards_kzp(this->get_board_bytes());
 	klib::file::write_bytes_to_file(l_board_lzw_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP));
+	return static_cast<int>(l_board_lzw_bytes.size());
 }
 
 // initializers

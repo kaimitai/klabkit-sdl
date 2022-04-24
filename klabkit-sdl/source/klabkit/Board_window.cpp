@@ -165,8 +165,13 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->move_grid_zoom(-1);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
 		this->move_grid_zoom(1);
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
-		p_project.save_boards_kzp();
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S)) {
+		int l_bytes = p_project.save_boards_kzp();
+		int l_board_count(p_project.get_board_count());
+		int l_original_bytes = l_board_count * 64 * 64 * 2;
+		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to KZP (" +
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+	}
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
 		--board_ind;
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP) && board_ind < p_project.get_board_count() - 1)
