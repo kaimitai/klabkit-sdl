@@ -12,6 +12,10 @@ void klib::Button::draw(SDL_Renderer* p_rnd, const klib::Font& p_font, const kli
 	klib::gfx::draw_label(p_rnd, p_font, caption, x, y, w, h, text_col, is_hit(p_input.mx(), p_input.my()) ? mouse_over_col : bg_col, outline_col);
 }
 
+void klib::Button::draw(SDL_Renderer* p_rnd, const klib::Font& p_font, const klib::User_input& p_input, const std::string& p_override_caption, SDL_Color p_override_bg) const {
+	klib::gfx::draw_label(p_rnd, p_font, p_override_caption, x, y, w, h, text_col, is_hit(p_input.mx(), p_input.my()) ? mouse_over_col : p_override_bg, outline_col);
+}
+
 bool klib::Button::is_hit(int p_mx, int p_my) const {
 	return klib::util::is_p_in_rect(p_mx, p_my, this->x, this->y, this->w, this->h);
 }

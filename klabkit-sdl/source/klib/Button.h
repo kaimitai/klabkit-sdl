@@ -22,6 +22,7 @@ namespace klib {
 			SDL_Color p_outline_color = gc::COL_WHITE);
 
 		void draw(SDL_Renderer* p_rnd, const klib::Font& p_font, const klib::User_input& p_input) const;
+		void draw(SDL_Renderer* p_rnd, const klib::Font& p_font, const klib::User_input& p_input, const std::string& p_override_caption, SDL_Color p_override_bg) const;
 		bool is_hit(int p_mx, int p_my) const;
 		void set_bg_color(SDL_Color p_color);
 	};

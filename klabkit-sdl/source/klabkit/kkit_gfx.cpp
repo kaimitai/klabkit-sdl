@@ -101,6 +101,15 @@ std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, c
 	return result;
 }
 
+SDL_Texture* kkit::gfx::get_project_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no) {
+	auto l_palette = p_project.get_palette();
+	SDL_Surface* l_bmp = image_to_sdl_surface(p_project.get_wall(p_frame_no).get_image(), l_palette);
+	SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
+	SDL_Texture* result = klib::gfx::surface_to_texture(p_rnd, l_bmp);
+
+	return result;
+}
+
 std::vector<SDL_Texture*> kkit::gfx::get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
 	std::vector<SDL_Texture*> result;
 	palette l_palette{ p_project.get_palette() };
@@ -141,6 +150,15 @@ std::vector<std::vector<byte>> kkit::gfx::flat_image_to_2d(const std::vector<byt
 		result.push_back(std::vector<byte>(begin(p_input) + 64 * i, begin(p_input) + 64 * (i + 1)));
 
 	return result;
+}
+
+bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path) {
+	SDL_Surface* l_bmp = image_to_sdl_surface(p_image, p_palette);
+	std::filesystem::create_directory(p_directory);
+	int file_status = SDL_SaveBMP(l_bmp, p_file_full_path.c_str());
+
+	SDL_FreeSurface(l_bmp);
+	return (file_status != -1);
 }
 
 void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {

@@ -15,6 +15,7 @@ namespace kkit {
 	namespace gfx {
 
 		// bmp functions
+		bool wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path);
 		void project_walls_to_bmps(const kkit::Project& p_project);
 		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no);
 		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
@@ -24,6 +25,7 @@ namespace kkit {
 
 		// program graphics
 		std::vector<SDL_Texture*> get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
+		SDL_Texture* get_project_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);
 		std::vector<SDL_Texture*> get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 
 		// utility functions

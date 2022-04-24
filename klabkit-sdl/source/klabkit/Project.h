@@ -62,8 +62,15 @@ namespace kkit {
 		void toggle_mt_inside(int p_board_no, int p_x, int p_y);
 		void set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction = kkit::Player_direction::Up);
 
+		// wall tile metadata
+		void toggle_wt_type(int p_wall_no);
+		void toggle_wt_blast(int p_wall_no);
+		void toggle_wt_inside(int p_wall_no);
+		void set_wall_image(int p_wall_no, const std::vector<std::vector<byte>>& p_bytes);
+
 		// save and load
 		int save_boards_kzp(void) const;
+		int save_walls_kzp(void) const;
 	};
 
 }

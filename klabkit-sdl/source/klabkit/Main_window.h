@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <vector>
 #include "Board_window.h"
+#include "Gfx_window.h"
 #include "Project.h"
 #include "Project_gfx.h"
 #include "./../klib/User_input.h"
@@ -20,6 +21,7 @@ namespace kkit {
 	class Main_window {
 		std::size_t window_index;
 		Board_window board_window;
+		Gfx_window gfx_window;
 
 		std::vector<klib::Button> buttons;
 
@@ -28,7 +30,7 @@ namespace kkit {
 	public:
 		Main_window(SDL_Renderer* p_rnd);
 
-		void move(const klib::User_input& p_input, int p_delta_ms, Project& p_project, Project_gfx& p_gfx);
+		void move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, Project& p_project, Project_gfx& p_gfx);
 		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, Project& p_project, Project_gfx& p_gfx);
 	};
 

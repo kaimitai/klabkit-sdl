@@ -15,6 +15,13 @@ kkit::Project_gfx::~Project_gfx(void) {
 				SDL_DestroyTexture(txt);
 }
 
+void kkit::Project_gfx::reload_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no) {
+	auto l_texture = kkit::gfx::get_project_texture(p_rnd, p_project, p_frame_no);
+	if (this->textures[0].at(p_frame_no) != nullptr)
+		SDL_DestroyTexture(this->textures[0].at(p_frame_no));
+	this->textures[0].at(p_frame_no) = l_texture;
+}
+
 SDL_Texture* kkit::Project_gfx::get_tile_texture(int p_frame_no) const {
 	return this->textures.at(INDEX_WALL_TEXTURES).at(p_frame_no);
 }

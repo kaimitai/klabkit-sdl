@@ -87,7 +87,7 @@ int main(int argc, char* args[]) {
 					uint32_t realDelta = std::min(delta, 5u);
 
 					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
-					main_window.move(input, realDelta, project, p_gfx);
+					main_window.move(l_rnd, input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
 				}

@@ -78,7 +78,7 @@ void kkit::Wall::toggle_type(void) {
 	else if (this->wall_type == kkit::Wall_type::Direction)
 		this->wall_type = kkit::Wall_type::Plane;
 	else
-		this->wall_type = kkit::Wall_type::Plane;
+		this->wall_type = kkit::Wall_type::Cube;
 }
 
 void kkit::Wall::set_image(const std::vector<std::vector<byte>>& p_image) {

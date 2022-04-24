@@ -20,6 +20,12 @@ int kkit::Project::save_boards_kzp(void) const {
 	return static_cast<int>(l_board_lzw_bytes.size());
 }
 
+int kkit::Project::save_walls_kzp(void) const {
+	auto l_walls_lzw_bytes = kkit::compression::compress_walls_kzp(this->get_wall_bytes());
+	klib::file::write_bytes_to_file(l_walls_lzw_bytes, get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP));
+	return static_cast<int>(l_walls_lzw_bytes.size());
+}
+
 // initializers
 void kkit::Project::initialize_palette(void) {
 	for (int i{ 0 }; i < 16; ++i) {
@@ -214,6 +220,23 @@ void kkit::Project::toggle_mt_inside(int p_board_no, int p_x, int p_y) {
 
 void kkit::Project::set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction) {
 	maps.at(p_board_no).set_player_start_position(p_x, p_y, p_direction);
+}
+
+// wall tile attribute manipulators
+void kkit::Project::toggle_wt_type(int p_wall_no) {
+	walls.at(p_wall_no).toggle_type();
+}
+
+void kkit::Project::toggle_wt_blast(int p_wall_no) {
+	walls.at(p_wall_no).toggle_blast();
+}
+
+void kkit::Project::toggle_wt_inside(int p_wall_no) {
+	walls.at(p_wall_no).toggle_inside();
+}
+
+void kkit::Project::set_wall_image(int p_wall_no, const std::vector<std::vector<byte>>& p_bytes) {
+	walls.at(p_wall_no).set_image(p_bytes);
 }
 
 // wall attribute getters

@@ -11,7 +11,7 @@ kkit::Main_window::Main_window(SDL_Renderer* p_rnd) : board_window{ Board_window
 		klib::gc::COL_WHITE));
 }
 
-void kkit::Main_window::move(const klib::User_input& p_input, int p_delta_ms, Project& p_project, Project_gfx& p_gfx) {
+void kkit::Main_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, Project& p_project, Project_gfx& p_gfx) {
 	if (p_input.mouse_clicked())
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
@@ -21,6 +21,8 @@ void kkit::Main_window::move(const klib::User_input& p_input, int p_delta_ms, Pr
 
 	if (window_index == 0)
 		board_window.move(p_input, p_delta_ms, p_project, p_gfx);
+	else if (window_index == 1)
+		gfx_window.move(p_rnd, p_input, p_delta_ms, p_project, p_gfx);
 
 	// move toast notifcations
 	p_gfx.move(p_delta_ms);
@@ -39,6 +41,8 @@ void kkit::Main_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 
 	if (window_index == 0)
 		board_window.draw(p_rnd, p_input, p_project, p_gfx);
+	else if(window_index==1)
+		gfx_window.draw(p_rnd, p_input, p_project, p_gfx);
 
 	// draw toast notifications
 	p_gfx.draw(p_rnd);
