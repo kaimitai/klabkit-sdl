@@ -134,7 +134,7 @@ namespace kkit {
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);
-		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project);
+		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 	};
 }

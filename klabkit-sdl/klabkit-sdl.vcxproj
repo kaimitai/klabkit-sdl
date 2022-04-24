@@ -36,6 +36,8 @@
     <ClInclude Include="source\klib\gfx.h" />
     <ClInclude Include="source\klib\klib_util.h" />
     <ClInclude Include="source\klib\Timer.h" />
+    <ClInclude Include="source\klib\Toast_notification.h" />
+    <ClInclude Include="source\klib\Toast_notification_handler.h" />
     <ClInclude Include="source\klib\User_input.h" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +56,8 @@
     <ClCompile Include="source\klib\gfx.cpp" />
     <ClCompile Include="source\klib\klib_util.cpp" />
     <ClCompile Include="source\klib\Timer.cpp" />
+    <ClCompile Include="source\klib\Toast_notification.cpp" />
+    <ClCompile Include="source\klib\Toast_notification_handler.cpp" />
     <ClCompile Include="source\klib\User_input.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>

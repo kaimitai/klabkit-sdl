@@ -26,3 +26,23 @@ SDL_Texture* kkit::Project_gfx::get_app_texture(int p_frame_no) const {
 const klib::Font& kkit::Project_gfx::get_font(void) const {
 	return this->font;
 }
+
+void kkit::Project_gfx::move(int p_delta_ms) {
+	this->toasts.move(p_delta_ms);
+}
+
+void kkit::Project_gfx::draw(SDL_Renderer* p_rnd) const {
+	this->toasts.draw(p_rnd, this->font);
+}
+
+void kkit::Project_gfx::add_toast_ok(const std::string& p_msg) {
+	toasts.add_toast_ok(p_msg);
+}
+
+void kkit::Project_gfx::add_toast_info(const std::string& p_msg) {
+	toasts.add_toast_info(p_msg);
+}
+
+void kkit::Project_gfx::add_toast_error(const std::string& p_msg) {
+	toasts.add_toast_error(p_msg);
+}

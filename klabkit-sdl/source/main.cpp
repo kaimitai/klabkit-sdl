@@ -41,6 +41,7 @@ int main(int argc, char* args[]) {
 			}
 
 			// load resources
+			//kkit::Project project("C:\\Users\\Kai\\Downloads\\klabkit\\versions\\1_1");
 			kkit::Project project("C:/games/ken3d");
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
@@ -57,6 +58,10 @@ int main(int argc, char* args[]) {
 
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
+
+			p_gfx.add_toast_ok("Welcome to Ken's Labyrinth Developer's Toolkit / SDL");
+			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " maps and " +
+				std::to_string(project.get_wall_image_count()) + " gfx tiles");
 
 			while (!l_exit) {
 
@@ -81,7 +86,7 @@ int main(int argc, char* args[]) {
 					uint32_t realDelta = std::min(delta, 5u);
 
 					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
-					main_window.move(input, realDelta, project);
+					main_window.move(input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
 				}

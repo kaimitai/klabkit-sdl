@@ -81,6 +81,12 @@
     <ClInclude Include="source\klib\Button.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\klib\Toast_notification.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klib\Toast_notification_handler.h">
+      <Filter>Header Files\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -132,6 +138,12 @@
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
     <ClCompile Include="source\klib\Button.cpp">
+      <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\Toast_notification.cpp">
+      <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klib\Toast_notification_handler.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
   </ItemGroup>

@@ -56,9 +56,13 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kki
 }
 
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
+	SDL_SetRenderDrawColor(p_rnd, klib::gc::COL_BLACK.r, klib::gc::COL_BLACK.g, klib::gc::COL_BLACK.b, 0);
+	SDL_RenderClear(p_rnd);
+	
+	p_gfx.draw(p_rnd);
+
 	for (const auto& button : buttons)
 		button.draw(p_rnd, p_gfx.get_font(), p_input);
-
 
 	bool l_mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
@@ -100,7 +104,9 @@ void kkit::Board_window::button_click(std::size_t p_button_no) {
 	}
 }
 
-void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project) {
+void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	p_gfx.move(p_delta_ms);
+
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
 

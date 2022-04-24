@@ -7,6 +7,7 @@
 #include <vector>
 #include "Project.h"
 #include "../klib/Font.h"
+#include "./../klib/Toast_notification_handler.h"
 
 namespace kkit {
 
@@ -17,6 +18,7 @@ namespace kkit {
 	class Project_gfx {
 
 		klib::Font font;
+		klib::Toast_notification_handler toasts;
 		std::map<int, std::vector<SDL_Texture*>> textures;
 
 	public:
@@ -26,6 +28,13 @@ namespace kkit {
 		SDL_Texture* get_tile_texture(int p_frame_no) const;
 		SDL_Texture* get_app_texture(int p_frame_no) const;
 		const klib::Font& get_font(void) const;
+
+		void move(int p_delta_ms);
+		void draw(SDL_Renderer* p_rnd) const;
+
+		void add_toast_ok(const std::string& p_msg);
+		void add_toast_info(const std::string& p_msg);
+		void add_toast_error(const std::string& p_msg);
 	};
 
 }
