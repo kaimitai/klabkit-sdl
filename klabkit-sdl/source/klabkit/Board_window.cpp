@@ -100,6 +100,9 @@ void kkit::Board_window::button_click(std::size_t p_button_no) {
 }
 
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	bool l_shift = p_input.is_shift_pressed();
+	bool l_ctrl = p_input.is_ctrl_pressed();
+	
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
 
@@ -110,15 +113,15 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 				return;
 			}
 
-	if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_C)) {
+	if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C)) {
 		this->copy_to_clipboard(p_project);
 		return;
 	}
-	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_V)) {
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
 		this->paste_from_clipboard(p_project);
 		return;
 	}
-	else if (p_input.is_shift_pressed() && p_input.is_pressed(SDL_SCANCODE_V)) {
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V)) {
 		this->show_selection_rectangle();
 		return;
 	}
@@ -130,7 +133,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
-	if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_up()) {
+	if (mouse_over_board_grid && l_ctrl && p_input.mw_up()) {
 		if (zoom_factor >= ZOOM_MAX)
 			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
@@ -138,7 +141,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		//this->center_offset(l_tcoords);
 		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
-	else if (mouse_over_board_grid && p_input.is_ctrl_pressed() && p_input.mw_down()) {
+	else if (mouse_over_board_grid && l_ctrl && p_input.mw_down()) {
 		if (zoom_factor <= ZOOM_MIN)
 			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
@@ -150,19 +153,19 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		tile_row = klib::util::validate(tile_row - 1, 0, c_tile_row_max());
 	else if (p_input.mw_down() && mouse_over_tile_picker)
 		tile_row = klib::util::validate(tile_row + 1, 0, c_tile_row_max());
-	else if (p_input.is_pressed(SDL_SCANCODE_UP) || p_input.mw_up())
-		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? -4 * 64 : -64);
-	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || p_input.mw_down())
-		this->move_grid_offset_y(p_input.is_ctrl_pressed() ? 4 * 64 : 64);
-	else if (p_input.is_pressed(SDL_SCANCODE_LEFT))
-		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? -4 * 64 : -1 * 64);
-	else if (p_input.is_pressed(SDL_SCANCODE_RIGHT))
-		this->move_grid_offset_x(p_input.is_ctrl_pressed() ? 4 * 64 : 1 * 64);
+	else if (p_input.is_pressed(SDL_SCANCODE_UP) || (!l_shift && p_input.mw_up()))
+		this->move_grid_offset_y(l_ctrl ? -4 * 64 : -64);
+	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || (!l_shift && p_input.mw_down()))
+		this->move_grid_offset_y(l_ctrl ? 4 * 64 : 64);
+	else if (p_input.is_pressed(SDL_SCANCODE_LEFT) || (l_shift && p_input.mw_down()))
+		this->move_grid_offset_x(l_ctrl ? -4 * 64 : -1 * 64);
+	else if (p_input.is_pressed(SDL_SCANCODE_RIGHT) || (l_shift && p_input.mw_up()))
+		this->move_grid_offset_x(l_ctrl ? 4 * 64 : 1 * 64);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_MINUS))
 		this->move_grid_zoom(-1);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
 		this->move_grid_zoom(1);
-	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S))
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
 		p_project.save_boards_kzp();
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
 		--board_ind;
@@ -179,13 +182,13 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 				p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
 		}
 	}
-	else if (mouse_over_board_grid && p_input.mouse_held(true) && !p_input.is_shift_pressed()) {
+	else if (mouse_over_board_grid && p_input.mouse_held(true) && !l_shift) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_x = l_tcoords.first;
 		sel_tile_y = l_tcoords.second;
 		sel_tile_2_x = -1;	// clear selection
 	}
-	else if (mouse_over_board_grid && p_input.mouse_held(true) && p_input.is_shift_pressed()) {
+	else if (mouse_over_board_grid && p_input.mouse_held(true) && l_shift) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_2_x = l_tcoords.first;
 		sel_tile_2_y = l_tcoords.second;
