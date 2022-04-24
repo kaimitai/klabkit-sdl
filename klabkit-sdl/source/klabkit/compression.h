@@ -43,6 +43,7 @@ namespace kkit {
 		// lzw helper
 		std::vector<byte> decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int header_size = 0, int out_header_size = 0);
 		std::vector<byte> compress_file_contents(const std::vector<byte>& p_bytes, int p_header_size = 0);
+		std::pair<int, int> calculate_lzw_block_count(const std::vector<byte>& p_bytes, bool p_has_header = false);
 	}
 
 }

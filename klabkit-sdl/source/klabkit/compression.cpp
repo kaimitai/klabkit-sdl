@@ -284,6 +284,30 @@ std::vector<byte> kkit::compression::compress_walls_kzp(const std::vector<byte>&
 	return compress_file_contents(p_bytes, 1024);
 }
 
+// determine header size and block count (these are the same number when a header exists) from lzw compressed archives
+std::pair<int, int> kkit::compression::calculate_lzw_block_count(const std::vector<byte>& p_bytes, bool p_has_header) {
+	int l_block_count{ 0 };
+	int target_size{ static_cast<int>(p_bytes.size()) };
+
+	for (int l_header{ 0 }; l_header < 1024; ++l_header) {
+
+		int l_file_size{ l_header };
+
+		for (int l_blocks{ 0 }; ; ++l_blocks) {
+			int l_comp_size = klib::util::uint_le(p_bytes, l_header + 2 * l_blocks, 2);
+			l_file_size += l_comp_size + 4;
+
+			if (l_file_size == target_size && (!p_has_header || (l_header == (l_blocks + 1))))
+				return std::make_pair(l_header, l_blocks + 1);
+			else if (l_file_size > target_size)
+				break;
+		}
+	}
+
+	throw std::exception("Could not determine lzw file metadata");
+
+}
+
 std::vector<byte> kkit::compression::compress_file_contents(const std::vector<byte>& p_bytes, int p_header_size) {
 	int l_block_count = (static_cast<int>(p_bytes.size()) - p_header_size) / LZW_UNCOMPRESSED_BLOCK_SIZE;
 	int l_out_header_size = (p_header_size == 0 ? 0 : l_block_count);
