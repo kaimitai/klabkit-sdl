@@ -38,3 +38,7 @@ void kkit::c::populate_tilemap(int p_wall_count) {
 		if (c::TILES[i] >= p_wall_count)
 			c::TILES[i] = -3;
 }
+
+std::string kkit::c::get_application_window_caption(void) {
+	return std::string(c::APP_TITLE) + " (version " + std::string(c::APP_VERSION) + ")";
+}

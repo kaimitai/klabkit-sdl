@@ -2,6 +2,7 @@
 #define KLABKIT_CONSTANTS_H
 
 #include <array>
+#include <string>
 #include <vector>
 
 namespace kkit {
@@ -9,6 +10,13 @@ namespace kkit {
 	namespace c {
 
 		void populate_tilemap(int p_wall_count);
+		std::string get_application_window_caption(void);
+
+		// application constants
+		constexpr char APP_TITLE[]{ "Ken's Labyrinth Developer's Toolkit/SDL" };
+		constexpr char APP_VERSION[]{ "alpha 1" };
+		constexpr int APP_W{ 1024 };
+		constexpr int APP_H{ 768 };
 
 		using byte = unsigned char;
 

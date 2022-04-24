@@ -2,6 +2,7 @@
 
 #include "./klabkit/Project.h"
 #include "./klabkit/Project_gfx.h"
+#include "./klabkit/constants.h"
 #include "klabkit/Main_window.h"
 #include "klib/User_input.h"
 
@@ -25,7 +26,7 @@ int main(int argc, char* args[]) {
 		// Event handler
 		SDL_Event e;
 
-		l_window = SDL_CreateWindow("Klabkit/SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 768, SDL_WINDOW_SHOWN);
+		l_window = SDL_CreateWindow(kkit::c::get_application_window_caption().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kkit::c::APP_W, kkit::c::APP_H, SDL_WINDOW_SHOWN);
 		if (l_window == nullptr)
 			std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
 		else {
