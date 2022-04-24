@@ -87,6 +87,9 @@
     <ClInclude Include="source\klib\Toast_notification_handler.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Main_window.h">
+      <Filter>Header Files\klabkit\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -145,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="source\klib\Toast_notification_handler.cpp">
       <Filter>Source Files\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Main_window.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

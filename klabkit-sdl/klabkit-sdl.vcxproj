@@ -24,6 +24,7 @@
     <ClInclude Include="source\klabkit\constants.h" />
     <ClInclude Include="source\klabkit\kkit_gfx.h" />
     <ClInclude Include="source\klabkit\Board.h" />
+    <ClInclude Include="source\klabkit\Main_window.h" />
     <ClInclude Include="source\klabkit\Map_tile.h" />
     <ClInclude Include="source\klabkit\Project.h">
       <FileType>CppHeader</FileType>
@@ -46,6 +47,7 @@
     <ClCompile Include="source\klabkit\constants.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
+    <ClCompile Include="source\klabkit\Main_window.cpp" />
     <ClCompile Include="source\klabkit\Map_tile.cpp" />
     <ClCompile Include="source\klabkit\Project.cpp" />
     <ClCompile Include="source\klabkit\Project_gfx.cpp" />

@@ -2,7 +2,7 @@
 
 #include "./klabkit/Project.h"
 #include "./klabkit/Project_gfx.h"
-#include "klabkit/Board_window.h"
+#include "klabkit/Main_window.h"
 #include "klib/User_input.h"
 
 // #include "klib/file.h"
@@ -46,7 +46,7 @@ int main(int argc, char* args[]) {
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing
-			kkit::Board_window main_window(l_rnd);
+			kkit::Main_window main_window(l_rnd);
 
 			// input handler
 			klib::User_input input;
