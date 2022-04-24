@@ -102,7 +102,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no) {
 void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
-	
+
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
 
@@ -286,7 +286,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 				int l_tile_no = board.get_tile_no(i, j);
 
 				bool l_flash = toggles[1] && board.is_blast(i, j);
-				l_flash |= toggles[2] && board.is_inside(i, j) && !p_project.is_inside(l_tile_no);
+				l_flash |= toggles[2] && board.is_inside(i, j) && (!p_project.is_inside(l_tile_no) || c::CLIP_OVERRIDE.find(l_tile_no) != end(c::CLIP_OVERRIDE));
 				l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no());
 
 				bool l_directional = p_project.is_directional(l_tile_no);

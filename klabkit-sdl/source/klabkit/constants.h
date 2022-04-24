@@ -2,6 +2,7 @@
 #define KLABKIT_CONSTANTS_H
 
 #include <array>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -64,10 +65,10 @@ namespace kkit {
 
 		// tiles grouped by type
 		// not really a constant
+		// TODO: Move this data to configuration XMLs
 		extern std::vector<int> TILES;
-
+		const std::set<int> CLIP_OVERRIDE{ 81,122,418,419 };
 	}
 }
 
 #endif
-
