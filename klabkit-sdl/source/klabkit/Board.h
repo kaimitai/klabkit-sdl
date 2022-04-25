@@ -45,6 +45,10 @@ namespace kkit {
 		void toggle_direction(int p_x, int p_y);
 		void toggle_blast(int p_x, int p_y);
 		void toggle_inside(int p_x, int p_y);
+
+		// flip a given sub-rectangle of the level
+		void flip_vertical(int p_x, int p_y, int p_w, int p_h);
+		void flip_horizontal(int p_x, int p_y, int p_w, int p_h);
 	};
 
 }

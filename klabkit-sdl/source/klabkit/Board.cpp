@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Board.h"
 #include "constants.h"
 
@@ -190,4 +191,31 @@ std::vector<std::vector<kkit::Map_tile>> kkit::Board::get_rectangle(int p_x, int
 		result.push_back(std::vector<kkit::Map_tile>(begin(tiles.at(j)) + p_y, begin(tiles.at(j)) + p_y + p_h));
 
 	return result;
+}
+
+// flip a section of the board around its vertical center
+void kkit::Board::flip_vertical(int p_x, int p_y, int p_w, int p_h) {
+	int l_px = this->get_player_start_x();
+	int l_py = this->get_player_start_y();
+	auto l_dir = this->get_player_start_direction();
+
+	for (int j{ 0 }; j < p_w / 2; ++j)
+		for (int i{ 0 }; i < p_h; ++i) {
+			std::swap(tiles.at(p_x + j).at(p_y + i), tiles.at(p_x + p_w - j - 1).at(p_y + i));
+		}
+
+	this->set_player_start_position(l_px, l_py, l_dir);
+}
+
+void kkit::Board::flip_horizontal(int p_x, int p_y, int p_w, int p_h) {
+	int l_px = this->get_player_start_x();
+	int l_py = this->get_player_start_y();
+	auto l_dir = this->get_player_start_direction();
+
+	for (int j{ 0 }; j < p_w; ++j)
+		for (int i{ 0 }; i < p_h / 2; ++i) {
+			std::swap(tiles.at(p_x + j).at(p_y + i), tiles.at(p_x + j).at(p_y + p_h - i - 1));
+		}
+
+	this->set_player_start_position(l_px, l_py, l_dir);
 }

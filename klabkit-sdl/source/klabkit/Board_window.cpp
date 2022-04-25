@@ -230,8 +230,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
 	else if (p_input.is_pressed(SDL_SCANCODE_D))
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
+	else if (p_input.is_pressed(SDL_SCANCODE_F)) {
+		auto l_rect = this->get_selection_rectangle();
+		if (l_shift)
+			p_project.flip_vertical(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+		else
+			p_project.flip_horizontal(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+	}
 }
-
 
 // internal calculations
 int kkit::Board_window::c_max_offset(void) const {

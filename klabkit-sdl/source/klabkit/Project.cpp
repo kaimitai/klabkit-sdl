@@ -222,6 +222,14 @@ void kkit::Project::set_player_start_position(int p_board_no, int p_x, int p_y, 
 	maps.at(p_board_no).set_player_start_position(p_x, p_y, p_direction);
 }
 
+void kkit::Project::flip_vertical(int p_board_no, int p_x, int p_y, int p_w, int p_h) {
+	maps.at(p_board_no).flip_vertical(p_x, p_y, p_w, p_h);
+}
+
+void kkit::Project::flip_horizontal(int p_board_no, int p_x, int p_y, int p_w, int p_h) {
+	maps.at(p_board_no).flip_horizontal(p_x, p_y, p_w, p_h);
+}
+
 // wall tile attribute manipulators
 void kkit::Project::toggle_wt_type(int p_wall_no) {
 	walls.at(p_wall_no).toggle_type();

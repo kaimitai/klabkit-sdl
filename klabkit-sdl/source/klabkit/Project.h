@@ -61,6 +61,8 @@ namespace kkit {
 		void toggle_mt_blast(int p_board_no, int p_x, int p_y);
 		void toggle_mt_inside(int p_board_no, int p_x, int p_y);
 		void set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction = kkit::Player_direction::Up);
+		void flip_vertical(int p_board_no, int p_x, int p_y, int p_w, int p_h);
+		void flip_horizontal(int p_board_no, int p_x, int p_y, int p_w, int p_h);
 
 		// wall tile metadata
 		void toggle_wt_type(int p_wall_no);
