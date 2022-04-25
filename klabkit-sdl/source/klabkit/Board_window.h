@@ -94,7 +94,7 @@ namespace kkit {
 		void draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
 		void draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const;
 		void draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const;
-		void draw_selected_board_tile(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
+		void draw_selected_board_tile(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 
 		// handle clicks on the various screen elements
 		void click_tile_picker(int p_x, int p_y);
@@ -122,7 +122,7 @@ namespace kkit {
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
 
-		void button_click(std::size_t p_button_no);
+		void button_click(std::size_t p_button_no, kkit::Project& p_project);
 
 		// selection operations, copy, paste, cut, flip, rotate etc
 		std::tuple<int, int, int, int> get_selection_rectangle(void) const;

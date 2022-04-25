@@ -42,8 +42,8 @@ int main(int argc, char* args[]) {
 			}
 
 			// load resources
-			//kkit::Project project("C:\\Users\\Kai\\Downloads\\klabkit\\versions\\1_1");
-			kkit::Project project("C:/games/ken3d");
+			//kkit::Project project("C:\\Users\\kfrol\\Downloads\\klabkit\\versions\\1_1");
+			kkit::Project project("C:/users/kfrol/downloads/klabkit");
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing
@@ -102,7 +102,7 @@ int main(int argc, char* args[]) {
 					SDL_RenderPresent(l_rnd);
 				}
 
-				SDL_Delay(5);
+				SDL_Delay(1);
 
 			}
 		}
