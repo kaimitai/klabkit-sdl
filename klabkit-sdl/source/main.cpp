@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 
 #include "./klabkit/Project.h"
@@ -9,13 +10,15 @@
 // #include "klib/file.h"
 // #include "klabkit/compression.h"
 
-void resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float& p_scale_x, float& p_scale_y) {
+float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
 	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
 	float l_scale_y = p_h / static_cast<float>(kkit::c::APP_H);
-	p_scale_x = l_scale_x;
-	p_scale_y = l_scale_y;
+	
+	float result = std::max(1.0f, std::min(l_scale_x, l_scale_y));
 
-	SDL_RenderSetScale(p_rnd, l_scale_x, l_scale_y);
+	SDL_RenderSetScale(p_rnd, result, result);
+
+	return result;
 }
 
 int main(int argc, char* args[]) {
@@ -28,7 +31,7 @@ int main(int argc, char* args[]) {
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
 
-	float scale_x{ 1.0f }, scale_y{ 1.0f };
+	float l_scale{ 1.0f };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
@@ -94,13 +97,16 @@ int main(int argc, char* args[]) {
 						mouse_wheel_y = e.wheel.y;
 					}
 					else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
-						resize_window(l_rnd, e.window.data1, e.window.data2, scale_x, scale_y);
+						l_scale = resize_window(l_rnd, e.window.data1, e.window.data2, l_scale);
+						SDL_SetWindowSize(l_window,
+							static_cast<int>(l_scale * kkit::c::APP_W),
+							static_cast<int>(l_scale * kkit::c::APP_H));
 					}
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
 
-					input.move(realDelta, mw_used ? mouse_wheel_y : 0, scale_x, scale_y);
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0, l_scale, l_scale);
 					main_window.move(l_rnd, input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
