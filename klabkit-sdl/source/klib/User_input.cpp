@@ -12,13 +12,15 @@ bool klib::User_input::is_pressed(SDL_Scancode p_key) const {
 	return pressed_keys.find(p_key) != end(pressed_keys);
 }
 
-void klib::User_input::move(int delta_ms, int p_mw_y) {
+void klib::User_input::move(int delta_ms, int p_mw_y, float p_scale_x, float p_scale_y) {
 	pressed_keys.clear();
 	this->mw_y = 0;
 	auto keyboard_state_current = SDL_GetKeyboardState(nullptr);
 
 	mouse_state_prev = mouse_state_current;
 	mouse_state_current = SDL_GetMouseState(&mouse_x, &mouse_y);
+	this->mouse_x = static_cast<int>(this->mouse_x / p_scale_x);
+	this->mouse_y = static_cast<int>(this->mouse_y / p_scale_y);
 
 	for (const auto& key : klib::c::KEY_DELAYS) {
 

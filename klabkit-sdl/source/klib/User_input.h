@@ -15,7 +15,7 @@ namespace klib {
 
 	public:
 		User_input(void);
-		void move(int, int);
+		void move(int p_delta_ms, int p_mw_y, float p_scale_x = 1.0f, float p_scale_y = 1.0f);
 
 		bool is_shift_pressed(void) const;
 		bool is_ctrl_pressed(void) const;

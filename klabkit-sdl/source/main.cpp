@@ -9,6 +9,15 @@
 // #include "klib/file.h"
 // #include "klabkit/compression.h"
 
+void resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float& p_scale_x, float& p_scale_y) {
+	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
+	float l_scale_y = p_h / static_cast<float>(kkit::c::APP_H);
+	p_scale_x = l_scale_x;
+	p_scale_y = l_scale_y;
+
+	SDL_RenderSetScale(p_rnd, l_scale_x, l_scale_y);
+}
+
 int main(int argc, char* args[]) {
 
 	//auto v = klib::file::read_file_as_bytes("c:/users/kai/downloads/klabkit/songs.kzp");
@@ -19,6 +28,8 @@ int main(int argc, char* args[]) {
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
 
+	float scale_x{ 1.0f }, scale_y{ 1.0f };
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
 	}
@@ -26,7 +37,7 @@ int main(int argc, char* args[]) {
 		// Event handler
 		SDL_Event e;
 
-		l_window = SDL_CreateWindow(kkit::c::get_application_window_caption().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kkit::c::APP_W, kkit::c::APP_H, SDL_WINDOW_SHOWN);
+		l_window = SDL_CreateWindow(kkit::c::get_application_window_caption().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kkit::c::APP_W, kkit::c::APP_H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
 			std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
 		else {
@@ -82,11 +93,14 @@ int main(int argc, char* args[]) {
 						mw_used = true;
 						mouse_wheel_y = e.wheel.y;
 					}
+					else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
+						resize_window(l_rnd, e.window.data1, e.window.data2, scale_x, scale_y);
+					}
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
 
-					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0, scale_x, scale_y);
 					main_window.move(l_rnd, input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
