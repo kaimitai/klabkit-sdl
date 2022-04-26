@@ -131,6 +131,7 @@ namespace kkit {
 		bool selection_fits(void) const;
 		void show_selection_rectangle(void);
 		void clear_selection(kkit::Project& p_project);
+		void rotate_selection(bool p_clockwise = false);
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);
