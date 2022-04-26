@@ -26,6 +26,10 @@ namespace kkit {
 		std::string get_file_path(const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
 		std::string get_dat_file_name(const std::string& p_filename) const;
 
+		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
+		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
+		std::string get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
+
 	public:
 		Project(const std::string&);
 
@@ -73,6 +77,8 @@ namespace kkit {
 		// save and load
 		int save_boards_kzp(void) const;
 		int save_walls_kzp(void) const;
+		void save_wall_xml(int p_wall_no);
+		void save_board_xml(int p_board_no);
 	};
 
 }

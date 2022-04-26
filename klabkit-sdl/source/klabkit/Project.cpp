@@ -2,6 +2,7 @@
 #include "Project.h"
 #include "constants.h"
 #include "compression.h"
+#include "xml_handler.h"
 #include "./../klib/file.h"
 
 using byte = unsigned char;
@@ -24,6 +25,14 @@ int kkit::Project::save_walls_kzp(void) const {
 	auto l_walls_lzw_bytes = kkit::compression::compress_walls_kzp(this->get_wall_bytes());
 	klib::file::write_bytes_to_file(l_walls_lzw_bytes, get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP));
 	return static_cast<int>(l_walls_lzw_bytes.size());
+}
+
+void kkit::Project::save_wall_xml(int p_wall_no) {
+	xml::save_wall_xml(this->walls.at(p_wall_no), this->get_file_directory(c::FILE_EXT_XML, p_wall_no), this->get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no));
+}
+
+void kkit::Project::save_board_xml(int p_board_no) {
+	xml::save_board_xml(this->maps.at(p_board_no), this->get_file_directory(c::FILE_EXT_XML, p_board_no), this->get_file_name(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no));
 }
 
 // initializers
@@ -108,6 +117,28 @@ std::string  kkit::Project::get_file_path(const std::string& p_file_prefix, cons
 
 std::string kkit::Project::get_dat_file_name(const std::string& p_filename) const {
 	return project_folder + "/" + p_filename + ".DAT";
+}
+
+std::string kkit::Project::get_file_directory(const std::string& p_extension, int p_frame_no) const {
+	if (p_frame_no == -1)
+		return this->project_folder;
+	else
+		return this->project_folder + "/" + p_extension;
+}
+
+std::string kkit::Project::get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {
+	std::string l_frame = "";
+	if (p_frame_no != -1) {
+		l_frame = std::to_string(p_frame_no + 1);
+		while (l_frame.size() < 3)
+			l_frame.insert(begin(l_frame), '0');
+	}
+
+	return p_filename + "-" + l_frame + "." + p_extension;
+}
+
+std::string kkit::Project::get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {
+	return this->get_file_directory(p_extension, p_frame_no) + "/" + this->get_file_name(p_filename, p_extension, p_frame_no);
 }
 
 std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const {

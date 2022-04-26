@@ -31,6 +31,12 @@
     <Filter Include="Source Files\klabkit\windows">
       <UniqueIdentifier>{09a3baa7-5b28-4a3e-8e23-aa1070a4c2c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\pugixml">
+      <UniqueIdentifier>{409fbae2-37b3-494c-b4dd-447c5bae9b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pugixml">
+      <UniqueIdentifier>{e4556171-8d1c-4e49-a1de-4a6ac2ea88a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\klib\file.h">
@@ -92,6 +98,15 @@
     </ClInclude>
     <ClInclude Include="source\klabkit\Gfx_window.h">
       <Filter>Header Files\klabkit\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pugixml\pugiconfig.hpp">
+      <Filter>Header Files\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="source\pugixml\pugixml.hpp">
+      <Filter>Header Files\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\xml_handler.h">
+      <Filter>Header Files\klabkit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Gfx_window.cpp">
       <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="source\pugixml\pugixml.cpp">
+      <Filter>Source Files\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\xml_handler.cpp">
+      <Filter>Source Files\klabkit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

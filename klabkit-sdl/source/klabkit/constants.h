@@ -27,6 +27,7 @@ namespace kkit {
 		constexpr char FILE_EXT_DAT[]{ "DAT" };
 		constexpr char FILE_EXT_KZP[]{ "KZP" };
 		constexpr char FILE_EXT_BMP[]{ "bmp" };
+		constexpr char FILE_EXT_XML[]{ "xml" };
 
 		// palette constants
 		constexpr int TRANSP_PAL_INDEX{ 255 };
