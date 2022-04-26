@@ -237,8 +237,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		else
 			p_project.flip_horizontal(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
 	}
-	else if (p_input.is_pressed(SDL_SCANCODE_R))
-		this->rotate_selection(l_shift);
+	else if (p_input.is_pressed(SDL_SCANCODE_R)) {
+		this->rotate_selection(p_project, l_shift);
+		p_gfx.add_toast_ok("Clipboard rotated " + std::string(l_shift ? "clockwise" : "counter-clockwise"));
+	}
 }
 
 // internal calculations
@@ -513,10 +515,10 @@ void kkit::Board_window::clear_selection(kkit::Project& p_project) {
 			p_project.clear_tile(board_ind, i, j);
 }
 
-void kkit::Board_window::rotate_selection(bool p_clockwise) {
+void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p_clockwise) {
 	std::vector<std::vector<kkit::Map_tile>> result;
 
-	if (!p_clockwise) {
+	if (p_clockwise) {
 		for (int j{ static_cast<int>(clipboard[0].size()) - 1 }; j >= 0; --j) {
 			std::vector<kkit::Map_tile> l_row;
 			for (int i{ 0 }; i < clipboard.size(); ++i) {
@@ -529,7 +531,7 @@ void kkit::Board_window::rotate_selection(bool p_clockwise) {
 		for (int j{ 0 }; j < static_cast<int>(clipboard[0].size()); ++j) {
 			std::vector<kkit::Map_tile> l_row;
 			for (int i{ 0 }; i < clipboard.size(); ++i) {
-				l_row.push_back(clipboard[i][j]);
+				l_row.push_back(clipboard[static_cast<int>(clipboard.size()) - i - 1][j]);
 			}
 			result.push_back(l_row);
 		}
@@ -537,7 +539,8 @@ void kkit::Board_window::rotate_selection(bool p_clockwise) {
 
 	for (auto& l_col : result)
 		for (auto& l_tile : l_col)
-			l_tile.toggle_direction();
+			if (l_tile.get_tile_no() >= 0 && p_project.is_directional(l_tile.get_tile_no()))
+				l_tile.toggle_direction();
 
 	clipboard = result;
 }
