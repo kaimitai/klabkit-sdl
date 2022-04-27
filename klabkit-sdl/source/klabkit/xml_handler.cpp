@@ -4,6 +4,10 @@
 #include <filesystem>
 #include <vector>
 
+kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) {
+	return kkit::Project_config();
+}
+
 void kkit::xml::create_header(pugi::xml_document& p_doc) {
 	auto n_comments = p_doc.append_child(pugi::node_comment);
 	n_comments.set_value(XML_COMMENTS);

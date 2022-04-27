@@ -5,11 +5,16 @@
 #include "../pugixml/pugixml.hpp"
 #include "Board.h"
 #include "Wall.h"
+#include "Project_config.h"
 
 namespace kkit {
 
 	namespace xml {
 
+		// load XMLs
+		kkit::Project_config read_config_xml(const std::string& p_file_name);
+
+		// save XMLs
 		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename);
 		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename);
 
