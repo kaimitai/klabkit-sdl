@@ -97,18 +97,18 @@ namespace kkit {
 		void draw_selected_board_tile(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 
 		// handle clicks on the various screen elements
-		void click_tile_picker(int p_x, int p_y);
+		void click_tile_picker(const kkit::Project& p_project, int p_x, int p_y);
 		std::pair<int, int> get_tile_pos(int p_x, int p_y) const;
 		std::pair<int, int> get_pixel_pos(int p_x, int p_y) const;
 
 		kkit::Map_tile get_selected_tile(const kkit::Project& p_project, int p_tile_no) const;
-		int get_mouseover_tile_no(int p_x, int p_y) const;
-		int get_selected_tile_no(void) const;
+		int get_mouseover_tile_no(const kkit::Project& p_project, int p_x, int p_y) const;
+		int get_selected_tile_no(const kkit::Project& p_project) const;
 
 		// internal calculations
 		int c_max_offset(void) const;
 		int c_bb_pixel_width(void) const;
-		int c_tile_row_max(void) const;
+		int c_tile_row_max(const kkit::Project& p_project) const;
 
 		void move_grid_offset_x(int p_dx);
 		void move_grid_offset_y(int p_dy);

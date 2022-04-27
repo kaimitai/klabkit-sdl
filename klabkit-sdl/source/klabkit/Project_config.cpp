@@ -11,9 +11,9 @@ kkit::Project_config::Project_config(void) :
 	this->fill_tile_picker();
 }
 
-kkit::Project_config::Project_config(const std::string& p_label,
-	const std::string& p_folder, int p_bcount, int p_wcount, int p_lzw_ctype,
-	const std::vector<int>& p_tile_picker, const std::set<int>& p_clip_overrides) :
+kkit::Project_config::Project_config(const std::string& p_label, const std::string& p_folder,
+	int p_bcount, int p_wcount, int p_lzw_ctype,
+	const std::set<int>& p_clip_overrides, const std::vector<int>& p_tile_picker) :
 	project_folder{ p_folder },
 	label{ p_label },
 	board_count{ p_bcount },

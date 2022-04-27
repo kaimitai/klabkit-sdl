@@ -7,12 +7,10 @@
 
 using byte = unsigned char;
 
-kkit::Project::Project(const std::string& p_folder) : project_folder{ p_folder } {
+kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config } {
 	initialize_palette();
 	initialize_walls();
 	initialize_maps();
-
-	kkit::c::populate_tilemap(this->get_wall_image_count());
 }
 
 int kkit::Project::save_boards_kzp(void) const {
@@ -102,7 +100,7 @@ void kkit::Project::initialize_maps(void) {
 
 // utility functions
 std::string  kkit::Project::get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no) const {
-	std::string result{ this->project_folder };
+	std::string result{ config.project_folder };
 	if (!p_subfolder.empty())
 		result += "/" + p_subfolder;
 
@@ -116,14 +114,14 @@ std::string  kkit::Project::get_file_path(const std::string& p_file_prefix, cons
 }
 
 std::string kkit::Project::get_dat_file_name(const std::string& p_filename) const {
-	return project_folder + "/" + p_filename + ".DAT";
+	return config.project_folder + "/" + p_filename + ".DAT";
 }
 
 std::string kkit::Project::get_file_directory(const std::string& p_extension, int p_frame_no) const {
 	if (p_frame_no == -1)
-		return this->project_folder;
+		return this->config.project_folder;
 	else
-		return this->project_folder + "/" + p_extension;
+		return this->config.project_folder + "/" + p_extension;
 }
 
 std::string kkit::Project::get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {
@@ -150,7 +148,7 @@ int kkit::Project::get_board_count(void) const {
 }
 
 std::string kkit::Project::get_bmp_folder(void) const {
-	return project_folder + "/" + c::FILE_EXT_BMP;
+	return config.project_folder + "/" + c::FILE_EXT_BMP;
 }
 
 // getters
@@ -219,6 +217,14 @@ std::string kkit::Project::get_block_type_as_string(int p_tile_no) const {
 
 std::pair<int, int> kkit::Project::get_player_start_pos(int p_board_no) const {
 	return std::make_pair(maps.at(p_board_no).get_player_start_x(), maps.at(p_board_no).get_player_start_y());
+}
+
+const std::vector<int>& kkit::Project::get_tile_picker(void) const {
+	return this->config.tile_picker;
+}
+
+bool kkit::Project::is_clip_override(int p_tile_no) const {
+	return this->config.is_clip_override(p_tile_no);
 }
 
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {

@@ -7,11 +7,13 @@
 
 #include "Wall.h"
 #include "Board.h"
+#include "Project_config.h"
 
 namespace kkit {
 
 	class Project {
-		std::string project_folder;
+		Project_config config;
+
 		std::vector<Wall> walls;
 		std::vector<Board> maps;
 		std::vector<std::tuple<byte, byte, byte>> palette;
@@ -31,7 +33,7 @@ namespace kkit {
 		std::string get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
 
 	public:
-		Project(const std::string&);
+		Project(const kkit::Project_config& p_config);
 
 		// logical getters
 		std::vector<byte> get_board_bytes(void) const;
@@ -39,6 +41,8 @@ namespace kkit {
 		kkit::Map_tile gen_map_tile(int p_tile_no) const;
 		std::string get_block_type_as_string(int p_tile_no) const;
 		std::pair<int, int> get_player_start_pos(int p_board_no) const;
+		const std::vector<int>& get_tile_picker(void) const;
+		bool is_clip_override(int p_tile_no) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;

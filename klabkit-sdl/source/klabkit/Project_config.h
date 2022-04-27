@@ -4,7 +4,6 @@
 #include <set>
 #include <string>
 #include <vector>
-#include "Project.h"
 
 namespace kkit {
 
@@ -38,8 +37,8 @@ namespace kkit {
 		Project_config(const std::string& p_label,
 			const std::string& p_folder,
 			int p_bcount, int p_wcount, int p_lzw_ctype,
-			const std::vector<int>& p_tile_picker,
-			const std::set<int>& p_clip_overrides);
+			const std::set<int>& p_clip_overrides,
+			const std::vector<int>& p_tile_picker);
 
 		bool is_clip_override(int p_tile_no) const;
 	};

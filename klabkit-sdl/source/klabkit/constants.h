@@ -10,7 +10,6 @@ namespace kkit {
 
 	namespace c {
 
-		void populate_tilemap(int p_wall_count);
 		std::string get_application_window_caption(void);
 
 		// application constants
@@ -64,11 +63,6 @@ namespace kkit {
 		constexpr int MAP_BYTES_PER_TILE{ 2 };
 		constexpr int MAP_BYTES{ MAP_W * MAP_H * MAP_BYTES_PER_TILE };
 
-		// tiles grouped by type
-		// not really a constant
-		// TODO: Move this data to configuration XMLs
-		extern std::vector<int> TILES;
-		const std::set<int> CLIP_OVERRIDE{ 81,122,418,419 };
 	}
 }
 
