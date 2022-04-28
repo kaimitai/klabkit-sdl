@@ -271,6 +271,10 @@ void kkit::Project::reload_map_from_xml(int p_board_no) {
 	this->maps.at(p_board_no) = xml::load_board_xml(this->get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no));
 }
 
+void kkit::Project::reload_wall_from_xml(int p_wall_no) {
+	this->walls.at(p_wall_no) = xml::load_wall_xml(this->get_file_full_path(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no));
+}
+
 // wall tile attribute manipulators
 void kkit::Project::toggle_wt_type(int p_wall_no) {
 	walls.at(p_wall_no).toggle_type();
