@@ -25,6 +25,10 @@ namespace kkit {
 		// xml tags
 		constexpr char XML_TAG_META[]{ "kkit_sdl" };
 
+		constexpr char XML_TAG_CONFIG[]{ "config" };
+		constexpr char XML_TAG_CLIP_OVERRIDES[]{ "clip_overrides" };
+		constexpr char XML_TAG_TILE_PICKER[]{ "tile_picker" };
+
 		constexpr char XML_TAG_BOARD[]{ "board" };
 		constexpr char XML_TAG_ROW[]{ "row" };
 		constexpr char XML_TAG_TILE[]{ "tile" };
@@ -34,6 +38,12 @@ namespace kkit {
 
 		// xml attributes
 		constexpr char XML_ATTR_APP_V[]{ "app_version" };
+
+		constexpr char XML_ATTR_LABEL[]{ "label" };
+		constexpr char XML_ATTR_PROJ_DIR[]{ "project_directory" };
+		constexpr char XML_ATTR_BCOUNT[]{ "board_count" };
+		constexpr char XML_ATTR_WCOUNT[]{ "wall_count" };
+		constexpr char XML_ATTR_LZW_TYPE[]{ "lzw_header_type" };
 
 		constexpr char XML_ATTR_APP_PLAYER_X[]{ "player_start_x" };
 		constexpr char XML_ATTR_APP_PLAYER_Y[]{ "player_start_y" };

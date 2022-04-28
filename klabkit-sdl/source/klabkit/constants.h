@@ -2,9 +2,7 @@
 #define KLABKIT_CONSTANTS_H
 
 #include <array>
-#include <set>
 #include <string>
-#include <vector>
 
 namespace kkit {
 
@@ -17,6 +15,7 @@ namespace kkit {
 		constexpr char APP_VERSION[]{ "alpha 1" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
+		constexpr char CONF_FILE_NAME[]{"klabkit-sdl-config.xml"};
 
 		using byte = unsigned char;
 

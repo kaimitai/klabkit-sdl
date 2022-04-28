@@ -2,10 +2,46 @@
 #include "../klib/klib_util.h"
 #include "constants.h"
 #include <filesystem>
+#include <set>
 #include <vector>
 
 kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) {
-	return kkit::Project_config();
+
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::exception("Could not find configuration file");
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+	auto n_conf = n_meta.child(XML_TAG_CONFIG);
+
+	std::string l_label = n_conf.attribute(XML_ATTR_LABEL).as_string();
+	std::string l_proj_dir = n_conf.attribute(XML_ATTR_PROJ_DIR).as_string();
+	int l_bcount = n_conf.attribute(XML_ATTR_BCOUNT).as_int();
+	int l_wcount = n_conf.attribute(XML_ATTR_WCOUNT).as_int();
+	int l_lzw_type = n_conf.attribute(XML_ATTR_LZW_TYPE).as_int();
+
+	std::vector l_clip_overrides_v = klib::util::string_split<int>(n_conf.child(XML_TAG_CLIP_OVERRIDES).attribute(XML_ATTR_VALUE).as_string(), ',');
+	std::vector<int> l_tile_picker;
+
+	if (auto n_tp_node = n_conf.child(XML_TAG_TILE_PICKER)) {
+		for (auto n_tpr_node = n_tp_node.child(XML_TAG_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_ROW)) {
+			std::vector<int> l_tp_row = klib::util::string_split<int>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
+			for (int n : l_tp_row)
+				l_tile_picker.push_back(n - 1);
+			// add padding to the tile picker after each row
+			while (l_tile_picker.size() % 14 != 0)
+				l_tile_picker.push_back(-3);
+		}
+	}
+
+	std::set<int> l_clip_overrides;
+	for (int n : l_clip_overrides_v)
+		l_clip_overrides.insert(n - 1);
+
+
+	return kkit::Project_config(l_label, l_proj_dir, l_bcount, l_wcount, l_lzw_type,
+		l_clip_overrides,
+		l_tile_picker);
 }
 
 void kkit::xml::create_header(pugi::xml_document& p_doc) {
