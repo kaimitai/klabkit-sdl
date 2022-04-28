@@ -18,7 +18,7 @@ namespace kkit {
 		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename);
 		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename);
 
-		void create_header(pugi::xml_document& p_doc);
+		pugi::xml_node create_header(pugi::xml_document& p_doc);
 
 		constexpr char XML_COMMENTS[]{ "KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)" };
 
@@ -39,6 +39,8 @@ namespace kkit {
 		// xml attributes
 		constexpr char XML_ATTR_APP_V[]{ "app_version" };
 
+		constexpr char XML_ATTR_FTYPE[]{ "file_type" };
+
 		constexpr char XML_ATTR_LABEL[]{ "label" };
 		constexpr char XML_ATTR_PROJ_DIR[]{ "project_directory" };
 		constexpr char XML_ATTR_BCOUNT[]{ "board_count" };
@@ -57,6 +59,10 @@ namespace kkit {
 
 		constexpr char XML_ATTR_WALL_TYPE[]{ "wall_type" };
 		constexpr char XML_ATTR_VALUE[]{ "value" };
+
+		// XML constant values
+		constexpr char XML_VALUE_FTYPE_WALL[]{ "wall" };
+		constexpr char XML_VALUE_FTYPE_BOARD[]{ "board" };
 
 		constexpr char XML_VALUE_BLOCK[]{ "block" };
 		constexpr char XML_VALUE_PLANE[]{ "plane" };

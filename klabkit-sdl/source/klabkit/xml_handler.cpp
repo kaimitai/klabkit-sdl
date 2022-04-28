@@ -44,7 +44,7 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 		l_tile_picker);
 }
 
-void kkit::xml::create_header(pugi::xml_document& p_doc) {
+pugi::xml_node kkit::xml::create_header(pugi::xml_document& p_doc) {
 	auto n_comments = p_doc.append_child(pugi::node_comment);
 	n_comments.set_value(XML_COMMENTS);
 
@@ -52,6 +52,10 @@ void kkit::xml::create_header(pugi::xml_document& p_doc) {
 
 	n_metadata.append_attribute(XML_ATTR_APP_V);
 	n_metadata.attribute(XML_ATTR_APP_V).set_value(c::APP_VERSION);
+
+	n_metadata.append_attribute(XML_ATTR_FTYPE);
+
+	return n_metadata;
 }
 
 void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename) {
@@ -59,9 +63,10 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 	std::string l_full_file_path = p_directory + "/" + p_filename;
 
 	pugi::xml_document doc;
-	create_header(doc);
+	auto n_root = create_header(doc);
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_WALL);
 
-	auto n_wall = doc.append_child(XML_TAG_WALL);
+	auto n_wall = n_root.append_child(XML_TAG_WALL);
 	n_wall.append_attribute(XML_ATTR_WALL_TYPE);
 	n_wall.append_attribute(XML_ATTR_DESTRUCTIBLE);
 	n_wall.append_attribute(XML_ATTR_CLIP);
@@ -98,9 +103,10 @@ void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_
 	std::string l_full_file_path = p_directory + "/" + p_filename;
 
 	pugi::xml_document doc;
-	create_header(doc);
+	auto n_root = create_header(doc);
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_BOARD);
 
-	auto n_board = doc.append_child(XML_TAG_BOARD);
+	auto n_board = n_root.append_child(XML_TAG_BOARD);
 	n_board.append_attribute(XML_ATTR_APP_PLAYER_X);
 	n_board.append_attribute(XML_ATTR_APP_PLAYER_Y);
 	n_board.append_attribute(XML_ATTR_APP_PLAYER_DIR);
