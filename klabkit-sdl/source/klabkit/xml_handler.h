@@ -13,6 +13,7 @@ namespace kkit {
 
 		// load XMLs
 		kkit::Project_config read_config_xml(const std::string& p_file_name);
+		kkit::Wall load_wall_xml(const std::string& p_filename);
 
 		// save XMLs
 		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename);
@@ -64,7 +65,7 @@ namespace kkit {
 		constexpr char XML_VALUE_FTYPE_WALL[]{ "wall" };
 		constexpr char XML_VALUE_FTYPE_BOARD[]{ "board" };
 
-		constexpr char XML_VALUE_BLOCK[]{ "block" };
+		constexpr char XML_VALUE_CUBE[]{ "cube" };
 		constexpr char XML_VALUE_PLANE[]{ "plane" };
 		constexpr char XML_VALUE_DIRECTIONAL[]{ "directional" };
 		constexpr char XML_VALUE_TRUE[]{ "true" };

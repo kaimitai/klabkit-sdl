@@ -17,6 +17,8 @@ namespace kkit {
 
 	public:
 		Wall(const std::vector<byte>& p_bytes, byte p_flags);
+		Wall(const std::vector<std::vector<byte>>& p_image, kkit::Wall_type p_wall_type, bool p_blast, bool p_inside);
+
 		byte get_palette_index(int p_x, int p_y) const;
 
 		// getters

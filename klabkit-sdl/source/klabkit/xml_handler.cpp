@@ -5,8 +5,35 @@
 #include <set>
 #include <vector>
 
-kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) {
+using byte = unsigned char;
 
+kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::exception("Could not find wall xml");
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+	auto n_wall = n_meta.child(XML_TAG_WALL);
+
+	std::vector<std::vector<byte>> l_image;
+	bool l_blast = (strcmp(XML_VALUE_TRUE, n_wall.attribute(XML_ATTR_DESTRUCTIBLE).as_string()) == 0);
+	bool l_inside = (strcmp(XML_VALUE_TRUE, n_wall.attribute(XML_ATTR_CLIP).as_string()) == 0);
+	kkit::Wall_type l_wall_type{ kkit::Wall_type::Cube };
+	std::string ls_wall_type = n_wall.attribute(XML_ATTR_WALL_TYPE).as_string();
+	if (ls_wall_type == XML_VALUE_DIRECTIONAL)
+		l_wall_type = kkit::Wall_type::Direction;
+	else if (ls_wall_type == XML_VALUE_PLANE)
+		l_wall_type = kkit::Wall_type::Plane;
+
+	for (auto n_tpr_node = n_wall.child(XML_TAG_PIXEL_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_PIXEL_ROW)) {
+		std::vector<byte> l_tp_row = klib::util::string_split<byte>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
+		l_image.push_back(l_tp_row);
+	}
+
+	return kkit::Wall(l_image, l_wall_type, l_blast, l_inside);
+}
+
+kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_file_name.c_str()))
 		throw std::exception("Could not find configuration file");
@@ -73,7 +100,7 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 
 	auto l_wall_type = p_wall.get_wall_type();
 	if (l_wall_type == kkit::Wall_type::Cube)
-		n_wall.attribute(XML_ATTR_WALL_TYPE).set_value(XML_VALUE_BLOCK);
+		n_wall.attribute(XML_ATTR_WALL_TYPE).set_value(XML_VALUE_CUBE);
 	else if (l_wall_type == kkit::Wall_type::Plane)
 		n_wall.attribute(XML_ATTR_WALL_TYPE).set_value(XML_VALUE_PLANE);
 	else

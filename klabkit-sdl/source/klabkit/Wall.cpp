@@ -20,6 +20,10 @@ kkit::Wall::Wall(const std::vector<byte>& bytes, byte p_flags) {
 		image.push_back(std::vector<byte>(begin(bytes) + c::WALL_IMG_W * i, begin(bytes) + c::WALL_IMG_W * (i + 1)));
 }
 
+kkit::Wall::Wall(const std::vector<std::vector<byte>>& p_image, kkit::Wall_type p_wall_type, bool p_blast, bool p_inside) :
+	image{ p_image }, wall_type{ p_wall_type }, blast{ p_blast }, inside{ p_inside }
+{}
+
 byte kkit::Wall::get_palette_index(int p_x, int p_y) const {
 	return this->image.at(p_x).at(p_y);
 }
