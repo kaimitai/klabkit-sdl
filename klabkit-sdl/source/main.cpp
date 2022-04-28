@@ -1,14 +1,12 @@
 #include <iostream>
+#include "./klabkit/constants.h"
 #include "./klabkit/Project.h"
 #include "./klabkit/Project_gfx.h"
 #include "./klabkit/Project_config.h"
-#include "./klabkit/constants.h"
-#include "klabkit/Main_window.h"
-#include "klib/User_input.h"
-
-// #include "klib/file.h"
-// #include "klabkit/compression.h"
-#include "klabkit/xml_handler.h"
+#include "./klabkit/kkit_gfx.h"
+#include "./klabkit/xml_handler.h"
+#include "./klabkit/Main_window.h"
+#include "./klib/User_input.h"
 
 float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
 	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
@@ -57,7 +55,11 @@ int main(int argc, char* args[]) {
 
 			// load resources
 			kkit::Project project(kkit::xml::read_config_xml("kkit-sdl-config.xml"));
+			kkit::gfx::set_application_icon(l_window, project);
 			kkit::Project_gfx p_gfx(l_rnd, project);
+
+			//kkit::Wall icon = kkit::xml::load_wall_xml("C:\\Users\\kfrol\\Downloads\\klabkit\\xml\\WALLS-170.xml");
+			//klib::file::write_bytes_to_file(kkit::compression::compress_lzw_block(icon.get_image_bytes()), "icon.lzw");
 
 			// main window object to handle all logic and drawing
 			kkit::Main_window main_window(l_rnd);

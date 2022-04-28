@@ -85,6 +85,17 @@ std::vector<std::vector<byte>> kkit::gfx::load_bmp(const palette& p_palette, con
 	return result;
 }
 
+void kkit::gfx::set_application_icon(SDL_Window* p_window, const kkit::Project& p_project) {
+	auto icon_image { flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_ICON), end(LZW_BYTES_ICON)))) };
+	auto l_palette = p_project.get_palette();
+	SDL_Surface* l_icon_srf = image_to_sdl_surface(icon_image, l_palette);
+
+	SDL_SetColorKey(l_icon_srf, true, SDL_MapRGB(l_icon_srf->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
+	SDL_SetWindowIcon(p_window, l_icon_srf);
+
+	SDL_FreeSurface(l_icon_srf);
+}
+
 std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
 	std::vector<SDL_Texture*> result;
 
