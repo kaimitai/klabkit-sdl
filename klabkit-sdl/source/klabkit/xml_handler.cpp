@@ -1,11 +1,46 @@
-#include "xml_handler.h"
-#include "../klib/klib_util.h"
 #include "constants.h"
+#include "xml_handler.h"
+#include "Map_tile.h"
+#include "../klib/klib_util.h"
 #include <filesystem>
 #include <set>
 #include <vector>
 
 using byte = unsigned char;
+
+kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::exception("Could not find board xml");
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+	auto n_board = n_meta.child(XML_TAG_BOARD);
+
+	int l_player_start_x = n_board.attribute(XML_ATTR_PLAYER_X).as_int();
+	int l_player_start_y = n_board.attribute(XML_ATTR_PLAYER_Y).as_int();
+	kkit::Player_direction l_player_dir = kkit::Board::get_player_direction_from_string(n_board.attribute(XML_ATTR_PLAYER_DIR).as_string());
+
+	std::vector<std::vector<kkit::Map_tile>> l_board(c::MAP_W, std::vector<kkit::Map_tile>(c::MAP_H, kkit::Map_tile()));
+	std::size_t x{ 0 }, y{ 0 };
+
+	for (auto n_br_node = n_board.child(XML_TAG_ROW); n_br_node; n_br_node = n_br_node.next_sibling(XML_TAG_ROW)) {
+
+		for (auto n_bc_node = n_br_node.child(XML_TAG_TILE); n_bc_node; n_bc_node = n_bc_node.next_sibling(XML_TAG_TILE)) {
+			int l_tile_no = n_bc_node.attribute(XML_ATTR_WALL_NO).as_int() - 1;
+			bool l_blast = (strcmp(n_bc_node.attribute(XML_ATTR_DESTRUCTIBLE).as_string(), XML_VALUE_TRUE) == 0);
+			bool l_inside = (strcmp(n_bc_node.attribute(XML_ATTR_CLIP).as_string(), XML_VALUE_TRUE) == 0);
+			bool l_vertical = (strcmp(n_bc_node.attribute(XML_ATTR_VERTICAL).as_string(), XML_VALUE_TRUE) == 0);
+
+			l_board[y][x] = kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical);
+			++y;
+		}
+
+		++x;
+		y = 0;
+	}
+
+	return kkit::Board(l_board, l_player_start_x, l_player_start_y, l_player_dir);
+}
 
 kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
@@ -134,12 +169,12 @@ void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_
 	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_BOARD);
 
 	auto n_board = n_root.append_child(XML_TAG_BOARD);
-	n_board.append_attribute(XML_ATTR_APP_PLAYER_X);
-	n_board.append_attribute(XML_ATTR_APP_PLAYER_Y);
-	n_board.append_attribute(XML_ATTR_APP_PLAYER_DIR);
-	n_board.attribute(XML_ATTR_APP_PLAYER_X).set_value(p_board.get_player_start_x());
-	n_board.attribute(XML_ATTR_APP_PLAYER_Y).set_value(p_board.get_player_start_y());
-	n_board.attribute(XML_ATTR_APP_PLAYER_DIR).set_value(p_board.get_player_direction_as_string().c_str());
+	n_board.append_attribute(XML_ATTR_PLAYER_X);
+	n_board.append_attribute(XML_ATTR_PLAYER_Y);
+	n_board.append_attribute(XML_ATTR_PLAYER_DIR);
+	n_board.attribute(XML_ATTR_PLAYER_X).set_value(p_board.get_player_start_x());
+	n_board.attribute(XML_ATTR_PLAYER_Y).set_value(p_board.get_player_start_y());
+	n_board.attribute(XML_ATTR_PLAYER_DIR).set_value(p_board.get_player_direction_as_string().c_str());
 
 	for (int y{ 0 }; y < c::MAP_H; ++y) {
 

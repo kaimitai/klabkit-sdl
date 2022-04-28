@@ -72,6 +72,9 @@ namespace kkit {
 		void flip_vertical(int p_board_no, int p_x, int p_y, int p_w, int p_h);
 		void flip_horizontal(int p_board_no, int p_x, int p_y, int p_w, int p_h);
 
+		// map
+		void reload_map_from_xml(int p_board_no);
+
 		// wall tile metadata
 		void toggle_wt_type(int p_wall_no);
 		void toggle_wt_blast(int p_wall_no);

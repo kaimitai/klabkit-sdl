@@ -13,7 +13,8 @@ namespace kkit {
 
 		// load XMLs
 		kkit::Project_config read_config_xml(const std::string& p_file_name);
-		kkit::Wall load_wall_xml(const std::string& p_filename);
+		kkit::Wall load_wall_xml(const std::string& p_file_name);
+		kkit::Board load_board_xml(const std::string& p_file_name);
 
 		// save XMLs
 		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename);
@@ -48,9 +49,9 @@ namespace kkit {
 		constexpr char XML_ATTR_WCOUNT[]{ "wall_count" };
 		constexpr char XML_ATTR_LZW_TYPE[]{ "lzw_header_type" };
 
-		constexpr char XML_ATTR_APP_PLAYER_X[]{ "player_start_x" };
-		constexpr char XML_ATTR_APP_PLAYER_Y[]{ "player_start_y" };
-		constexpr char XML_ATTR_APP_PLAYER_DIR[]{ "player_start_direction" };
+		constexpr char XML_ATTR_PLAYER_X[]{ "player_start_x" };
+		constexpr char XML_ATTR_PLAYER_Y[]{ "player_start_y" };
+		constexpr char XML_ATTR_PLAYER_DIR[]{ "player_start_direction" };
 
 		constexpr char XML_ATTR_NO[]{ "no" };
 		constexpr char XML_ATTR_WALL_NO[]{ "wall_no" };
@@ -70,6 +71,7 @@ namespace kkit {
 		constexpr char XML_VALUE_DIRECTIONAL[]{ "directional" };
 		constexpr char XML_VALUE_TRUE[]{ "true" };
 		constexpr char XML_VALUE_FALSE[]{ "false" };
+
 	}
 
 }

@@ -7,6 +7,11 @@
 
 namespace kkit {
 
+	constexpr char PLAYER_DIR_UP[]{ "n" };
+	constexpr char PLAYER_DIR_RIGHT[]{ "e" };
+	constexpr char PLAYER_DIR_DOWN[]{ "s" };
+	constexpr char PLAYER_DIR_LEFT[]{ "w" };
+
 	using byte = unsigned char;
 
 	enum class Player_direction { Up, Down, Left, Right };
@@ -19,6 +24,7 @@ namespace kkit {
 
 	public:
 		Board(const std::vector<byte>& p_bytes);
+		Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int p_player_x, int p_player_y, kkit::Player_direction p_player_dir);
 
 		// getters
 		int get_tile_no(int p_x, int p_y) const;
@@ -49,6 +55,9 @@ namespace kkit {
 		// flip a given sub-rectangle of the level
 		void flip_vertical(int p_x, int p_y, int p_w, int p_h);
 		void flip_horizontal(int p_x, int p_y, int p_w, int p_h);
+
+		// static functions
+		static kkit::Player_direction get_player_direction_from_string(const std::string& p_dir);
 	};
 
 }

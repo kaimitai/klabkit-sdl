@@ -53,6 +53,10 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 	}
 }
 
+kkit::Board::Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int p_player_x, int p_player_y, kkit::Player_direction p_player_dir) :
+	tiles{ p_tiles }, player_x{ p_player_x }, player_y{ p_player_y }, player_direction{ p_player_dir }
+{ }
+
 bool kkit::Board::is_empty_tile(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).empty();
 }
@@ -91,15 +95,14 @@ bool  kkit::Board::is_start_tile(int p_x, int p_y) const {
 
 std::string kkit::Board::get_player_direction_as_string(void) const {
 	if (this->player_direction == kkit::Player_direction::Up)
-		return "Up";
+		return PLAYER_DIR_UP;
 	else if (this->player_direction == kkit::Player_direction::Right)
-		return "Right";
+		return PLAYER_DIR_RIGHT;
 	if (this->player_direction == kkit::Player_direction::Down)
-		return "Down";
+		return PLAYER_DIR_DOWN;
 	else
-		return "Left";
+		return PLAYER_DIR_LEFT;
 }
-
 
 std::vector<byte> kkit::Board::get_bytes(void) const {
 	std::vector<byte> result;
@@ -218,4 +221,16 @@ void kkit::Board::flip_horizontal(int p_x, int p_y, int p_w, int p_h) {
 		}
 
 	this->set_player_start_position(l_px, l_py, l_dir);
+}
+
+// static functions
+kkit::Player_direction kkit::Board::get_player_direction_from_string(const std::string& p_dir) {
+	if (p_dir == PLAYER_DIR_DOWN)
+		return kkit::Player_direction::Down;
+	else if (p_dir == PLAYER_DIR_RIGHT)
+		return kkit::Player_direction::Right;
+	else if (p_dir == PLAYER_DIR_LEFT)
+		return kkit::Player_direction::Left;
+	else
+		return kkit::Player_direction::Up;
 }
