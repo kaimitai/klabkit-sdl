@@ -28,10 +28,6 @@ namespace kkit {
 		std::string get_file_path(const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
 		std::string get_dat_file_name(const std::string& p_filename) const;
 
-		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
-		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
-		std::string get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
-
 	public:
 		Project(const kkit::Project_config& p_config);
 
@@ -43,6 +39,10 @@ namespace kkit {
 		std::pair<int, int> get_player_start_pos(int p_board_no) const;
 		const std::vector<int>& get_tile_picker(void) const;
 		bool is_clip_override(int p_tile_no) const;
+
+		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
+		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
+		std::string get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
 
 		// getters
 		std::string get_bmp_folder(void) const;

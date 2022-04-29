@@ -1,5 +1,6 @@
 #include "Gfx_window.h"
 #include "kkit_gfx.h"
+#include "xml_handler.h"
 #include "./../klib/gfx.h"
 #include "./../klib/klib_util.h"
 
@@ -10,6 +11,8 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 
 	buttons.push_back(klib::Button("Exp BMP", GW_BMP_X, GW_BMP_Y, GW_BMP_W));
 	buttons.push_back(klib::Button("Imp BMP", GW_AB_X + GW_AB_W - GW_BMP_W, GW_BMP_Y, GW_BMP_W));
+	buttons.push_back(klib::Button("Exp XML", GW_BMP_X, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
+	buttons.push_back(klib::Button("Imp XML", GW_AB_X + GW_AB_W - GW_BMP_W, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
 
 }
 
@@ -19,7 +22,16 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 	if (p_input.mouse_clicked()) {
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
-				this->button_click(p_rnd, i, p_project, p_gfx);
+				try {
+					this->button_click(p_rnd, i, p_project, p_gfx);
+				}
+				catch (const std::exception& ex) {
+					p_gfx.add_toast_error(ex.what());
+				}
+				catch (...) {
+					p_gfx.add_toast_error("Unknown error occurred");
+				}
+
 				return;
 			}
 	}
@@ -81,7 +93,7 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 
 	// draw selected tile
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(),
-		"Tile #" + std::to_string(l_selected_tile_no),
+		"Tile #" + std::to_string(l_selected_tile_no + 1),
 		GW_SX - 1, GW_SY - (1 + klib::gc::BUTTON_H), GW_SW + 2, GW_SH + 4 + klib::gc::BUTTON_H);
 	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_selected_tile_no),
 		GW_SX, GW_SY, 2);
@@ -126,17 +138,22 @@ void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no
 	}
 	else if (p_button_no == 4) {
 		auto l_in_file = p_project.get_bmp_file_path(c::FILE_WALLS, l_tile_no);
-		try {
-			auto l_img = kkit::gfx::load_bmp(p_project.get_palette(), l_in_file);
-			p_project.set_wall_image(l_tile_no, l_img);
-			p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
-			p_gfx.add_toast_ok("Loaded " + l_in_file);
-		}
-		catch (const std::exception& ex) {
-			p_gfx.add_toast_error("Error: " + std::string(ex.what()));
-		}
-		catch (...) {
-			p_gfx.add_toast_error("Unknown error occurred");
-		}
+		auto l_img = kkit::gfx::load_bmp(p_project.get_palette(), l_in_file);
+		p_project.set_wall_image(l_tile_no, l_img);
+		p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
+		p_gfx.add_toast_ok("Loaded " + l_in_file);
+	}
+	// export XML
+	else if (p_button_no == 5) {
+		auto l_dir = p_project.get_file_directory(c::FILE_EXT_XML, l_tile_no);
+		auto l_file = p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, l_tile_no);
+		kkit::xml::save_wall_xml(p_project.get_wall(this->get_selected_tile_no()), l_dir, l_file);
+		p_gfx.add_toast_ok("Wall tile saved to " + l_file);
+	}
+	// import xml
+	else if (p_button_no == 6) {
+		p_project.reload_wall_from_xml(l_tile_no);
+		p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
+		p_gfx.add_toast_ok("Loaded " + p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, l_tile_no));
 	}
 }

@@ -35,9 +35,9 @@ namespace kkit {
 
 	// bmp imp/exp buttons
 	constexpr int GW_BMP_X{ GW_SX };
-	constexpr int GW_BMP_Y{ GW_AB_Y + 4 * GW_AB_H };
+	constexpr int GW_BMP_Y{ GW_AB_Y + 5 * GW_AB_H };
 	constexpr int GW_BMP_W{ GW_SW / 2 - 10 };
-	constexpr int GW_BMP_H{ GW_SH };
+	constexpr int GW_BMP_H{ GW_AB_H };
 
 	class Gfx_window {
 		int tile_row, tile_x, tile_y;

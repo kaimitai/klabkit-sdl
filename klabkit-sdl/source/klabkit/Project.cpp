@@ -140,7 +140,7 @@ std::string kkit::Project::get_file_full_path(const std::string& p_filename, con
 }
 
 std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const {
-	return get_file_path(c::FILE_EXT_BMP, p_file_prefix, c::FILE_EXT_BMP, p_frame_no);
+	return get_file_full_path(c::FILE_WALLS, c::FILE_EXT_BMP, p_frame_no);
 }
 
 int kkit::Project::get_board_count(void) const {

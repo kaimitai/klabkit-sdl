@@ -32,7 +32,7 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kli
 	bool l_is_start_tile = p_project.get_board(board_ind).is_start_tile(sel_tile_x, sel_tile_y);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(),
-		"tile @ (" + std::to_string(sel_tile_x) + "," + std::to_string(sel_tile_y) + "): " + (l_sel_tile_no == -1 ? (l_is_start_tile ? "Start" : "None") : "#" + std::to_string(l_sel_tile_no)),
+		"tile @ (" + std::to_string(sel_tile_x) + "," + std::to_string(sel_tile_y) + "): " + (l_sel_tile_no == -1 ? (l_is_start_tile ? "Start" : "None") : "#" + std::to_string(l_sel_tile_no + 1)),
 		BW_SBTX - 1, BW_SBTY - klib::gc::BUTTON_H - 1, BW_SBTW + 2, BW_SBTH + 4 + klib::gc::BUTTON_H);
 
 	klib::gfx::draw_rect(p_rnd, BW_SBTX, BW_SBTY, 128, 128, BG_COLOR, 0);
@@ -400,7 +400,7 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 	if (l_tile_no >= 0) {
 		bool l_clip = p_project.is_inside(l_tile_no);
 		bool l_blast = p_project.is_blast(l_tile_no);
-		l_tile_md = std::to_string(l_tile_no) + ":" + (l_blast ? "Destruct" : "Nodestruct") + "," + (l_clip ? "Clip" : "Noclip") + "," + p_project.get_block_type_as_string(l_tile_no);
+		l_tile_md = std::to_string(l_tile_no + 1) + ":" + (l_blast ? "Destruct" : "Nodestruct") + "," + (l_clip ? "Clip" : "Noclip") + "," + p_project.get_block_type_as_string(l_tile_no);
 	}
 	else if (l_tile_no == -1)
 		l_tile_md = "Empty tile";
