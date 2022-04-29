@@ -84,10 +84,10 @@ namespace kkit {
 		void set_wall_image(int p_wall_no, const std::vector<std::vector<byte>>& p_bytes);
 
 		// save and load
-		int save_boards_kzp(void) const;
-		int save_walls_kzp(void) const;
-		void save_wall_xml(int p_wall_no);
-		void save_board_xml(int p_board_no);
+		int save_boards_kzp(bool p_compress = true) const;
+		int save_walls_kzp(bool p_compress = true) const;
+		void save_wall_xml(int p_wall_no) const;
+		void save_board_xml(int p_board_no) const;
 	};
 
 }

@@ -14,6 +14,8 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 	buttons.push_back(klib::Button("Exp XML", GW_BMP_X, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
 	buttons.push_back(klib::Button("Imp XML", GW_AB_X + GW_AB_W - GW_BMP_W, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
 
+	buttons.push_back(klib::Button("Save KZP", GW_SAV_X, GW_SAV_Y, GW_SAV_W));
+	buttons.push_back(klib::Button("Save DAT", GW_SAV_X, GW_SAV_Y + GW_SAV_H + GW_AB_SPACING, GW_SAV_W));
 }
 
 void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
@@ -51,12 +53,9 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 			tile_y = l_y + tile_row;
 		}
 	}
+	// save kzp
 	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S)) {
-		int l_bytes = p_project.save_walls_kzp();
-		int l_wall_count(p_project.get_wall_image_count());
-		int l_original_bytes = 1024 + l_wall_count * 64 * 64;
-		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " tiles saved to KZP (" +
-			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+		this->button_click(p_rnd, 7, p_project, p_gfx);
 	}
 }
 
@@ -155,5 +154,21 @@ void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no
 		p_project.reload_wall_from_xml(l_tile_no);
 		p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
 		p_gfx.add_toast_ok("Loaded " + p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, l_tile_no));
+	}
+	// save kzp
+	else if (p_button_no == 7) {
+		int l_bytes = p_project.save_walls_kzp();
+		int l_wall_count(p_project.get_wall_image_count());
+		int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " wall tiles saved to KZP (" +
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+	}
+	// save dat
+	else if (p_button_no == 8) {
+		int l_bytes = p_project.save_walls_kzp(false);
+		int l_wall_count(p_project.get_wall_image_count());
+		int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " wall tiles saved to DAT (" +
+			std::to_string(l_bytes) + " bytes)");
 	}
 }

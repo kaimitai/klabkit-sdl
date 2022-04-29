@@ -13,23 +13,23 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 	initialize_maps();
 }
 
-int kkit::Project::save_boards_kzp(void) const {
-	auto l_board_lzw_bytes = kkit::compression::compress_boards_kzp(this->get_board_bytes());
-	klib::file::write_bytes_to_file(l_board_lzw_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP));
-	return static_cast<int>(l_board_lzw_bytes.size());
+int kkit::Project::save_boards_kzp(bool p_compress) const {
+	auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes()) : this->get_board_bytes());
+	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+	return static_cast<int>(l_bytes.size());
 }
 
-int kkit::Project::save_walls_kzp(void) const {
-	auto l_walls_lzw_bytes = kkit::compression::compress_walls_kzp(this->get_wall_bytes());
-	klib::file::write_bytes_to_file(l_walls_lzw_bytes, get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP));
-	return static_cast<int>(l_walls_lzw_bytes.size());
+int kkit::Project::save_walls_kzp(bool p_compress) const {
+	auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes()) : this->get_wall_bytes());
+	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+	return static_cast<int>(l_bytes.size());
 }
 
-void kkit::Project::save_wall_xml(int p_wall_no) {
+void kkit::Project::save_wall_xml(int p_wall_no) const {
 	xml::save_wall_xml(this->walls.at(p_wall_no), this->get_file_directory(c::FILE_EXT_XML, p_wall_no), this->get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no));
 }
 
-void kkit::Project::save_board_xml(int p_board_no) {
+void kkit::Project::save_board_xml(int p_board_no) const {
 	xml::save_board_xml(this->maps.at(p_board_no), this->get_file_directory(c::FILE_EXT_XML, p_board_no), this->get_file_name(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no));
 }
 

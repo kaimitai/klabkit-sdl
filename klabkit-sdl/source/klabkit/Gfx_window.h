@@ -39,6 +39,12 @@ namespace kkit {
 	constexpr int GW_BMP_W{ GW_SW / 2 - 10 };
 	constexpr int GW_BMP_H{ GW_AB_H };
 
+	// save kzp/dat
+	constexpr int GW_SAV_X{ GW_SX };
+	constexpr int GW_SAV_Y{ GW_BMP_Y + 5 * GW_AB_H };
+	constexpr int GW_SAV_W{ GW_SW};
+	constexpr int GW_SAV_H{ GW_AB_H };
+
 	class Gfx_window {
 		int tile_row, tile_x, tile_y;
 		std::vector<klib::Button> buttons;
