@@ -3,17 +3,17 @@
 
 using byte = unsigned char;
 
-std::vector<byte> kkit::compression::decompress_walls_kzp(const std::vector<byte>& p_bytes) {
+std::vector<byte> kkit::compression::decompress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count) {
 	// the compressed files containt no metadata, so the number of blocks need to be known in advance
 	// for walls.kzp - the image metadata header makes it even more difficult
 	// each image consists of one compressed block
-	return decompress_file_contents(p_bytes, 448, 448, 1024);
+	return decompress_file_contents(p_bytes, p_wall_count, p_wall_count, 1024);
 }
 
-std::vector<byte> kkit::compression::decompress_boards_kzp(const std::vector<byte>& p_bytes) {
+std::vector<byte> kkit::compression::decompress_boards_kzp(const std::vector<byte>& p_bytes, int p_board_count) {
 	// the compressed files containt no metadata, so the number of blocks need to be known in advance
 	// each board is divided into two compressed blocks
-	return decompress_file_contents(p_bytes, 30 * 2);
+	return decompress_file_contents(p_bytes, p_board_count * 2);
 }
 
 std::vector<byte> kkit::compression::decompress_story_kzp(const std::vector<byte>& p_bytes) {

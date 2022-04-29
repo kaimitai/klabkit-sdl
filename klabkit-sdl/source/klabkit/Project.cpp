@@ -52,7 +52,7 @@ void kkit::Project::initialize_walls(void) {
 		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	}
 	catch (std::exception& ex) {
-		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)));
+		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count);
 	}
 
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
@@ -70,7 +70,7 @@ void kkit::Project::initialize_maps(void) {
 	}
 	catch (const std::exception& ex) {
 		//map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path("BOARDS_orig", c::FILE_EXT_KZP)));
-		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)));
+		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)), config.board_count);
 	}
 
 	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
