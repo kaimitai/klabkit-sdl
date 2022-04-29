@@ -39,6 +39,7 @@ namespace kkit {
 		std::pair<int, int> get_player_start_pos(int p_board_no) const;
 		const std::vector<int>& get_tile_picker(void) const;
 		bool is_clip_override(int p_tile_no) const;
+		int get_tile_picker_index(int p_tile_no) const;
 
 		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
 		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;

@@ -211,6 +211,17 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		sel_tile_x = l_tcoords.first;
 		sel_tile_y = l_tcoords.second;
 		sel_tile_2_x = -1;	// clear selection
+
+		if (l_ctrl) {
+			int l_sel_tile_no = p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
+			int l_index = p_project.get_tile_picker_index(l_sel_tile_no);
+
+			if (l_index >= 0) {
+				this->tile_x = l_index % 14; // TODO: Replace with constants
+				this->tile_y = l_index / 14;
+			}
+		}
+
 	}
 	else if (mouse_over_board_grid && p_input.mouse_held(true) && l_shift) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);

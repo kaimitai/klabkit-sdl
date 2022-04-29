@@ -227,6 +227,13 @@ bool kkit::Project::is_clip_override(int p_tile_no) const {
 	return this->config.is_clip_override(p_tile_no);
 }
 
+int kkit::Project::get_tile_picker_index(int p_tile_no) const {
+	for (std::size_t i{ 0 }; i < config.tile_picker.size(); ++i)
+		if (config.tile_picker[i] == p_tile_no)
+			return static_cast<int>(i);
+	return -1;
+}
+
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
 	maps[p_board_no].clear_tile(p_x, p_y);
 }
