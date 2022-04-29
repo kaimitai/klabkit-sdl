@@ -33,6 +33,7 @@ namespace kkit {
 		std::vector<SDL_Color> tuple_to_sdl_palette(const palette&);
 		void bmp_to_lzw_file(const palette& p_palette, const std::string& p_out_file);
 		std::vector<std::vector<byte>> flat_image_to_2d(const std::vector<byte>& p_input);
+		SDL_Color get_pulse_color(int p_color_no, int p_frame_no);
 
 		// constant graphics
 		// using lzw-compression to save space ;)

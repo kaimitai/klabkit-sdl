@@ -5,6 +5,8 @@
 #include "./../klib/klib_util.h"
 
 kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
+	// pulse color timer
+	timers.push_back(klib::Timer(256, 5));
 
 	for (int i{ 0 }; i < 3; ++i)
 		buttons.push_back(klib::Button("", GW_AB_X, GW_AB_Y + i * GW_AB_H + (i + 1) * GW_AB_SPACING, GW_AB_W, GW_AB_H));
@@ -20,6 +22,9 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 
 void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_ctrl = p_input.is_ctrl_pressed();
+
+	for (auto& timer : timers)
+		timer.move(p_delta_ms);
 
 	if (p_input.mouse_clicked()) {
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
@@ -94,13 +99,19 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(),
 		"Tile #" + std::to_string(l_selected_tile_no + 1),
 		GW_SX - 1, GW_SY - (1 + klib::gc::BUTTON_H), GW_SW + 2, GW_SH + 4 + klib::gc::BUTTON_H);
+
+	klib::gfx::draw_rect(p_rnd, GW_SX, GW_SY, GW_SW, GW_SH,
+		kkit::gfx::get_pulse_color(2, timers[0].get_frame()),
+		0);
+
 	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_selected_tile_no),
 		GW_SX, GW_SY, 2);
 
 	if (tile_y >= tile_row && tile_y < tile_row + GW_TTPC) {
 		int l_rel_y = tile_y - tile_row;
 		klib::gfx::draw_rect(p_rnd, GW_TX + tile_x * c::WALL_IMG_W, GW_TY + l_rel_y * c::WALL_IMG_H, c::WALL_IMG_W, c::WALL_IMG_H,
-			klib::gc::COL_YELLOW, 3);
+			kkit::gfx::get_pulse_color(0, timers[0].get_frame()),
+			3);
 	}
 }
 

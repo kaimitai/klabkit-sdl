@@ -86,7 +86,7 @@ std::vector<std::vector<byte>> kkit::gfx::load_bmp(const palette& p_palette, con
 }
 
 void kkit::gfx::set_application_icon(SDL_Window* p_window, const kkit::Project& p_project) {
-	auto icon_image { flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_ICON), end(LZW_BYTES_ICON)))) };
+	auto icon_image{ flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_ICON), end(LZW_BYTES_ICON)))) };
 	auto l_palette = p_project.get_palette();
 	SDL_Surface* l_icon_srf = image_to_sdl_surface(icon_image, l_palette);
 
@@ -161,6 +161,21 @@ std::vector<std::vector<byte>> kkit::gfx::flat_image_to_2d(const std::vector<byt
 		result.push_back(std::vector<byte>(begin(p_input) + 64 * i, begin(p_input) + 64 * (i + 1)));
 
 	return result;
+}
+
+SDL_Color kkit::gfx::get_pulse_color(int p_color_no, int p_frame_no) {
+	int l_frame_no = (p_frame_no >= 128 ? 256 - p_frame_no : p_frame_no);
+
+	if (p_color_no == 0)
+		return SDL_Color(255 - l_frame_no, 255 - l_frame_no / 2, 0);
+	else if (p_color_no == 1)
+		return SDL_Color(255 - l_frame_no / 2, 255 - l_frame_no / 2, 255 - l_frame_no / 2);
+	else if (p_color_no == 2)
+		return SDL_Color(255 - l_frame_no, 255 - l_frame_no / 2, 255 - l_frame_no / 3);
+	else if (p_color_no == 3)
+		return SDL_Color(l_frame_no / 4, l_frame_no / 4, 255 - l_frame_no / 2);
+	else
+		return SDL_Color(l_frame_no / 4, l_frame_no / 4, l_frame_no / 4);
 }
 
 bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path) {

@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "./../klib/User_input.h"
 #include "./../klib/Button.h"
+#include "./../klib/Timer.h"
 
 namespace kkit {
 
@@ -48,6 +49,7 @@ namespace kkit {
 	class Gfx_window {
 		int tile_row, tile_x, tile_y;
 		std::vector<klib::Button> buttons;
+		std::vector<klib::Timer> timers;
 
 		int get_selected_tile_no(void) const;
 		int c_max_tile_row(int p_total_tile_count) const;

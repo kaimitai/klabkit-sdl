@@ -5,10 +5,15 @@
 #include "./../klib/file.h"
 #include "./../klib/klib_util.h"
 #include "./../klib/gfx.h"
+#include "kkit_gfx.h"
 
 kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool>(4, false)) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
+	
+	// tile flash timer
 	timers.push_back(klib::Timer(70, 10, true));
+	// pulsating color timer
+	timers.push_back(klib::Timer(256, 5));
 
 	// board tile metadata toggle buttons
 
@@ -35,7 +40,9 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kli
 		"tile @ (" + std::to_string(sel_tile_x) + "," + std::to_string(sel_tile_y) + "): " + (l_sel_tile_no == -1 ? (l_is_start_tile ? "Start" : "None") : "#" + std::to_string(l_sel_tile_no + 1)),
 		BW_SBTX - 1, BW_SBTY - klib::gc::BUTTON_H - 1, BW_SBTW + 2, BW_SBTH + 4 + klib::gc::BUTTON_H);
 
-	klib::gfx::draw_rect(p_rnd, BW_SBTX, BW_SBTY, 128, 128, BG_COLOR, 0);
+	klib::gfx::draw_rect(p_rnd, BW_SBTX, BW_SBTY, 128, 128,
+		kkit::gfx::get_pulse_color(2, timers[1].get_frame()),
+		0);
 
 	if (l_sel_tile_no >= 0) {
 		klib::gfx::blit_full_spec(p_rnd, p_gfx.get_tile_texture(l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
@@ -358,7 +365,9 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(l_pstart_sprite_no), l_px, l_py, l_shrink_factor);
 
 	// draw selected tile
-	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64, SDL_Color{ 255,255,0 }, 4);
+	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64,
+		kkit::gfx::get_pulse_color(0, timers[1].get_frame()),
+		4);
 
 	// draw full selection
 	if (sel_tile_2_x >= 0)
@@ -390,7 +399,9 @@ void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) con
 }
 
 void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_TPW, BW_TPH, SDL_Color{ 0,0,0 }, 0);
+	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_TPW, BW_TPH,
+		kkit::gfx::get_pulse_color(4, timers[1].get_frame()),
+		0);
 
 	for (int i{ tile_row * BW_TPR }; i < static_cast<int>(p_project.get_tile_picker().size()) && i < (BW_TPR * (BW_TPC + tile_row)); ++i) {
 		int l_y = (i - tile_row * BW_TPR) / BW_TPR;
@@ -403,7 +414,9 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 	}
 
 	if (tile_y >= tile_row && tile_y < tile_row + BW_TPC)
-		klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * (tile_y - tile_row), 32, 32, SDL_Color{ 255, 255, 0 }, 2);
+		klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * (tile_y - tile_row), 32, 32,
+			kkit::gfx::get_pulse_color(0, timers[1].get_frame()),
+			2);
 
 	std::string l_tile_md;
 	int l_tile_no = p_project.get_tile_picker().at(tile_y * BW_TPR + tile_x);
