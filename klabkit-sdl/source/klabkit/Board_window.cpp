@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cmath>
+#include <filesystem>
 
 #include "Board_window.h"
 #include "./../klib/file.h"
@@ -9,7 +10,7 @@
 
 kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool>(4, false)) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
-	
+
 	// tile flash timer
 	timers.push_back(klib::Timer(70, 10, true));
 	// pulsating color timer
@@ -26,6 +27,10 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Destr", BW_FBX + 1 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 	buttons.push_back(klib::Button("Clip", BW_FBX + 2 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 	buttons.push_back(klib::Button("Tile", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
+
+	// save, load, export/import
+	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 
 	// direction indicator is turned on by default
 	toggles[0] = true;
@@ -110,15 +115,43 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	}
 }
 
-void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_project) {
+void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held) {
+
+	// toggle board tile: destructible
 	if (p_button_no == 0)
 		p_project.toggle_mt_blast(board_ind, sel_tile_x, sel_tile_y);
+	// toggle board tile: clip/noclip
 	else if (p_button_no == 1)
 		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
+	// toggle board tile: direction
 	else if (p_button_no == 2)
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
+	// export board(s) to xml
+	else if (p_button_no == 7) {
+		int l_exported{ 0 };
 
-	if (p_button_no >= 3) {
+		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
+			this->xml_export(p_project, i);
+			++l_exported;
+		}
+		p_gfx.add_toast_ok(std::to_string(l_exported) + " xml file(s) exported");
+
+	}
+	// import board(s) from xml
+	else if (p_button_no == 8) {
+		int l_imported{ 0 };
+
+		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i)
+			if (this->xml_import(p_project, i))
+				++l_imported;
+
+		if (l_imported > 0)
+			p_gfx.add_toast_ok(std::to_string(l_imported) + " xml file(s) imported");
+		else
+			p_gfx.add_toast_error("No xml file(s) found");
+	}
+	// flash toggles
+	else if (p_button_no >= 3) {
 		bool l_toggle = !toggles[p_button_no - 3];
 		toggles[p_button_no - 3] = l_toggle;
 		buttons[p_button_no].set_bg_color(l_toggle ? klib::gc::COL_GREEN : klib::gc::COL_GRAY);
@@ -135,8 +168,17 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	if (p_input.mouse_clicked())
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
-				button_click(i, p_project);
-				return;
+				try {
+					button_click(i, p_project, p_gfx, l_shift);
+					return;
+				}
+				catch (const std::exception& ex) {
+					p_gfx.add_toast_error(ex.what());
+				}
+				catch (...) {
+					p_gfx.add_toast_error("Unknown error occurred");
+				}
+
 			}
 
 	if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C)) {
@@ -567,4 +609,22 @@ void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p
 				l_tile.toggle_direction();
 
 	clipboard = result;
+}
+
+
+// save/load
+
+bool kkit::Board_window::xml_import(kkit::Project& p_project, int p_board_no) const {
+	auto l_in_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no);
+
+	if (!std::filesystem::exists(l_in_file))
+		return false;
+	else {
+		p_project.reload_map_from_xml(p_board_no);
+		return true;
+	}
+}
+
+void kkit::Board_window::xml_export(const kkit::Project& p_project, int p_board_no) const {
+	p_project.save_board_xml(p_board_no);
 }

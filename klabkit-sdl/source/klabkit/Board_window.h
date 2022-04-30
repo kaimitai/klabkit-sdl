@@ -63,6 +63,12 @@ namespace kkit {
 	constexpr int BW_FBH{ 28 };
 	constexpr int BW_FB_SPACING{ 15 };
 
+	// save/load buttons
+	constexpr int BW_EXML_BTN_X{ BW_TPX };
+	constexpr int BW_EXML_BTN_Y{ BW_FBY + 2* BW_FBH + BW_FB_SPACING };
+	constexpr int BW_EXML_BTN_W{ BW_TPW/2- BW_FB_SPACING };
+	constexpr int BW_EXML_BTN_H{ BW_FBH };
+
 	class Board_window {
 
 		// the texture which will hold the map data
@@ -122,7 +128,7 @@ namespace kkit {
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
 
-		void button_click(std::size_t p_button_no, kkit::Project& p_project);
+		void button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held);
 
 		// selection operations, copy, paste, cut, flip, rotate etc
 		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
@@ -132,6 +138,11 @@ namespace kkit {
 		void show_selection_rectangle(void);
 		void clear_selection(kkit::Project& p_project);
 		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
+
+		// save/load
+		void xml_export(const kkit::Project& p_project, int p_board_no) const;
+		bool xml_import(kkit::Project& p_project, int p_board_no) const;
+
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);
