@@ -32,7 +32,9 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 
-	buttons.push_back(klib::Button("Save BMP", BW_EXML_BTN_X, BW_EXML_BTN_Y + 3 * BW_EXML_BTN_H, BW_TPW, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Save KZP", BW_EXML_BTN_X, BW_EXML_BTN_Y + BW_EXML_BTN_H + BW_FB_SPACING, BW_TPW, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Save DAT", BW_EXML_BTN_X, BW_EXML_BTN_Y + 2 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Save BMP", BW_EXML_BTN_X, BW_EXML_BTN_Y + 3 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
 
 	// direction indicator is turned on by default
 	toggles[0] = true;
@@ -129,7 +131,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	else if (p_button_no == 2)
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
 	// export board(s) to xml
-	else if (p_button_no == 7) {
+	else if (p_button_no == BW_BTN_SL_IND) {
 		int l_exported{ 0 };
 
 		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
@@ -137,10 +139,9 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 			++l_exported;
 		}
 		p_gfx.add_toast_ok(std::to_string(l_exported) + " xml file(s) exported");
-
 	}
 	// import board(s) from xml
-	else if (p_button_no == 8) {
+	else if (p_button_no == BW_BTN_SL_IND + 1) {
 		int l_imported{ 0 };
 
 		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i)
@@ -152,8 +153,14 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 		else
 			p_gfx.add_toast_error("No xml file(s) found");
 	}
+	// save kzp
+	else if (p_button_no == BW_BTN_SL_IND + 2)
+		this->save_boards_kzp(p_project, p_gfx, true);
+	// save dat	
+	else if (p_button_no == BW_BTN_SL_IND + 3)
+		this->save_boards_kzp(p_project, p_gfx, false);
 	// save board as bmp file
-	else if (p_button_no == 9) {
+	else if (p_button_no == BW_BTN_SL_IND + 4) {
 
 		int l_exported{ 0 };
 
@@ -248,11 +255,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
 		this->move_grid_zoom(1);
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S)) {
-		int l_bytes = p_project.save_boards_kzp();
-		int l_board_count(p_project.get_board_count());
-		int l_original_bytes = l_board_count * 64 * 64 * 2;
-		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to KZP (" +
-			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+		this->save_boards_kzp(p_project, p_gfx, !l_shift);
 	}
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
 		--board_ind;
@@ -644,4 +647,18 @@ bool kkit::Board_window::xml_import(kkit::Project& p_project, int p_board_no) co
 
 void kkit::Board_window::xml_export(const kkit::Project& p_project, int p_board_no) const {
 	p_project.save_board_xml(p_board_no);
+}
+
+
+void kkit::Board_window::save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
+	int l_bytes = p_project.save_boards_kzp(p_compress);
+	int l_board_count(p_project.get_board_count());
+	int l_original_bytes = l_board_count * 2 * c::MAP_W * c::MAP_H;
+
+	if (p_compress)
+		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to KZP (" +
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+	else
+		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to DAT (" +
+			std::to_string(l_bytes) + " bytes)");
 }

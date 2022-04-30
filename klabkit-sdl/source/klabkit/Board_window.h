@@ -64,9 +64,11 @@ namespace kkit {
 	constexpr int BW_FB_SPACING{ 15 };
 
 	// save/load buttons
+	constexpr int BW_BTN_SL_IND{ 7 };
+
 	constexpr int BW_EXML_BTN_X{ BW_TPX };
-	constexpr int BW_EXML_BTN_Y{ BW_FBY + 2* BW_FBH + BW_FB_SPACING };
-	constexpr int BW_EXML_BTN_W{ BW_TPW/2- BW_FB_SPACING };
+	constexpr int BW_EXML_BTN_Y{ BW_FBY + 2 * (BW_FBH + BW_FB_SPACING) };
+	constexpr int BW_EXML_BTN_W{ BW_TPW / 2 - BW_FB_SPACING };
 	constexpr int BW_EXML_BTN_H{ BW_FBH };
 
 	class Board_window {
@@ -144,6 +146,7 @@ namespace kkit {
 		bool xml_import(kkit::Project& p_project, int p_board_no) const;
 		bool bmp_export(kkit::Project& p_project, int p_board_no) const;
 
+		void save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const;
 
 	public:
 		Board_window(SDL_Renderer* p_rnd);
