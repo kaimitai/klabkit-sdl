@@ -9,9 +9,11 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 	// pulse color timer
 	timers.push_back(klib::Timer(256, 5));
 
+	// toggle metadata buttons
 	for (int i{ 0 }; i < 3; ++i)
 		buttons.push_back(klib::Button("", GW_AB_X, GW_AB_Y + i * GW_AB_H + (i + 1) * GW_AB_SPACING, GW_AB_W, GW_AB_H));
 
+	// save buttons
 	buttons.push_back(klib::Button("Exp BMP", GW_BMP_X, GW_BMP_Y, GW_BMP_W));
 	buttons.push_back(klib::Button("Imp BMP", GW_AB_X + GW_AB_W - GW_BMP_W, GW_BMP_Y, GW_BMP_W));
 	buttons.push_back(klib::Button("Exp XML", GW_BMP_X, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));

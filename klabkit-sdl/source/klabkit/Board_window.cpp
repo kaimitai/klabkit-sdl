@@ -28,6 +28,9 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Clip", BW_FBX + 2 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 	buttons.push_back(klib::Button("Tile", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 
+	// logic buttons
+	buttons.push_back(klib::Button("Count", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY + BW_FBH + BW_FB_SPACING, BW_FBW, BW_FBH));
+
 	// save, load, export/import
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
@@ -119,7 +122,9 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	}
 }
 
-void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held) {
+void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input) {
+	bool l_shift_held = p_input.is_shift_pressed();
+	bool l_ctrl_held = p_input.is_ctrl_pressed();
 
 	// toggle board tile: destructible
 	if (p_button_no == 0)
@@ -130,11 +135,23 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	// toggle board tile: direction
 	else if (p_button_no == 2)
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
+	else if (p_button_no == BW_BTN_LOGIC) {
+		int l_tile_no = (l_ctrl_held ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project));
+		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift_held);
+
+		std::string l_msg{ "Count selected " };
+		l_msg += (l_ctrl_held ? "tile picker" : "board");
+		l_msg += " tile (#" + std::to_string(l_tile_no + 1) + ", ";
+		l_msg += (l_shift_held ? "all boards" : "board " + std::to_string(board_ind + 1));
+		l_msg += "): " + std::to_string(l_tile_cnt);
+
+		p_gfx.add_toast_info(l_msg);
+	}
 	// export board(s) to xml
 	else if (p_button_no == BW_BTN_SL_IND) {
 		int l_exported{ 0 };
 
-		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
+		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
 			this->xml_export(p_project, i);
 			++l_exported;
 		}
@@ -144,7 +161,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	else if (p_button_no == BW_BTN_SL_IND + 1) {
 		int l_imported{ 0 };
 
-		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i)
+		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i)
 			if (this->xml_import(p_project, i))
 				++l_imported;
 
@@ -164,7 +181,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 
 		int l_exported{ 0 };
 
-		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
+		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
 			kkit::gfx::project_map_to_bmp(p_project, i);
 			++l_exported;
 		}
@@ -190,7 +207,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
 				try {
-					button_click(i, p_project, p_gfx, l_shift);
+					button_click(i, p_project, p_gfx, p_input);
 					return;
 				}
 				catch (const std::exception& ex) {
@@ -226,7 +243,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		if (zoom_factor >= ZOOM_MAX)
 			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		this->move_grid_zoom(0.2f);
+		this->move_grid_zoom(0.1f);
 		//this->center_offset(l_tcoords);
 		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
@@ -234,7 +251,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		if (zoom_factor <= ZOOM_MIN)
 			return;
 		auto l_tcoords = this->get_pixel_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		this->move_grid_zoom(-0.2f);
+		this->move_grid_zoom(-0.1f);
 		//this->center_offset(l_tcoords);
 		this->translate_grid_offset(l_tcoords.first, l_tcoords.second, p_input.mx() - BW_BX, p_input.my() - BW_BY);
 	}
@@ -503,6 +520,10 @@ int kkit::Board_window::get_selected_tile_no(const kkit::Project& p_project) con
 	return p_project.get_tile_picker().at(tile_y * BW_TPR + tile_x);
 }
 
+int kkit::Board_window::get_selected_board_tile_no(const kkit::Project& p_project) const {
+	return p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
+}
+
 int kkit::Board_window::get_mouseover_tile_no(const kkit::Project& p_project, int p_x, int p_y) const {
 	int l_x = p_x / BW_TP_TW;
 	int l_y = p_y / BW_TP_TW;
@@ -661,4 +682,19 @@ void kkit::Board_window::save_boards_kzp(const kkit::Project& p_project, kkit::P
 	else
 		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to DAT (" +
 			std::to_string(l_bytes) + " bytes)");
+}
+
+// board calculations
+int kkit::Board_window::count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards) const {
+	int result{ 0 };
+
+	for (int i{ p_all_boards ? 0 : board_ind }; i < (p_all_boards ? p_project.get_board_count() : board_ind + 1); ++i) {
+		const auto& l_brd = p_project.get_board(i);
+		for (int x{ 0 }; x < c::MAP_W; ++x)
+			for (int y{ 0 }; y < c::MAP_H; ++y)
+				if (l_brd.get_tile_no(x, y) == p_tile_no)
+					++result;
+	}
+
+	return result;
 }

@@ -64,7 +64,8 @@ namespace kkit {
 	constexpr int BW_FB_SPACING{ 15 };
 
 	// save/load buttons
-	constexpr int BW_BTN_SL_IND{ 7 };
+	constexpr int BW_BTN_LOGIC{ 7 };
+	constexpr int BW_BTN_SL_IND{ BW_BTN_LOGIC + 1 };
 
 	constexpr int BW_EXML_BTN_X{ BW_TPX };
 	constexpr int BW_EXML_BTN_Y{ BW_FBY + 2 * (BW_FBH + BW_FB_SPACING) };
@@ -112,6 +113,7 @@ namespace kkit {
 		kkit::Map_tile get_selected_tile(const kkit::Project& p_project, int p_tile_no) const;
 		int get_mouseover_tile_no(const kkit::Project& p_project, int p_x, int p_y) const;
 		int get_selected_tile_no(const kkit::Project& p_project) const;
+		int get_selected_board_tile_no(const kkit::Project& p_project) const;
 
 		// internal calculations
 		int c_max_offset(void) const;
@@ -130,7 +132,7 @@ namespace kkit {
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
 
-		void button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held);
+		void button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input);
 
 		// selection operations, copy, paste, cut, flip, rotate etc
 		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
@@ -141,11 +143,13 @@ namespace kkit {
 		void clear_selection(kkit::Project& p_project);
 		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
 
+		// board calculations
+		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;
+
 		// save/load
 		void xml_export(const kkit::Project& p_project, int p_board_no) const;
 		bool xml_import(kkit::Project& p_project, int p_board_no) const;
 		bool bmp_export(kkit::Project& p_project, int p_board_no) const;
-
 		void save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const;
 
 	public:
