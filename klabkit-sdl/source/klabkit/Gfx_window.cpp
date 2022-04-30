@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "Gfx_window.h"
 #include "kkit_gfx.h"
 #include "xml_handler.h"
@@ -22,6 +23,7 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 
 void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_ctrl = p_input.is_ctrl_pressed();
+	bool l_shift = p_input.is_shift_pressed();
 
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
@@ -30,7 +32,7 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
 				try {
-					this->button_click(p_rnd, i, p_project, p_gfx);
+					this->button_click(p_rnd, i, p_project, p_gfx, l_shift);
 				}
 				catch (const std::exception& ex) {
 					p_gfx.add_toast_error(ex.what());
@@ -60,7 +62,7 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 	}
 	// save kzp
 	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S)) {
-		this->button_click(p_rnd, 7, p_project, p_gfx);
+		this->save_walls_kzp(p_project, p_gfx, !l_shift);
 	}
 }
 
@@ -78,7 +80,7 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 		l_blast ? "Destruct" : "Nodestruct",
 		l_blast ? klib::gc::COL_GREEN : klib::gc::COL_RED);
 
-	for (std::size_t i{ 3 }; i < buttons.size(); ++i)
+	for (std::size_t i{ GW_PROP_BTN_CNT }; i < buttons.size(); ++i)
 		buttons[i].draw(p_rnd, p_gfx.get_font(), p_input);
 
 	// draw tile selector window
@@ -127,7 +129,7 @@ int kkit::Gfx_window::c_max_tile_row(int p_total_tile_count) const {
 	return (l_max_y < 0 ? 0 : l_max_y);
 }
 
-void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held) {
 	int l_tile_no = this->get_selected_tile_no();
 
 	if (p_button_no == 0)
@@ -136,7 +138,8 @@ void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no
 		p_project.toggle_wt_inside(l_tile_no);
 	else if (p_button_no == 2)
 		p_project.toggle_wt_blast(l_tile_no);
-	else if (p_button_no == 3) {
+	// export bmp(s)
+	else if (p_button_no == GW_PROP_BTN_CNT) {
 		auto l_out_file = p_project.get_bmp_file_path(c::FILE_WALLS, l_tile_no);
 		if (gfx::wall_to_bmp(p_project.get_wall(l_tile_no).get_image(),
 			p_project.get_palette(),
@@ -146,40 +149,74 @@ void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no
 		else
 			p_gfx.add_toast_error("Could not save " + l_out_file);
 	}
-	else if (p_button_no == 4) {
+	// import bmp(s)
+	else if (p_button_no == GW_PROP_BTN_CNT + 1) {
 		auto l_in_file = p_project.get_bmp_file_path(c::FILE_WALLS, l_tile_no);
 		auto l_img = kkit::gfx::load_bmp(p_project.get_palette(), l_in_file);
 		p_project.set_wall_image(l_tile_no, l_img);
 		p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
 		p_gfx.add_toast_ok("Loaded " + l_in_file);
 	}
-	// export XML
-	else if (p_button_no == 5) {
-		auto l_dir = p_project.get_file_directory(c::FILE_EXT_XML, l_tile_no);
-		auto l_file = p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, l_tile_no);
-		kkit::xml::save_wall_xml(p_project.get_wall(this->get_selected_tile_no()), l_dir, l_file);
-		p_gfx.add_toast_ok("Wall tile saved to " + l_file);
+	// export xml(s)
+	else if (p_button_no == GW_PROP_BTN_CNT + 2) {
+		int l_exported{ 0 };
+
+		for (int i{ p_shift_held ? 0 : l_tile_no }; i < (p_shift_held ? p_project.get_wall_image_count() : l_tile_no + 1); ++i) {
+			this->xml_export(p_project, i);
+			++l_exported;
+		}
+		p_gfx.add_toast_ok(std::to_string(l_exported) + " xml file(s) exported");
 	}
-	// import xml
-	else if (p_button_no == 6) {
-		p_project.reload_wall_from_xml(l_tile_no);
-		p_gfx.reload_texture(p_rnd, p_project, l_tile_no);
-		p_gfx.add_toast_ok("Loaded " + p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, l_tile_no));
+	// import xml(s)
+	else if (p_button_no == GW_PROP_BTN_CNT + 3) {
+		int l_imported{ 0 };
+		int l_total_cnt = p_project.get_wall_image_count();
+
+		for (int i{ p_shift_held ? 0 : l_tile_no }; i < (p_shift_held ? l_total_cnt : l_tile_no + 1); ++i)
+			if (this->xml_import(p_rnd, p_project, p_gfx, i))
+				++l_imported;
+
+		if (l_imported > 0)
+			p_gfx.add_toast_ok(std::to_string(l_imported) + " xml file(s) imported");
+		else
+			p_gfx.add_toast_error("No xml file(s) found");
+
 	}
 	// save kzp
-	else if (p_button_no == 7) {
-		int l_bytes = p_project.save_walls_kzp();
-		int l_wall_count(p_project.get_wall_image_count());
-		int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+	else if (p_button_no == GW_PROP_BTN_CNT + 4)
+		this->save_walls_kzp(p_project, p_gfx, true);
+	// save dat
+	else if (p_button_no == GW_PROP_BTN_CNT + 5)
+		this->save_walls_kzp(p_project, p_gfx, false);
+}
+
+bool kkit::Gfx_window::xml_import(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, int p_wall_no) const {
+	auto l_in_file = p_project.get_file_full_path(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no);
+
+	if (!std::filesystem::exists(l_in_file))
+		return false;
+	else {
+		p_project.reload_wall_from_xml(p_wall_no);
+		p_gfx.reload_texture(p_rnd, p_project, p_wall_no);
+		return true;
+	}
+}
+
+void kkit::Gfx_window::xml_export(const kkit::Project& p_project, int p_wall_no) const {
+	auto l_dir = p_project.get_file_directory(c::FILE_EXT_XML, p_wall_no);
+	auto l_file = p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no);
+	kkit::xml::save_wall_xml(p_project.get_wall(p_wall_no), l_dir, l_file);
+}
+
+void kkit::Gfx_window::save_walls_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
+	int l_bytes = p_project.save_walls_kzp(p_compress);
+	int l_wall_count(p_project.get_wall_image_count());
+	int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+
+	if (p_compress)
 		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " wall tiles saved to KZP (" +
 			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
-	}
-	// save dat
-	else if (p_button_no == 8) {
-		int l_bytes = p_project.save_walls_kzp(false);
-		int l_wall_count(p_project.get_wall_image_count());
-		int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+	else
 		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " wall tiles saved to DAT (" +
 			std::to_string(l_bytes) + " bytes)");
-	}
 }

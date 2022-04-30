@@ -46,6 +46,9 @@ namespace kkit {
 	constexpr int GW_SAV_W{ GW_SW};
 	constexpr int GW_SAV_H{ GW_AB_H };
 
+	// number of metadata properties
+	constexpr int GW_PROP_BTN_CNT{ 3 };
+
 	class Gfx_window {
 		int tile_row, tile_x, tile_y;
 		std::vector<klib::Button> buttons;
@@ -53,7 +56,10 @@ namespace kkit {
 
 		int get_selected_tile_no(void) const;
 		int c_max_tile_row(int p_total_tile_count) const;
-		void button_click(SDL_Renderer* p_rnd, std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+		void button_click(SDL_Renderer* p_rnd, std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_shift_held = false);
+		void save_walls_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress = true) const;
+		void xml_export(const kkit::Project& p_project, int p_wall_no) const;
+		bool xml_import(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, int p_wall_no) const;
 
 	public:
 		Gfx_window(void);
