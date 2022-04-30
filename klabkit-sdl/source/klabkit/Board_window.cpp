@@ -32,6 +32,8 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 
+	buttons.push_back(klib::Button("Save BMP", BW_EXML_BTN_X, BW_EXML_BTN_Y + 3 * BW_EXML_BTN_H, BW_TPW, BW_EXML_BTN_H));
+
 	// direction indicator is turned on by default
 	toggles[0] = true;
 
@@ -149,6 +151,18 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 			p_gfx.add_toast_ok(std::to_string(l_imported) + " xml file(s) imported");
 		else
 			p_gfx.add_toast_error("No xml file(s) found");
+	}
+	// save board as bmp file
+	else if (p_button_no == 9) {
+
+		int l_exported{ 0 };
+
+		for (int i{ p_shift_held ? 0 : board_ind }; i < (p_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
+			kkit::gfx::project_map_to_bmp(p_project, i);
+			++l_exported;
+		}
+		p_gfx.add_toast_ok(std::to_string(l_exported) + " bmp file(s) saved");
+
 	}
 	// flash toggles
 	else if (p_button_no >= 3) {
@@ -613,6 +627,9 @@ void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p
 
 
 // save/load
+bool kkit::Board_window::bmp_export(kkit::Project& p_project, int p_board_no) const {
+	kkit::gfx::project_map_to_bmp(p_project, p_board_no);
+}
 
 bool kkit::Board_window::xml_import(kkit::Project& p_project, int p_board_no) const {
 	auto l_in_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no);

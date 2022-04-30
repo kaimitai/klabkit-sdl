@@ -142,6 +142,7 @@ namespace kkit {
 		// save/load
 		void xml_export(const kkit::Project& p_project, int p_board_no) const;
 		bool xml_import(kkit::Project& p_project, int p_board_no) const;
+		bool bmp_export(kkit::Project& p_project, int p_board_no) const;
 
 
 	public:

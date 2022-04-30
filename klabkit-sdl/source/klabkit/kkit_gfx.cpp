@@ -226,7 +226,7 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 		}
 
 	std::filesystem::create_directory(p_project.get_bmp_folder());
-	std::string l_out_file = p_project.get_bmp_file_path(c::FILE_BOARDS, p_board_no);
+	std::string l_out_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_BMP, p_board_no);
 	auto file_status = SDL_SaveBMP(l_bmp, l_out_file.c_str());
 
 	SDL_FreeSurface(l_bmp);
