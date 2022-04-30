@@ -43,7 +43,7 @@ namespace kkit {
 	// save kzp/dat
 	constexpr int GW_SAV_X{ GW_SX };
 	constexpr int GW_SAV_Y{ GW_BMP_Y + 5 * GW_AB_H };
-	constexpr int GW_SAV_W{ GW_SW};
+	constexpr int GW_SAV_W{ GW_SW };
 	constexpr int GW_SAV_H{ GW_AB_H };
 
 	// number of metadata properties
@@ -60,6 +60,9 @@ namespace kkit {
 		void save_walls_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress = true) const;
 		void xml_export(const kkit::Project& p_project, int p_wall_no) const;
 		bool xml_import(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, int p_wall_no) const;
+
+		bool bmp_export(const kkit::Project& p_project, int p_wall_no) const;
+		bool bmp_import(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, int p_wall_no) const;
 
 	public:
 		Gfx_window(void);
