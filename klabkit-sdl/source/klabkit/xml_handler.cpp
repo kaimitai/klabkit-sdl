@@ -50,7 +50,9 @@ kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
 	auto n_wall = n_meta.child(XML_TAG_WALL);
 
-	std::vector<std::vector<byte>> l_image;
+	std::vector<std::vector<byte>> l_image(c::WALL_IMG_W, std::vector<byte>(c::WALL_IMG_W, 0));
+	std::size_t x{ 0 };
+
 	bool l_blast = (strcmp(XML_VALUE_TRUE, n_wall.attribute(XML_ATTR_DESTRUCTIBLE).as_string()) == 0);
 	bool l_inside = (strcmp(XML_VALUE_TRUE, n_wall.attribute(XML_ATTR_CLIP).as_string()) == 0);
 	kkit::Wall_type l_wall_type{ kkit::Wall_type::Cube };
@@ -62,7 +64,11 @@ kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 
 	for (auto n_tpr_node = n_wall.child(XML_TAG_PIXEL_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_PIXEL_ROW)) {
 		std::vector<byte> l_tp_row = klib::util::string_split<byte>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
-		l_image.push_back(l_tp_row);
+
+		for (std::size_t y{ 0 }; y < l_tp_row.size(); ++y)
+			l_image.at(y).at(x) = l_tp_row[y];
+
+		++x;
 	}
 
 	return kkit::Wall(l_image, l_wall_type, l_blast, l_inside);
@@ -144,14 +150,16 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 	n_wall.attribute(XML_ATTR_DESTRUCTIBLE).set_value(p_wall.is_blast() ? XML_VALUE_TRUE : XML_VALUE_FALSE);
 	n_wall.attribute(XML_ATTR_CLIP).set_value(p_wall.is_inside() ? XML_VALUE_TRUE : XML_VALUE_FALSE);
 
-	auto l_bytes = p_wall.get_image();
-
 	for (int y{ 0 }; y < c::WALL_IMG_H; ++y) {
 		auto n_row = n_wall.append_child(XML_TAG_PIXEL_ROW);
 		n_row.append_attribute(XML_ATTR_NO);
 		n_row.attribute(XML_ATTR_NO).set_value(y);
 
-		std::string l_pixels = klib::util::string_join(l_bytes.at(y), ',');
+		std::vector<byte> l_row;
+		for (int x{ 0 }; x < c::WALL_IMG_W; ++x)
+			l_row.push_back(p_wall.get_palette_index(x, y));
+
+		std::string l_pixels = klib::util::string_join(l_row, ',');
 		n_row.append_attribute(XML_ATTR_VALUE);
 		n_row.attribute(XML_ATTR_VALUE).set_value(l_pixels.c_str());
 	}
