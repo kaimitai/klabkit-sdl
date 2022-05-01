@@ -145,6 +145,7 @@ namespace kkit {
 
 		// board calculations
 		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;
+		void next_tile(const kkit::Project& p_project, bool p_wrap = false);
 
 		// save/load
 		void xml_export(const kkit::Project& p_project, int p_board_no) const;

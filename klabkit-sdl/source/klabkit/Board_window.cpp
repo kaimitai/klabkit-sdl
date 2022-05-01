@@ -271,9 +271,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->move_grid_zoom(-1);
 	else if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS))
 		this->move_grid_zoom(1);
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S)) {
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
 		this->save_boards_kzp(p_project, p_gfx, !l_shift);
-	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
+		this->next_tile(p_project);
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
 		--board_ind;
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP) && board_ind < p_project.get_board_count() - 1)
@@ -697,4 +698,27 @@ int kkit::Board_window::count_tiles(const kkit::Project& p_project, int p_tile_n
 	}
 
 	return result;
+}
+
+void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_wrap) {
+	const auto& l_brd{ p_project.get_board(board_ind) };
+	int l_tile_no = this->get_selected_board_tile_no(p_project);
+	bool l_first{ true };
+
+	for (int x{ p_wrap ? 0 : sel_tile_x }; x < c::MAP_W; ++x) {
+		for (int y{ l_first ? sel_tile_y + 1 : 0 }; y < c::MAP_H; ++y)
+			if (l_brd.get_tile_no(x, y) == l_tile_no) {
+				sel_tile_x = x;
+				sel_tile_y = y;
+				sel_tile_2_x = -1;
+				return;
+			}
+		l_first = false;
+	}
+
+	// no tile found, wrap around
+	if (!p_wrap)
+		this->next_tile(p_project, true);
+
+	// no tile found, but wrap was already turned on, return with no changes (should never happen)
 }
