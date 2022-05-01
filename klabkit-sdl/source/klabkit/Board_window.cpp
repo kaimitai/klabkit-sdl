@@ -268,9 +268,9 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 			l_kp ? (BW_BW / 2) : (p_input.my() - BW_BY));
 	}
 	else if (p_input.mw_up() && mouse_over_tile_picker)
-		tile_row = klib::util::validate(tile_row - 1, 0, c_tile_row_max(p_project));
+		tile_row = klib::util::validate(tile_row - (l_ctrl ? 4 : 1), 0, c_tile_row_max(p_project));
 	else if (p_input.mw_down() && mouse_over_tile_picker)
-		tile_row = klib::util::validate(tile_row + 1, 0, c_tile_row_max(p_project));
+		tile_row = klib::util::validate(tile_row + (l_ctrl ? 4 : 1), 0, c_tile_row_max(p_project));
 	else if (p_input.is_pressed(SDL_SCANCODE_UP) || (!l_shift && p_input.mw_up()))
 		this->move_grid_offset_y(l_ctrl ? -4 * 64 : -64);
 	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || (!l_shift && p_input.mw_down()))
