@@ -239,6 +239,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->clear_selection(p_project);
 		return;
 	}
+	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEDOWN)) {
+		board_ind = klib::util::validate(board_ind - 1, 0, p_project.get_board_count() - 1);
+		return;
+	}
+	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEUP)) {
+		board_ind = klib::util::validate(board_ind + 1, 0, p_project.get_board_count() - 1);
+		return;
+	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -283,10 +291,6 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->save_boards_kzp(p_project, p_gfx, !l_shift);
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
 		this->next_tile(p_project);
-	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN) && board_ind > 0)
-		--board_ind;
-	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP) && board_ind < p_project.get_board_count() - 1)
-		++board_ind;
 
 	if (p_input.mouse_held(false) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
