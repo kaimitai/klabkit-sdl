@@ -29,7 +29,8 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Tile", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 
 	// logic buttons
-	buttons.push_back(klib::Button("Count", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY + BW_FBH + BW_FB_SPACING, BW_FBW, BW_FBH));
+	buttons.push_back(klib::Button("Next", BW_FBX, BW_FBY + BW_FBH + BW_FB_SPACING, BW_FBW, BW_FBH));
+	buttons.push_back(klib::Button("Count", BW_FBX + 1 * (BW_FBW + BW_FB_SPACING), BW_FBY + BW_FBH + BW_FB_SPACING, BW_FBW, BW_FBH));
 
 	// save, load, export/import
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
@@ -135,7 +136,10 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	// toggle board tile: direction
 	else if (p_button_no == 2)
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
-	else if (p_button_no == BW_BTN_LOGIC) {
+	// next board tile of same type
+	else if (p_button_no == BW_BTN_LOGIC)
+		this->next_tile(p_project);
+	else if (p_button_no == BW_BTN_LOGIC + 1) {
 		int l_tile_no = (l_ctrl_held ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project));
 		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift_held);
 
