@@ -20,6 +20,7 @@ namespace klib {
 		int uint_le(const std::vector<byte>& p_bytes, std::size_t p_offset, int p_byte_count);
 
 		std::vector<byte> from_uint_le(int p_int, int p_byte_no);
+		void append_uint_le(std::vector<byte>& p_bytes, int p_int, int p_byte_count);
 
 		template<class T>
 		void rot_sq_matrix_ccw(std::vector<std::vector<T>>& p_input) {

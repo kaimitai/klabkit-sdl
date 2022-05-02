@@ -17,6 +17,10 @@ namespace kkit {
 		constexpr std::array<byte, 6> HEADER_LAB3D{ { 'L', 'A', 'B', '3', 'D', '!'} };
 		constexpr std::array<byte, 6> HEADER_GIF{ {'G','I','F','8','7','a'} };
 
+		constexpr std::array<byte, 4> HEADER_WAV_RIFF{ {'R', 'I', 'F', 'F'} };
+		constexpr std::array<byte, 8> HEADER_WAV_WAVEFMT{ {'W', 'A', 'V', 'E', 'f', 'm', 't', ' '} };
+		constexpr std::array<byte, 4> HEADER_WAV_DATA{ {'d', 'a', 't', 'a'} };
+
 		// core compression routines
 		std::vector<byte> decompress_lzw_block(const std::vector<byte>& p_input);
 		std::vector<byte> compress_lzw_block(const std::vector<byte>& p_input);
@@ -32,6 +36,7 @@ namespace kkit {
 		std::vector<std::vector<byte>> decompress_lab3d_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> decompress_story_kzp(const std::vector<byte>& p_bytes);
 		std::vector<std::pair<std::string, std::vector<byte>>> decompress_songs_kzp(const std::vector<byte>& p_bytes);
+		std::vector<std::vector<byte>> decompress_sounds_kzp(const std::vector<byte>& p_bytes);
 
 		// compression / archiving / encryption
 		std::vector<byte> compress_boards_kzp(const std::vector<byte>& p_bytes);

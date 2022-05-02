@@ -86,6 +86,41 @@ std::vector<std::pair<std::string, std::vector<byte>>> kkit::compression::decomp
 	return result;
 }
 
+std::vector<std::vector<byte>> kkit::compression::decompress_sounds_kzp(const std::vector<byte>& p_bytes) {
+	std::vector<std::vector<byte>> result;
+
+	int l_file_count = klib::util::uint_le(p_bytes, 0, 2);
+	std::vector<int> l_offsets;
+	std::vector<int> l_lengths;
+
+	for (int i{ 0 }; i < l_file_count; ++i) {
+		int l_of{ 2 + 6 * i };
+		l_offsets.push_back(klib::util::uint_le(p_bytes, l_of, 4));
+		l_lengths.push_back(klib::util::uint_le(p_bytes, l_of + 4, 2));
+	}
+
+	for (int i{ 0 }; i < l_file_count; ++i) {
+		std::vector<byte> l_file;
+
+		l_file.insert(end(l_file), begin(HEADER_WAV_RIFF), end(HEADER_WAV_RIFF));
+		klib::util::append_uint_le(l_file, l_lengths.at(i) + 36, 4);
+		l_file.insert(end(l_file), begin(HEADER_WAV_WAVEFMT), end(HEADER_WAV_WAVEFMT));
+		klib::util::append_uint_le(l_file, 16, 4);
+		klib::util::append_uint_le(l_file, 1, 2);
+		klib::util::append_uint_le(l_file, 1, 2);
+		klib::util::append_uint_le(l_file, 11025, 4);
+		klib::util::append_uint_le(l_file, 11025, 4);
+		klib::util::append_uint_le(l_file, 1, 2);
+		klib::util::append_uint_le(l_file, 8, 2);
+		l_file.insert(end(l_file), begin(HEADER_WAV_DATA), end(HEADER_WAV_DATA));
+		klib::util::append_uint_le(l_file, l_lengths.at(i), 4);
+		l_file.insert(end(l_file), begin(p_bytes) + l_offsets.at(i), begin(p_bytes) + l_offsets.at(i) + l_lengths.at(i));
+
+		result.push_back(l_file);
+	}
+
+	return result;
+}
 
 std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size) {
 	std::vector<byte> result(std::vector<byte>(begin(p_bytes), begin(p_bytes) + p_header_size));

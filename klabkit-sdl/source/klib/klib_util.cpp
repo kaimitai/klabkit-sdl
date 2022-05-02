@@ -43,3 +43,8 @@ std::vector<byte> klib::util::from_uint_le(int p_int, int p_byte_count) {
 
 	return result;
 }
+
+void klib::util::append_uint_le(std::vector<byte>& p_bytes, int p_int, int p_byte_count) {
+	auto l_bytes = from_uint_le(p_int, p_byte_count);
+	p_bytes.insert(end(p_bytes), begin(l_bytes), end(l_bytes));
+}
