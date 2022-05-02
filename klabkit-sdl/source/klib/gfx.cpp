@@ -80,6 +80,27 @@ void klib::gfx::blit_full_spec(SDL_Renderer* p_rnd, SDL_Texture* txt, int target
 	SDL_RenderCopy(p_rnd, txt, &src_rect, &target_rect);
 }
 
+void klib::gfx::blit_tiled(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y) {
+	int srcW, srcH, tarW, tarH;
+	SDL_QueryTexture(p_texture, NULL, NULL, &srcW, &srcH);
+	SDL_GetRendererOutputSize(p_rnd, &tarW, &tarH);
+
+	int xTimes = 1 + tarW / srcW;
+	int yTimes = 1 + tarH / srcH;
+
+	p_x %= srcW;
+	p_y %= srcH;
+
+	if (p_x < 0)
+		p_x += srcW;
+	if (p_y < 0)
+		p_y += srcH;
+
+	for (int i = -1; i < xTimes; ++i)
+		for (int j = -1; j < yTimes; ++j)
+			blit(p_rnd, p_texture, p_x + i * srcW, p_y + j * srcH);
+}
+
 // utility functions
 SDL_Texture* klib::gfx::surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface) {
 	SDL_Texture* result = SDL_CreateTextureFromSurface(p_rnd, p_srf);

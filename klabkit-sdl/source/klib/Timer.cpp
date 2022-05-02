@@ -33,3 +33,8 @@ void klib::Timer::move(int p_delta_ms) {
 int klib::Timer::get_frame(void) const {
 	return this->cur_frame;
 }
+
+void klib::Timer::reset(void) {
+	this->cur_cnt = 0;
+	this->cur_frame = 0;
+}

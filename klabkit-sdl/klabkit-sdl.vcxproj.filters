@@ -111,6 +111,9 @@
     <ClInclude Include="source\klabkit\Project_config.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\About_window.h">
+      <Filter>Header Files\klabkit\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Project_config.cpp">
       <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\About_window.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

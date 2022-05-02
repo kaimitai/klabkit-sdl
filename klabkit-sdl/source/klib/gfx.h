@@ -31,6 +31,7 @@ namespace klib {
 		void blit_p2_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_p2);
 		void blit_full_spec(SDL_Renderer* p_rnd, SDL_Texture* p_txt, int s_x, int s_y, int s_w, int s_h, int t_x, int t_y, int t_w, int t_h);
 		void blit_factor(SDL_Renderer* p_rnd, SDL_Texture* p_txt, int p_x, int p_y, float p_factor);
+		void blit_tiled(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y);
 
 		// surface and texture functions and procedures
 		SDL_Texture* surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface = true);

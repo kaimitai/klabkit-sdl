@@ -23,6 +23,8 @@ void kkit::Main_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 		board_window.move(p_input, p_delta_ms, p_project, p_gfx);
 	else if (window_index == 1)
 		gfx_window.move(p_rnd, p_input, p_delta_ms, p_project, p_gfx);
+	else
+		about_window.move(p_delta_ms, p_input);
 
 	// move toast notifcations
 	p_gfx.move(p_delta_ms);
@@ -32,6 +34,13 @@ void kkit::Main_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 	SDL_SetRenderDrawColor(p_rnd, MW_BG_COLOR.r, MW_BG_COLOR.g, MW_BG_COLOR.b, 0);
 	SDL_RenderClear(p_rnd);
 
+	if (window_index == 0)
+		board_window.draw(p_rnd, p_input, p_project, p_gfx);
+	else if (window_index == 1)
+		gfx_window.draw(p_rnd, p_input, p_project, p_gfx);
+	else
+		about_window.draw(p_rnd, p_input, p_gfx);
+
 	klib::gfx::draw_rect(p_rnd, 2 * MW_BW, 0, c::APP_W - 3 * MW_BW, MW_BH, klib::gc::COL_WHITE, 0);
 
 	for (const auto& button : buttons)
@@ -39,13 +48,6 @@ void kkit::Main_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 
 	p_gfx.draw(p_rnd);
 
-	if (window_index == 0)
-		board_window.draw(p_rnd, p_input, p_project, p_gfx);
-	else if(window_index==1)
-		gfx_window.draw(p_rnd, p_input, p_project, p_gfx);
-
-	// draw toast notifications
-	p_gfx.draw(p_rnd);
 }
 
 void kkit::Main_window::button_click(std::size_t p_button_no) {

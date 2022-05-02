@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <vector>
+#include "About_window.h"
 #include "Board_window.h"
 #include "Gfx_window.h"
 #include "Project.h"
@@ -20,6 +21,8 @@ namespace kkit {
 
 	class Main_window {
 		std::size_t window_index;
+
+		About_window about_window;
 		Board_window board_window;
 		Gfx_window gfx_window;
 

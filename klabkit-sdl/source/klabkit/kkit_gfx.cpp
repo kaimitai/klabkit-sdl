@@ -23,6 +23,49 @@ void kkit::gfx::bmp_to_lzw_file(const palette& p_palette, const std::string& p_f
 	klib::file::write_bytes_to_file(kkit::compression::compress_lzw_block(out_bytes), p_out_file);
 }
 
+SDL_Texture* kkit::gfx::create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no) {
+	SDL_Surface* result = SDL_CreateRGBSurface(0, 256, 256, 24, 0, 0, 0, 0);
+
+	if (p_bg_no == 0)
+		for (int i = 0; i < 256; ++i)
+			for (int j = 0; j < 256; ++j)
+				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, i % 64, j % 64, 255));
+
+	else if (p_bg_no == 1)
+		for (int i = 0; i < 256; ++i)
+			for (int j = 0; j < 256; ++j)
+				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, 0, i % 64, j % 64));
+
+	else if (p_bg_no == 2)
+		for (int i = 0; i < 256; ++i)
+			for (int j = 0; j < 256; ++j)
+				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, i % 64, 0, j % 64));
+
+	else if (p_bg_no == 3)
+		for (int i = 0; i < 256; ++i)
+			for (int j = 0; j < 256; ++j)
+				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, i % 64, j % 64, (i + j) % 64));
+
+	else if (p_bg_no == 4)
+		for (int i = 0; i < 256; ++i)
+			for (int j = 0; j < 256; ++j)
+				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, (i + j) % 256, i, j));
+
+	else
+		throw std::exception("Invalid background no");
+
+	return(klib::gfx::surface_to_texture(p_rnd, result));
+}
+
+std::vector<SDL_Texture*> kkit::gfx::create_bg_textures(SDL_Renderer* p_rnd) {
+	std::vector<SDL_Texture*> result;
+
+	for (int i{ 0 }; i <= 4; ++i)
+		result.push_back(create_bg_texture(p_rnd, i));
+
+	return result;
+}
+
 byte kkit::gfx::find_nearest_palette_index(SDL_Color p_color, const palette& p_palette) {
 	int min_distance = 3 * 256 * 256 + 1; // higher than any possible color distance
 	byte result{ 0 };

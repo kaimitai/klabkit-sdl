@@ -11,6 +11,7 @@ namespace klib {
 	public:
 		Timer(int p_max_no, int p_ms_per_frame, bool p_backward = false);
 		void move(int p_delta_ms);
+		void reset(void);
 		int get_frame(void) const;
 	};
 

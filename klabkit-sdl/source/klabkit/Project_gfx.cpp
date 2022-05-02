@@ -3,7 +3,8 @@
 
 kkit::Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project) : font(p_rnd, std::vector<byte>(begin(FONT_BYTES), end(FONT_BYTES)), 16, 22) {
 	this->textures[INDEX_WALL_TEXTURES] = kkit::gfx::get_project_textures(p_rnd, p_project);
-	this->textures[1] = kkit::gfx::get_program_textures(p_rnd, p_project);
+	this->textures[INDEX_APP_TEXTURES] = kkit::gfx::get_program_textures(p_rnd, p_project);
+	this->load_background_textures(p_rnd);
 }
 
 kkit::Project_gfx::~Project_gfx(void) {
@@ -13,6 +14,10 @@ kkit::Project_gfx::~Project_gfx(void) {
 		for (auto& txt : kv.second)
 			if (txt != nullptr)
 				SDL_DestroyTexture(txt);
+}
+
+void kkit::Project_gfx::load_background_textures(SDL_Renderer* p_rnd) {
+	this->textures[INDEX_BG_TEXTURES] = kkit::gfx::create_bg_textures(p_rnd);
 }
 
 void kkit::Project_gfx::reload_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no) {
@@ -28,6 +33,10 @@ SDL_Texture* kkit::Project_gfx::get_tile_texture(int p_frame_no) const {
 
 SDL_Texture* kkit::Project_gfx::get_app_texture(int p_frame_no) const {
 	return this->textures.at(INDEX_APP_TEXTURES).at(p_frame_no);
+}
+
+SDL_Texture* kkit::Project_gfx::get_bg_texture(int p_frame_no) const {
+	return this->textures.at(INDEX_BG_TEXTURES).at(p_frame_no);
 }
 
 const klib::Font& kkit::Project_gfx::get_font(void) const {

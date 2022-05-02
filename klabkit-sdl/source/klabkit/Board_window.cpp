@@ -665,7 +665,13 @@ void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p
 
 // save/load
 bool kkit::Board_window::bmp_export(kkit::Project& p_project, int p_board_no) const {
-	kkit::gfx::project_map_to_bmp(p_project, p_board_no);
+	try {
+		kkit::gfx::project_map_to_bmp(p_project, p_board_no);
+		return true;
+	}
+	catch (const std::exception& ex) {
+		return false;
+	}
 }
 
 bool kkit::Board_window::xml_import(kkit::Project& p_project, int p_board_no) const {
