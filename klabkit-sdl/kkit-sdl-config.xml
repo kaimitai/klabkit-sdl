@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
 <kkit_sdl app_version="alpha 1" file_type="config">
+
  <config label="2.1" project_directory="." board_count="30" wall_count="448" lzw_header_type="0">
    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
    <tile_picker>
@@ -22,4 +23,11 @@
    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
    <clip_overrides value="82,123,419,420" />
  </config>
+
+  <config label="1.0" project_directory="." board_count="5" wall_count="192" lzw_header_type="1">
+  </config>
+
+  <config label="1.1" project_directory="." board_count="27" wall_count="224" lzw_header_type="1">
+  </config>
+
 </kkit_sdl>
