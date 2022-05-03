@@ -122,46 +122,56 @@ std::vector<std::vector<byte>> kkit::compression::decompress_sounds_kzp(const st
 	return result;
 }
 
-std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size) {
+
+
+std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size, bool p_klab_1) {
 	std::vector<byte> result(std::vector<byte>(begin(p_bytes), begin(p_bytes) + p_header_size));
 	while (result.size() < p_out_header_size)
 		result.push_back(0);
 
-	auto compressed_data{ std::vector<byte>(begin(p_bytes) + p_header_size, end(p_bytes)) };
-	std::vector<int> l_comp_lengths;
+	// offsets to compressed data in file
+	std::vector<int> l_offsets;
+	// strtot-values for each compressed block
+	std::vector<int> l_strtot;
 
-	// first bytes of the compressed data is the compressed lengths of each block, 1 int16 per
+	int l_cdata_index{ p_header_size + 2 * p_block_count };
+
 	for (int i{ 0 }; i < p_block_count; ++i) {
-		int l_len = compressed_data.at(2 * i);
-		l_len += 256 * compressed_data.at(2 * i + 1);
-		l_comp_lengths.push_back(l_len);
+		l_strtot.push_back(klib::util::uint_le(p_bytes, l_cdata_index, 2));
+		l_offsets.push_back(l_cdata_index);
+
+		int l_len = klib::util::uint_le(p_bytes, p_header_size + 2 * i, 2);
+		l_cdata_index += 2 + l_len;
+
+		if (l_cdata_index == p_bytes.size()) {
+			l_offsets.push_back(l_cdata_index);
+			break;
+		}
 	}
 
-	for (int i{ 0 }; i < p_block_count; ++i) {
-		auto px = decompress_lzw_block(std::vector<byte>(begin(compressed_data) + get_file_offset(l_comp_lengths, i), begin(compressed_data) + get_file_offset(l_comp_lengths, i + 1)));
+	for (int i{ 0 }; i < static_cast<int>(l_strtot.size()); ++i) {
+		auto px = decompress_lzw_block(std::vector<byte>(begin(p_bytes) + l_offsets.at(i) + 2,
+			begin(p_bytes) + l_offsets.at(i + 1)), l_strtot.at(i));
+
 		result.insert(end(result), begin(px), end(px));
 	}
 
 	return result;
 }
 
-int kkit::compression::get_file_offset(const std::vector<int> p_comp_lengths, int p_block_no) {
-	// start at 2xblock number, the first bytes of the file are a header containing an int16 of compression lengths per block
-
-	int result{ static_cast<int>(p_comp_lengths.size()) * 2 };
-
-	for (int i = 0; i < p_block_no; ++i)
-		result += p_comp_lengths[i] + 2; // add two, since the individual blocks also have a 2-byte header
-
-	return result;
+std::vector<byte>  kkit::compression::decompress_lzw_block(const std::vector<byte>& p_input) {
+	int l_strtot = klib::util::uint_le(p_input, 0, 2);
+	return decompress_lzw_block(std::vector<byte>(begin(p_input) + 2, end(p_input)), l_strtot);
 }
 
-std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte>& p_input) {
+std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte>& p_input, int p_strtot) {
 	std::vector<byte> result(LZW_UNCOMPRESSED_BLOCK_SIZE, 0);
 	std::vector<int> lzwbuf(LZW_DICT_SIZE, 0);
 	std::vector<int> lzwbuf2(LZW_DICT_SIZE, 0);
 	std::vector<int> stack(LZW_DICT_SIZE, 0);
-	std::vector<byte> tempbuf(std::vector<byte>(begin(p_input) + 2, end(p_input)));
+
+	std::vector<byte> tempbuf{ p_input };
+
 	tempbuf.push_back(0);
 	tempbuf.push_back(0);
 	tempbuf.push_back(0);
@@ -171,7 +181,6 @@ std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte
 		lzwbuf2[i] = i;
 	}
 
-	int strtot = p_input.at(0) + p_input.at(1) * 256;
 	int compleng = static_cast<int>(tempbuf.size());
 	int bytecnt1{ 0 }, bytecnt2{ 0 }, bitcnt{ 0 }, stackp{ 0 }, currstr{ 256 }, goalstr{ 512 }, numbits{ 9 }, dat{ 0 };
 
@@ -216,7 +225,7 @@ std::vector<byte> kkit::compression::decompress_lzw_block(const std::vector<byte
 			goalstr = (goalstr << 1);
 		}
 
-	} while (currstr <= strtot);
+	} while (currstr <= p_strtot);
 
 	return result;
 }
@@ -311,12 +320,12 @@ std::vector<byte> kkit::compression::compress_lzw_block(const std::vector<byte>&
 	return result;
 }
 
-std::vector<byte> kkit::compression::compress_boards_kzp(const std::vector<byte>& p_bytes) {
-	return compress_file_contents(p_bytes);
+std::vector<byte> kkit::compression::compress_boards_kzp(const std::vector<byte>& p_bytes, int p_board_count) {
+	return compress_file_contents(p_bytes, p_board_count * 2);
 }
 
-std::vector<byte> kkit::compression::compress_walls_kzp(const std::vector<byte>& p_bytes) {
-	return compress_file_contents(p_bytes, 1024);
+std::vector<byte> kkit::compression::compress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count) {
+	return compress_file_contents(p_bytes, p_wall_count, 1024);
 }
 
 // determine header size and block count (these are the same number when a header exists) from lzw compressed archives
@@ -343,10 +352,10 @@ std::pair<int, int> kkit::compression::calculate_lzw_block_count(const std::vect
 
 }
 
-std::vector<byte> kkit::compression::compress_file_contents(const std::vector<byte>& p_bytes, int p_header_size) {
+std::vector<byte> kkit::compression::compress_file_contents(const std::vector<byte>& p_bytes, int p_target_block_count, int p_header_size, bool p_klab_1) {
 	int l_block_count = (static_cast<int>(p_bytes.size()) - p_header_size) / LZW_UNCOMPRESSED_BLOCK_SIZE;
 	int l_out_header_size = (p_header_size == 0 ? 0 : l_block_count);
-	std::vector<byte> result(l_out_header_size + l_block_count * 2, 0);
+	std::vector<byte> result(l_out_header_size + p_target_block_count * 2, 0);
 	std::copy(begin(p_bytes), begin(p_bytes) + l_block_count, begin(result));
 
 	for (int i{ 0 }; i < l_block_count; ++i) {
