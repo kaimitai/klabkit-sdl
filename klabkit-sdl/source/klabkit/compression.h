@@ -31,7 +31,7 @@ namespace kkit {
 
 		// concrete implementations based on file type we're handling
 		// decompression / extraction / decryption
-		std::vector<byte> decompress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count);
+		std::vector<byte> decompress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count, bool p_klab_1 = false);
 		std::vector<byte> decompress_boards_kzp(const std::vector<byte>& p_bytes, int p_board_count);
 		std::vector<std::vector<byte>> decompress_lab3d_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> decompress_story_kzp(const std::vector<byte>& p_bytes);

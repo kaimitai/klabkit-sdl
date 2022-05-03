@@ -3,11 +3,11 @@
 
 using byte = unsigned char;
 
-std::vector<byte> kkit::compression::decompress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count) {
+std::vector<byte> kkit::compression::decompress_walls_kzp(const std::vector<byte>& p_bytes, int p_wall_count, bool p_klab_1) {
 	// the compressed files containt no metadata, so the number of blocks need to be known in advance
 	// for walls.kzp - the image metadata header makes it even more difficult
 	// each image consists of one compressed block
-	return decompress_file_contents(p_bytes, p_wall_count, p_wall_count, 1024);
+	return decompress_file_contents(p_bytes, p_wall_count, p_wall_count, 1024, p_klab_1);
 }
 
 std::vector<byte> kkit::compression::decompress_boards_kzp(const std::vector<byte>& p_bytes, int p_board_count) {
@@ -134,14 +134,14 @@ std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<
 	// strtot-values for each compressed block
 	std::vector<int> l_strtot;
 
-	int l_cdata_index{ p_header_size + 2 * p_block_count };
+	int l_cdata_index{ p_klab_1 ? p_header_size : p_header_size + 2 * p_block_count };
 
 	for (int i{ 0 }; i < p_block_count; ++i) {
 		l_strtot.push_back(klib::util::uint_le(p_bytes, l_cdata_index, 2));
 		l_offsets.push_back(l_cdata_index);
 
-		int l_len = klib::util::uint_le(p_bytes, p_header_size + 2 * i, 2);
-		l_cdata_index += 2 + l_len;
+		int l_len = klib::util::uint_le(p_bytes, p_klab_1 ? l_cdata_index + 2 : p_header_size + 2 * i, 2);
+		l_cdata_index += (p_klab_1 ? 4 : 2) + l_len;
 
 		if (l_cdata_index == p_bytes.size()) {
 			l_offsets.push_back(l_cdata_index);
@@ -150,7 +150,7 @@ std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<
 	}
 
 	for (int i{ 0 }; i < static_cast<int>(l_strtot.size()); ++i) {
-		auto px = decompress_lzw_block(std::vector<byte>(begin(p_bytes) + l_offsets.at(i) + 2,
+		auto px = decompress_lzw_block(std::vector<byte>(begin(p_bytes) + l_offsets.at(i) + (p_klab_1 ? 4 : 2),
 			begin(p_bytes) + l_offsets.at(i + 1)), l_strtot.at(i));
 
 		result.insert(end(result), begin(px), end(px));
