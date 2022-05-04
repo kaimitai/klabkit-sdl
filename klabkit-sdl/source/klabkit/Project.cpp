@@ -35,14 +35,18 @@ void kkit::Project::save_board_xml(int p_board_no) const {
 
 // initializers
 void kkit::Project::initialize_palette(void) {
+	bool l_lab3d_v1{ this->is_klab_v_1() };
+
 	for (int i{ 0 }; i < 16; ++i) {
 		for (int j{ 0 }; j < 16; ++j) {
-			byte l_r = c::PAL_GEN[i][0] * (j + 1) / 17;
-			byte l_g = c::PAL_GEN[i][1] * (j + 1) / 17;
-			byte l_b = c::PAL_GEN[i][2] * (j + 1) / 17;
+			byte l_r = (l_lab3d_v1 ? c::PAL_GEN_V1[i][0] : c::PAL_GEN[i][0]) * (j + 1) / 17;
+			byte l_g = (l_lab3d_v1 ? c::PAL_GEN_V1[i][1] : c::PAL_GEN[i][1]) * (j + 1) / 17;
+			byte l_b = (l_lab3d_v1 ? c::PAL_GEN_V1[i][2] : c::PAL_GEN[i][2]) * (j + 1) / 17;
 			palette.push_back(std::make_tuple(4 * l_r, 4 * l_g, 4 * l_b));
 		}
 	}
+
+	palette[255] = c::TRANS_COL_RGB;
 }
 
 void kkit::Project::initialize_walls(void) {

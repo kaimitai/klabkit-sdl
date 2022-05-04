@@ -50,7 +50,7 @@ namespace kkit {
 			} };
 
 		// palette generator for lab3d v1
-		constexpr std::array<std::array<byte, 3>, 16> PAL_GEN_V1{
+		constexpr std::array<std::array<byte, 3>, 16> PAL_GEN_V1{ {
 			{0, 30, 63},
 			{ 28,34,60 },
 			{ 0,50,20 },
@@ -67,7 +67,9 @@ namespace kkit {
 			{ 63,40,63 },
 			{ 63,30,20 },
 			{ 63,63,63 }
-		};
+		} };
+
+		constexpr std::tuple<byte, byte, byte> TRANS_COL_RGB{ 204, 92, 112 };
 
 		// wall files
 		constexpr int WALL_IMG_W{ 64 };
