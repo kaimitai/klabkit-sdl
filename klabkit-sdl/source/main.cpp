@@ -1,12 +1,16 @@
-#include <iostream>
-#include "./klabkit/constants.h"
-#include "./klabkit/Project.h"
-#include "./klabkit/Project_gfx.h"
-#include "./klabkit/Project_config.h"
-#include "./klabkit/kkit_gfx.h"
-#include "./klabkit/xml_handler.h"
-#include "./klabkit/Main_window.h"
-#include "./klib/User_input.h"
+#include <exception>
+#include <string>
+#include "klabkit/constants.h"
+#include "klabkit/Project.h"
+#include "klabkit/Project_gfx.h"
+#include "klabkit/Project_config.h"
+#include "klabkit/kkit_gfx.h"
+#include "klabkit/Main_window.h"
+#include "klabkit/xml_handler.h"
+#include "klib/User_input.h"
+#include "klib/file.h"
+
+constexpr char ERROR_LOG_FILE[]{ "kkit-sdl-err.log" };
 
 float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
 	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
@@ -19,11 +23,7 @@ float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
 	return result;
 }
 
-int main(int argc, char* args[]) {
-
-	//auto v = klib::file::read_file_as_bytes("c:/users/kai/downloads/klabkit/songs.kzp");
-	//auto w = kkit::compression::decompress_songs_kzp(v);
-	//return 0;
+int main(int argc, char* args[]) try {
 
 	SDL_Window* l_window{ nullptr };
 	SDL_Renderer* l_rnd{ nullptr };
@@ -31,23 +31,20 @@ int main(int argc, char* args[]) {
 
 	float l_scale{ 1.0f };
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
-	}
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		throw std::exception(std::string("SDL could not initialize! SDL_Error: " + std::string(SDL_GetError())).c_str());
 	else {
 		// Event handler
 		SDL_Event e;
 
 		l_window = SDL_CreateWindow(kkit::c::get_application_window_caption().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kkit::c::APP_W, kkit::c::APP_H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
-			std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
+			throw std::exception(std::string("Window could not be created! SDL_Error: " + std::string(SDL_GetError())).c_str());
 		else {
 			l_rnd = SDL_CreateRenderer(l_window, -1, SDL_RENDERER_ACCELERATED);
 
-			if (l_rnd == nullptr) {
-				printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
-				exit(1);
-			}
+			if (l_rnd == nullptr)
+				throw std::exception(std::string("Renderer could not be created!SDL Error: " + std::string(SDL_GetError())).c_str());
 			else {
 				//Initialize renderer color
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
@@ -57,9 +54,6 @@ int main(int argc, char* args[]) {
 			kkit::Project project(kkit::xml::read_config_xml("kkit-sdl-config.xml"));
 			kkit::gfx::set_application_icon(l_window, project);
 			kkit::Project_gfx p_gfx(l_rnd, project);
-
-			//kkit::Wall icon = kkit::xml::load_wall_xml("C:\\Users\\kfrol\\Downloads\\klabkit\\xml\\WALLS-170.xml");
-			//klib::file::write_bytes_to_file(kkit::compression::compress_lzw_block(icon.get_image_bytes()), "icon.lzw");
 
 			// main window object to handle all logic and drawing
 			kkit::Main_window main_window(l_rnd);
@@ -138,4 +132,13 @@ int main(int argc, char* args[]) {
 	SDL_Quit();
 
 	return 0;
+}
+
+catch (const std::exception& ex) {
+	klib::file::append_string_to_file("Runtime error. Exception was:\n" + std::string(ex.what()) + "\n", ERROR_LOG_FILE);
+	return 1;
+}
+catch (...) {
+	klib::file::append_string_to_file("Unknown runtime error occurred.\n", ERROR_LOG_FILE);
+	return 1;
 }
