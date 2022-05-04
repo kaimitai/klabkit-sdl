@@ -2,7 +2,7 @@
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
 <kkit_sdl app_version="alpha 1" file_type="config">
 
- <config label="2.1" project_directory="." board_count="30" wall_count="448" lzw_header_type="0">
+ <config label="2.x" project_directory="./gamefiles/klab_2_1" board_count="30" wall_count="448" lzw_header_type="0">
    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
    <tile_picker>
     <!-- empty tile and start position -->
@@ -24,10 +24,28 @@
    <clip_overrides value="82,123,419,420" />
  </config>
 
-  <config label="1.0" project_directory="." board_count="5" wall_count="192" lzw_header_type="1">
-  </config>
+ <config label="1.1" project_directory="./gamefiles/klab_1_1" board_count="27" wall_count="224" lzw_header_type="1">
+  <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+  <tile_picker>
+   <!-- empty tile and start position -->
+   <row no="0" value="0,-1" />
+   <!-- monsters -->
+   <row no="1" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
+   <!-- doors -->
+   <row no="2" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
+   <!-- walls -->
+   <row no="3" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
+   <!-- powerups and items -->
+   <row no="4" value="63,179,37,107,56,59,46,60,86,91,88,129,181,191,123,28,75,34,36,130,32" />
+   <!-- consumed items -->
+   <row no="5" value="84,83,81,82,87,92,89,92,29" />
+   <!-- decorative items -->
+   <row no="6" value="197,33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
+  </tile_picker>
+  <clip_overrides value="23,64,180" />
+ </config>
 
-  <config label="1.1" project_directory="." board_count="27" wall_count="224" lzw_header_type="1">
-  </config>
+ <config label="1.0" project_directory="./gamefiles/klab_1_0" board_count="5" wall_count="192" lzw_header_type="1">
+ </config>
 
 </kkit_sdl>
