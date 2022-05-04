@@ -138,7 +138,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
 	// next board tile of same type
 	else if (p_button_no == BW_BTN_LOGIC)
-		this->next_tile(p_project);
+		this->next_tile(p_project, l_shift_held);
 	else if (p_button_no == BW_BTN_LOGIC + 1) {
 		int l_tile_no = (l_ctrl_held ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project));
 		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift_held);
@@ -290,7 +290,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
 		this->save_boards_kzp(p_project, p_gfx, !l_shift);
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
-		this->next_tile(p_project);
+		this->next_tile(p_project, l_shift);
 
 	if (p_input.mouse_held(false) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
@@ -718,13 +718,13 @@ int kkit::Board_window::count_tiles(const kkit::Project& p_project, int p_tile_n
 	return result;
 }
 
-void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_wrap) {
+void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_tp_tile, bool p_wrap) {
 	const auto& l_brd{ p_project.get_board(board_ind) };
-	int l_tile_no = this->get_selected_board_tile_no(p_project);
+	int l_tile_no = p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
 	bool l_first{ true };
 
 	for (int x{ p_wrap ? 0 : sel_tile_x }; x < c::MAP_W; ++x) {
-		for (int y{ l_first ? sel_tile_y + 1 : 0 }; y < c::MAP_H; ++y)
+		for (int y{ l_first && !p_wrap ? sel_tile_y + 1 : 0 }; y < c::MAP_H; ++y)
 			if (l_brd.get_tile_no(x, y) == l_tile_no) {
 				sel_tile_x = x;
 				sel_tile_y = y;
@@ -736,7 +736,7 @@ void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_wrap) 
 
 	// no tile found, wrap around
 	if (!p_wrap)
-		this->next_tile(p_project, true);
+		this->next_tile(p_project, p_tp_tile, true);
 
 	// no tile found, but wrap was already turned on, return with no changes (should never happen)
 }
