@@ -9,8 +9,6 @@ using byte = unsigned char;
 
 kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config } {
 	initialize_palette();
-	initialize_walls();
-	initialize_maps();
 }
 
 int kkit::Project::save_boards_kzp(bool p_compress) const {

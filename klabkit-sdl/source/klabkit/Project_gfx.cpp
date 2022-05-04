@@ -2,7 +2,6 @@
 #include "kkit_gfx.h"
 
 kkit::Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project) : font(p_rnd, std::vector<byte>(begin(FONT_BYTES), end(FONT_BYTES)), 16, 22) {
-	this->textures[INDEX_WALL_TEXTURES] = kkit::gfx::get_project_textures(p_rnd, p_project);
 	this->textures[INDEX_APP_TEXTURES] = kkit::gfx::get_program_textures(p_rnd, p_project);
 	this->load_background_textures(p_rnd);
 }
@@ -14,6 +13,10 @@ kkit::Project_gfx::~Project_gfx(void) {
 		for (auto& txt : kv.second)
 			if (txt != nullptr)
 				SDL_DestroyTexture(txt);
+}
+
+void kkit::Project_gfx::load_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
+	this->textures[INDEX_WALL_TEXTURES] = kkit::gfx::get_project_textures(p_rnd, p_project);
 }
 
 void kkit::Project_gfx::load_background_textures(SDL_Renderer* p_rnd) {

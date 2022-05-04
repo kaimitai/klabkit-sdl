@@ -28,6 +28,7 @@ namespace kkit {
 		Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		~Project_gfx(void);
 
+		void load_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		void reload_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);
 
 		SDL_Texture* get_tile_texture(int p_frame_no) const;

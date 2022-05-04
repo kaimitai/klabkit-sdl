@@ -20,8 +20,6 @@ namespace kkit {
 
 		// initializers
 		void initialize_palette(void);
-		void initialize_walls(void);
-		void initialize_maps(void);
 
 		// utility functions
 		std::string get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
@@ -30,6 +28,10 @@ namespace kkit {
 
 	public:
 		Project(const kkit::Project_config& p_config);
+
+		// public initializers
+		void initialize_walls(void);
+		void initialize_maps(void);
 
 		// logical getters
 		std::vector<byte> get_board_bytes(void) const;

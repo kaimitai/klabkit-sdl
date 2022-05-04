@@ -21,6 +21,7 @@ namespace kkit {
 
 	class Main_window {
 		std::size_t window_index;
+		bool project_loaded;
 
 		About_window about_window;
 		Board_window board_window;
@@ -28,7 +29,8 @@ namespace kkit {
 
 		std::vector<klib::Button> buttons;
 
-		void button_click(std::size_t p_button_no);
+		void button_click(std::size_t p_button_no, SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+		void load_project_files(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 
 	public:
 		Main_window(SDL_Renderer* p_rnd);

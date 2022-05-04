@@ -76,8 +76,6 @@ int main(int argc, char* args[]) {
 			uint32_t deltaDraw = 17;
 
 			p_gfx.add_toast_ok("Welcome to Ken's Labyrinth Developer's Toolkit / SDL");
-			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " maps and " +
-				std::to_string(project.get_wall_image_count()) + " gfx tiles");
 
 			while (!l_exit) {
 
