@@ -247,6 +247,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		board_ind = klib::util::validate(board_ind + 1, 0, p_project.get_board_count() - 1);
 		return;
 	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_F)) {
+		this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
+		return;
+	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_P)) {
+		this->center_offset(p_project.get_player_start_pos(board_ind));
+		return;
+	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -394,17 +402,18 @@ void kkit::Board_window::click_minimap(int p_x, int p_y) {
 }
 
 void kkit::Board_window::center_offset(void) {
-	// TODO: Fix this function, the problem is centering tiles near the right and bottom edges
-	//int l_dx = std::min(c_tile_cnt() / 2, (64 - board_x) / c_tile_cnt());
-	//int l_dy = std::min(c_tile_cnt() / 2, (64 - board_y) / c_tile_cnt());
-	int l_dx = 0;
-	int l_dy = 0;
+	// TODO: Make sure the centered pixel remains on the board even when close to the right/bottom edge
+	int l_pw = c_bb_pixel_width();
 
-	this->set_grid_offset(board_px - c_bb_pixel_width() / 2, board_py - c_bb_pixel_width() / 2);
+	bool l_bx = (BOARD_TPW - board_px) <= c_bb_pixel_width() + 32;
+	bool l_by = (BOARD_TPW - board_py) <= c_bb_pixel_width() + 32;
+
+	//this->set_grid_offset(board_px - l_x / 2, board_py - l_y / 2);
+	this->set_grid_offset(board_px - (l_bx ? 0 : c_bb_pixel_width() / 2), board_py - (l_by ? 0 : c_bb_pixel_width() / 2));
 }
 
 void kkit::Board_window::center_offset(std::pair<int, int> p_coords) {
-	this->set_grid_offset(p_coords.first, p_coords.second);
+	this->set_grid_offset(c::WALL_IMG_W * p_coords.first, c::WALL_IMG_H * p_coords.second);
 	this->center_offset();
 }
 
@@ -489,7 +498,7 @@ void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) con
 
 void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx, int p_x, int p_y) const {
 	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_TPW, BW_TPH,
-		kkit::gfx::get_pulse_color(4, timers[1].get_frame()),
+		kkit::gfx::get_pulse_color(2, timers[1].get_frame()),
 		0);
 
 	for (int i{ tile_row * BW_TPR }; i < static_cast<int>(p_project.get_tile_picker().size()) && i < (BW_TPR * (BW_TPC + tile_row)); ++i) {
@@ -504,8 +513,8 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 
 	if (tile_y >= tile_row && tile_y < tile_row + BW_TPC)
 		klib::gfx::draw_rect(p_rnd, p_x + 32 * tile_x, p_y + 32 * (tile_y - tile_row), 32, 32,
-			kkit::gfx::get_pulse_color(0, timers[1].get_frame()),
-			2);
+			kkit::gfx::get_pulse_color(4, timers[1].get_frame()),
+			4);
 
 	std::string l_tile_md;
 	int l_tile_no = p_project.get_tile_picker().at(tile_y * BW_TPR + tile_x);

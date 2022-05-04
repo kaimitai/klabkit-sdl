@@ -22,9 +22,10 @@ namespace kkit {
 	// pixel dimension and coordinates of level board
 	constexpr int BW_BX{ 20 };
 	constexpr int BW_BY{ 80 };
-	constexpr int BW_BW{ c::WALL_IMG_W * 8 };
 	constexpr int BOARD_TILE_W{ 8 };
+	constexpr int BW_BW{ c::WALL_IMG_W * BOARD_TILE_W };
 	constexpr int BOARD_PW{ BOARD_TILE_W * c::WALL_IMG_W };
+	constexpr int BOARD_TPW{ c::WALL_IMG_W * c::MAP_W };
 
 	// pixel dimensions and coordinates of minimap
 	constexpr int BW_MX{ BW_BX };

@@ -218,7 +218,7 @@ SDL_Color kkit::gfx::get_pulse_color(int p_color_no, int p_frame_no) {
 	else if (p_color_no == 3)
 		return SDL_Color(l_frame_no / 4, l_frame_no / 4, 255 - l_frame_no / 2);
 	else
-		return SDL_Color(l_frame_no / 4, l_frame_no / 4, l_frame_no / 4);
+		return SDL_Color(180 - l_frame_no/2, 240 - l_frame_no/2, 0);
 }
 
 bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path) {
