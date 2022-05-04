@@ -14,13 +14,13 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 }
 
 int kkit::Project::save_boards_kzp(bool p_compress) const {
-	auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, config.lzw_comp_type == 1) : this->get_board_bytes());
+	auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, this->is_klab_v_1()) : this->get_board_bytes());
 	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
 	return static_cast<int>(l_bytes.size());
 }
 
 int kkit::Project::save_walls_kzp(bool p_compress) const {
-	auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, config.lzw_comp_type == 1) : this->get_wall_bytes());
+	auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, this->is_klab_v_1()) : this->get_wall_bytes());
 	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
 	return static_cast<int>(l_bytes.size());
 }
@@ -52,7 +52,7 @@ void kkit::Project::initialize_walls(void) {
 		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	}
 	catch (std::exception& ex) {
-		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count, config.lzw_comp_type == 1);
+		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count, this->is_klab_v_1());
 	}
 
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
@@ -70,7 +70,7 @@ void kkit::Project::initialize_maps(void) {
 	}
 	catch (const std::exception& ex) {
 		//map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path("BOARDS_orig", c::FILE_EXT_KZP)));
-		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)), config.board_count, config.lzw_comp_type == 1);
+		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)), config.board_count, this->is_klab_v_1());
 	}
 
 	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
@@ -229,6 +229,10 @@ int kkit::Project::get_tile_picker_index(int p_tile_no) const {
 		if (config.tile_picker[i] == p_tile_no)
 			return static_cast<int>(i);
 	return -1;
+}
+
+bool kkit::Project::is_klab_v_1(void) const {
+	return (config.lzw_comp_type == 1);
 }
 
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {

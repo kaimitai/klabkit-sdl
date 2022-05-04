@@ -15,7 +15,7 @@ namespace kkit {
 		constexpr char APP_VERSION[]{ "alpha 1" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
-		constexpr char CONF_FILE_NAME[]{"klabkit-sdl-config.xml"};
+		constexpr char CONF_FILE_NAME[]{ "klabkit-sdl-config.xml" };
 
 		using byte = unsigned char;
 
@@ -48,6 +48,26 @@ namespace kkit {
 			{63,30,20},
 			{55,25,30}
 			} };
+
+		// palette generator for lab3d v1
+		constexpr std::array<std::array<byte, 3>, 16> PAL_GEN_V1{
+			{0, 30, 63},
+			{ 28,34,60 },
+			{ 0,50,20 },
+			{ 15,60,30 },
+			{ 63,63,25 },
+			{ 63,63,63 },
+			{ 63,20,20 },
+			{ 63,0,63 },
+			{ 63,32,0 },
+			{ 63,40,25 },
+			{ 63,48,48 },
+			{ 45,63,45 },
+			{ 0,0,63 },
+			{ 63,40,63 },
+			{ 63,30,20 },
+			{ 63,63,63 }
+		};
 
 		// wall files
 		constexpr int WALL_IMG_W{ 64 };
