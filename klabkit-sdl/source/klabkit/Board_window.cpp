@@ -92,15 +92,22 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	for (std::size_t i{ 3 }; i < buttons.size(); ++i)
 		buttons[i].draw(p_rnd, p_gfx.get_font(), p_input);
 
+	bool l_mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool l_mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
-	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Board " + std::to_string(board_ind + 1) + "/" + std::to_string(p_project.get_board_count()), BW_BX - 1, BW_BY - klib::gc::BUTTON_H - 1, BW_BW + 2, BW_BW + 4 + klib::gc::BUTTON_H);
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Board " + std::to_string(board_ind + 1) + "/" + std::to_string(p_project.get_board_count()), BW_BX - 1, BW_BY - klib::gc::BUTTON_H - 1, BW_BW + 2, BW_BW + 4 + klib::gc::BUTTON_H,
+		klib::gc::BUTTON_H,
+		l_mouse_over_board_grid ? klib::gc::COL_BLACK : klib::gc::COL_WHITE,
+		l_mouse_over_board_grid ? gfx::get_pulse_color(0, timers[1].get_frame()) : klib::gc::COL_BLUE);
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 
-	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H);
+	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H,
+		klib::gc::BUTTON_H,
+		l_mouse_over_tile_picker ? klib::gc::COL_BLACK : klib::gc::COL_WHITE,
+		l_mouse_over_tile_picker ? gfx::get_pulse_color(0, timers[1].get_frame()) : klib::gc::COL_BLUE);
 	draw_tile_picker(p_rnd, p_project, p_gfx, BW_TPX, BW_TPY);
 
 	draw_selected_board_tile(p_rnd, p_input, p_project, p_gfx);
