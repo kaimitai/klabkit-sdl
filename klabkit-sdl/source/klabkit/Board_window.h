@@ -119,6 +119,7 @@ namespace kkit {
 		// internal calculations
 		int c_max_offset(void) const;
 		int c_bb_pixel_width(void) const;
+		int c_bb_tile_pixel_width(void) const;
 		int c_tile_row_max(const kkit::Project& p_project) const;
 
 		void move_grid_offset_x(int p_dx);
