@@ -137,13 +137,16 @@ namespace kkit {
 		void button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input);
 
 		// selection operations, copy, paste, cut, flip, rotate etc
+		bool is_empty_selection(const kkit::Project& p_project) const;
 		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
-		void copy_to_clipboard(const kkit::Project& p_project);
+		void copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary = true);
+		void cut_selection(kkit::Project& p_project);
 		void paste_from_clipboard(kkit::Project& p_project);
 		bool selection_fits(void) const;
 		void show_selection_rectangle(void);
 		void clear_selection(kkit::Project& p_project);
 		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
+		void clear_secondary_selection(void);
 
 		// board calculations
 		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;

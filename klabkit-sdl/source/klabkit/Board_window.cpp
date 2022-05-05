@@ -270,6 +270,14 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		this->center_offset(p_project.get_player_start_pos(board_ind));
 		return;
 	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X)) {
+		this->cut_selection(p_project);
+		return;
+	}
+	else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE)) {
+		this->clear_secondary_selection();
+		return;
+	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
@@ -329,7 +337,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_x = l_tcoords.first;
 		sel_tile_y = l_tcoords.second;
-		sel_tile_2_x = -1;	// clear selection
+		this->clear_secondary_selection();
 
 		if (l_ctrl) {
 			int l_sel_tile_no = p_project.get_board(board_ind).get_tile_no(sel_tile_x, sel_tile_y);
@@ -612,6 +620,23 @@ std::pair<int, int> kkit::Board_window::get_pixel_pos(int p_x, int p_y) const {
 * Selection operations *
 ************************/
 
+bool kkit::Board_window::is_empty_selection(const kkit::Project& p_project) const {
+	auto l_rect = this->get_selection_rectangle();
+	const auto& l_brd = p_project.get_board(board_ind);
+
+	int l_x = std::get<0>(l_rect);
+	int l_y = std::get<1>(l_rect);
+	int l_w = std::get<2>(l_rect);
+	int l_h = std::get<3>(l_rect);
+
+	for (int x{ l_x }; x < l_x + l_w; ++x)
+		for (int y{ l_y }; y < l_y + l_h; ++y)
+			if (l_brd.get_tile_no(x, y) != -1)
+				return false;
+
+	return true;
+}
+
 std::tuple<int, int, int, int> kkit::Board_window::get_selection_rectangle(void) const {
 	// we only have one tile selected
 	if (sel_tile_2_x < 0)
@@ -626,10 +651,20 @@ std::tuple<int, int, int, int> kkit::Board_window::get_selection_rectangle(void)
 	}
 }
 
-void kkit::Board_window::copy_to_clipboard(const kkit::Project& p_project) {
+void kkit::Board_window::copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary) {
 	auto l_rect = this->get_selection_rectangle();
 
 	this->clipboard = p_project.get_board(board_ind).get_rectangle(std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+	if (p_clear_secondary)
+		this->clear_secondary_selection();
+}
+
+void kkit::Board_window::cut_selection(kkit::Project& p_project) {
+	if (!this->is_empty_selection(p_project)) {
+		this->copy_to_clipboard(p_project, false);
+		this->clear_selection(p_project);
+		this->clear_secondary_selection();
+	}
 }
 
 void kkit::Board_window::paste_from_clipboard(kkit::Project& p_project) {
@@ -657,6 +692,10 @@ void kkit::Board_window::clear_selection(kkit::Project& p_project) {
 	for (int i{ std::get<0>(l_rect) }; i < std::get<0>(l_rect) + std::get<2>(l_rect); ++i)
 		for (int j{ std::get<1>(l_rect) }; j < std::get<1>(l_rect) + std::get<3>(l_rect); ++j)
 			p_project.clear_tile(board_ind, i, j);
+}
+
+void kkit::Board_window::clear_secondary_selection(void) {
+	this->sel_tile_2_x = -1;
 }
 
 void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p_clockwise) {
@@ -755,7 +794,7 @@ void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_tp_til
 			if (l_brd.get_tile_no(x, y) == l_tile_no) {
 				sel_tile_x = x;
 				sel_tile_y = y;
-				sel_tile_2_x = -1;
+				this->clear_secondary_selection();
 				this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
 				return;
 			}
@@ -780,7 +819,7 @@ void kkit::Board_window::prev_tile(const kkit::Project& p_project, bool p_tp_til
 			if (l_brd.get_tile_no(x, y) == l_tile_no) {
 				sel_tile_x = x;
 				sel_tile_y = y;
-				sel_tile_2_x = -1;
+				this->clear_secondary_selection();
 				this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
 				return;
 			}
