@@ -218,12 +218,12 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	for (auto& timer : timers)
 		timer.move(p_delta_ms);
 
+	// check if any button was clicked
 	if (p_input.mouse_clicked())
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
 				try {
 					button_click(i, p_project, p_gfx, p_input);
-					return;
 				}
 				catch (const std::exception& ex) {
 					p_gfx.add_toast_error(ex.what());
@@ -231,58 +231,93 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 				catch (...) {
 					p_gfx.add_toast_error("Unknown error occurred");
 				}
-
+				return;
 			}
-
-	if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C)) {
-		this->copy_to_clipboard(p_project);
-		return;
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
-		this->paste_from_clipboard(p_project);
-		return;
-	}
-	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V)) {
-		this->show_selection_rectangle();
-		return;
-	}
-	else if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
-		this->clear_selection(p_project);
-		return;
-	}
-	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEDOWN)) {
-		board_ind = klib::util::validate(board_ind - 1, 0, p_project.get_board_count() - 1);
-		return;
-	}
-	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEUP)) {
-		board_ind = klib::util::validate(board_ind + 1, 0, p_project.get_board_count() - 1);
-		return;
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_F)) {
-		this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
-		return;
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_P)) {
-		this->prev_tile(p_project, l_shift);
-		return;
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H)) {
-		this->center_offset(p_project.get_player_start_pos(board_ind));
-		return;
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X)) {
-		this->cut_selection(p_project);
-		return;
-	}
-	else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE)) {
-		this->clear_secondary_selection();
-		return;
-	}
 
 	bool mouse_over_board_grid{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_BX, BW_BY, BW_BW, BW_BW) };
 	bool mouse_over_tile_picker{ klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_TPX, BW_TPY, BW_TPW, BW_TPH) };
 
-	if (p_input.is_pressed(SDL_SCANCODE_KP_PLUS) || (mouse_over_board_grid && l_ctrl && p_input.mw_up())) {
+	// shift + home: to top of tile picker
+	if (l_shift && p_input.is_pressed(SDL_SCANCODE_HOME))
+		tile_row = 0;
+	// home: go to first board
+	else if (p_input.is_pressed(SDL_SCANCODE_HOME))
+		board_ind = 0;
+	// shift + end: to bottom of tile picker
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_END))
+		tile_row = c_tile_row_max(p_project);
+	// end: go to last board
+	else if (p_input.is_pressed(SDL_SCANCODE_END))
+		board_ind = p_project.get_board_count() - 1;
+	// shift + PgDown: tile picker next page
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
+		tile_row = klib::util::validate(tile_row + BW_TPC, 0, c_tile_row_max(p_project));
+	// shift + PgUp: tile picker previous page
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_PAGEUP))
+		tile_row = klib::util::validate(tile_row - BW_TPC, 0, c_tile_row_max(p_project));
+	// ctrl+C: copy selection to clipboard
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
+		this->copy_to_clipboard(p_project);
+	// ctrl+V: paste from clipboard
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
+		this->paste_from_clipboard(p_project);
+	// shift+V: show where clipboard WOULD BE pasted
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
+		this->show_selection_rectangle();
+	// delete: set all tiles in selection to 0 (internal -1)
+	else if (p_input.is_pressed(SDL_SCANCODE_DELETE))
+		this->clear_selection(p_project);
+	// shift+Minus / PgDown: previous board
+	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
+		board_ind = klib::util::validate(board_ind - 1, 0, p_project.get_board_count() - 1);
+	// shift+Plus / PgUp: next board
+	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEUP))
+		board_ind = klib::util::validate(board_ind + 1, 0, p_project.get_board_count() - 1);
+	// ctrl+F: find selected board tile
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_F))
+		this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
+	// ctrl+P: go to previous tile of selected type on board (if shift held, previous tile of tile picker's type)
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_P))
+		this->prev_tile(p_project, l_shift);
+	// ctrl+H: center on player start position
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H))
+		this->center_offset(p_project.get_player_start_pos(board_ind));
+	// ctrl+X: cut selection
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+		this->cut_selection(p_project);
+	// esc: clear selection rectangle
+	else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
+		this->clear_secondary_selection();
+	// ctrl+S: save to kzp (if shift held too; save to DAT)
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
+		this->save_boards_kzp(p_project, p_gfx, !l_shift);
+	// ctrl+N: next tile of selected type (if shift held, next tile of tile picker's type - if any)
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
+		this->next_tile(p_project, l_shift);
+	// B: toggle selected board tile desctructible property ([B]last)
+	else if (p_input.is_pressed(SDL_SCANCODE_B))
+		p_project.toggle_mt_blast(board_ind, sel_tile_x, sel_tile_y);
+	// C: toggle selected board tile clip property ([C]lip)
+	else if (p_input.is_pressed(SDL_SCANCODE_C))
+		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
+	// D: toggle selected board tile direction (horizontal/vertical), or if player start: n/e/s/w
+	else if (p_input.is_pressed(SDL_SCANCODE_D))
+		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
+	// F: flip selection: horizontal flip, shift+F: vertical flip
+	else if (p_input.is_pressed(SDL_SCANCODE_F)) {
+		auto l_rect = this->get_selection_rectangle();
+		if (l_shift)
+			p_project.flip_vertical(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+		else
+			p_project.flip_horizontal(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+	}
+	// R: rotate clipboard counter-clockwise, if shift held: rotate clockwise
+	else if (p_input.is_pressed(SDL_SCANCODE_R)) {
+		this->rotate_selection(p_project, l_shift);
+		p_gfx.add_toast_ok("Clipboard rotated " + std::string(l_shift ? "clockwise" : "counter-clockwise"));
+	}
+	// ctrl+Plus / ctrl+mousewheel up on board grid: zoom in
+	else if ((l_ctrl && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) || (mouse_over_board_grid && l_ctrl && p_input.mw_up())) {
 		bool l_kp{ p_input.is_pressed(SDL_SCANCODE_KP_PLUS) };
 		if (zoom_factor >= ZOOM_MAX)
 			return;
@@ -294,7 +329,8 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 			l_kp ? (BW_BW / 2) : (p_input.mx() - BW_BX),
 			l_kp ? (BW_BW / 2) : (p_input.my() - BW_BY));
 	}
-	else if (p_input.is_pressed(SDL_SCANCODE_KP_MINUS) || (mouse_over_board_grid && l_ctrl && p_input.mw_down())) {
+	// ctrl+Minus / ctrl+mousewheel down on board grid: zoom out
+	else if ((l_ctrl && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || (mouse_over_board_grid && l_ctrl && p_input.mw_down())) {
 		bool l_kp{ p_input.is_pressed(SDL_SCANCODE_KP_MINUS) };
 		if (zoom_factor <= ZOOM_MIN)
 			return;
@@ -306,33 +342,37 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 			l_kp ? (BW_BW / 2) : (p_input.mx() - BW_BX),
 			l_kp ? (BW_BW / 2) : (p_input.my() - BW_BY));
 	}
+	// mousewheel up over tile picker: scroll up
 	else if (p_input.mw_up() && mouse_over_tile_picker)
 		tile_row = klib::util::validate(tile_row - (l_ctrl ? 4 : 1), 0, c_tile_row_max(p_project));
+	// mousewheel down over tile picker: scroll down
 	else if (p_input.mw_down() && mouse_over_tile_picker)
 		tile_row = klib::util::validate(tile_row + (l_ctrl ? 4 : 1), 0, c_tile_row_max(p_project));
-	else if (p_input.is_pressed(SDL_SCANCODE_UP) || (!l_shift && p_input.mw_up()))
+	// up arrow / mousewheel up on board grid, scroll board grid up (ctrl for faster scroll)
+	else if (p_input.is_pressed(SDL_SCANCODE_UP) || (mouse_over_board_grid && !l_shift && p_input.mw_up()))
 		this->move_grid_offset_y(l_ctrl ? -4 * 64 : -64);
-	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || (!l_shift && p_input.mw_down()))
+	// down arrow / mousewheel down on board grid, scroll board grid down (ctrl for faster scroll)
+	else if (p_input.is_pressed(SDL_SCANCODE_DOWN) || (mouse_over_board_grid && !l_shift && p_input.mw_down()))
 		this->move_grid_offset_y(l_ctrl ? 4 * 64 : 64);
+	// left arrow / shift + mousewheel down on board grid, scroll board grid left (ctrl for faster scroll)
 	else if (p_input.is_pressed(SDL_SCANCODE_LEFT) || (l_shift && p_input.mw_down()))
 		this->move_grid_offset_x(l_ctrl ? -4 * 64 : -1 * 64);
+	// right arrow / shift + mousewheel up on board grid, scroll board grid right (ctrl for faster scroll)
 	else if (p_input.is_pressed(SDL_SCANCODE_RIGHT) || (l_shift && p_input.mw_up()))
 		this->move_grid_offset_x(l_ctrl ? 4 * 64 : 1 * 64);
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
-		this->save_boards_kzp(p_project, p_gfx, !l_shift);
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
-		this->next_tile(p_project, l_shift);
 
-	if (p_input.mouse_held(false) && mouse_over_board_grid) {
+	// right click on board grid: paint (set board grid tile to selected tile picker tile)
+	else if (p_input.mouse_held(false) && mouse_over_board_grid) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
-		//if (p_project.get_player_start_pos(board_ind) != l_tcoords) {
+
 		int l_stile_no{ this->get_selected_tile_no(p_project) };
 		if (l_stile_no == -2)
 			p_project.set_player_start_position(board_ind, l_tcoords.first, l_tcoords.second);
 		else
 			p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
-		//}
 	}
+	// mouse down on board grid, no shift: select clicked tile
+	// if ctrl held: "color picker" (make tile picker tile equal to selected board tile)
 	else if (mouse_over_board_grid && p_input.mouse_held(true) && !l_shift) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_x = l_tcoords.first;
@@ -350,35 +390,20 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		}
 
 	}
+	// shift + board grid mouse down; make selection rectangle
 	else if (mouse_over_board_grid && p_input.mouse_held(true) && l_shift) {
 		auto l_tcoords = this->get_tile_pos(p_input.mx() - BW_BX, p_input.my() - BW_BY);
 		sel_tile_2_x = l_tcoords.first;
 		sel_tile_2_y = l_tcoords.second;
 	}
+	// minimap clicked, change board grid offset to match
 	else if (p_input.mouse_held() &&
-		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW)) {
+		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW))
 		this->click_minimap(p_input.mx() - BW_MX, p_input.my() - BW_MY);
-	}
-	else if (p_input.mouse_held() && mouse_over_tile_picker) {
+	// tile picker clicked, select tile
+	else if (p_input.mouse_held() && mouse_over_tile_picker)
 		this->click_tile_picker(p_project, p_input.mx() - BW_TPX, p_input.my() - BW_TPY);
-	}
-	else if (p_input.is_pressed(SDL_SCANCODE_B))
-		p_project.toggle_mt_blast(board_ind, sel_tile_x, sel_tile_y);
-	else if (p_input.is_pressed(SDL_SCANCODE_C))
-		p_project.toggle_mt_inside(board_ind, sel_tile_x, sel_tile_y);
-	else if (p_input.is_pressed(SDL_SCANCODE_D))
-		p_project.toggle_mt_direction(board_ind, sel_tile_x, sel_tile_y);
-	else if (p_input.is_pressed(SDL_SCANCODE_F)) {
-		auto l_rect = this->get_selection_rectangle();
-		if (l_shift)
-			p_project.flip_vertical(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
-		else
-			p_project.flip_horizontal(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
-	}
-	else if (p_input.is_pressed(SDL_SCANCODE_R)) {
-		this->rotate_selection(p_project, l_shift);
-		p_gfx.add_toast_ok("Clipboard rotated " + std::string(l_shift ? "clockwise" : "counter-clockwise"));
-	}
+
 }
 
 // internal calculations
@@ -598,7 +623,7 @@ int kkit::Board_window::c_bb_tile_pixel_width(void) const {
 }
 
 int kkit::Board_window::c_tile_row_max(const kkit::Project& p_project) const {
-	return std::max(0, (static_cast<int>(p_project.get_tile_picker().size()) % BW_TPC == 0 ? 0 : 1) + static_cast<int>(p_project.get_tile_picker().size()) / BW_TPR - BW_TPC);
+	return std::max(0, (static_cast<int>(p_project.get_tile_picker().size()) % BW_TPR == 0 ? 0 : 1) + static_cast<int>(p_project.get_tile_picker().size()) / BW_TPR - BW_TPC);
 }
 
 // the board was clicked, get its global coordinates from the pixels
@@ -699,6 +724,9 @@ void kkit::Board_window::clear_secondary_selection(void) {
 }
 
 void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p_clockwise) {
+	if (this->clipboard.empty())
+		return;
+
 	std::vector<std::vector<kkit::Map_tile>> result;
 
 	if (p_clockwise) {
