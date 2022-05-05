@@ -53,6 +53,7 @@ namespace kkit {
 		constexpr char XML_ATTR_PLAYER_Y[]{ "player_start_y" };
 		constexpr char XML_ATTR_PLAYER_DIR[]{ "player_start_direction" };
 
+		constexpr char XML_ATTR_ACTIVE_CONFIG_NO[]{ "active_config_no" };
 		constexpr char XML_ATTR_NO[]{ "no" };
 		constexpr char XML_ATTR_WALL_NO[]{ "wall_no" };
 		constexpr char XML_ATTR_VERTICAL[]{ "vertical" };
