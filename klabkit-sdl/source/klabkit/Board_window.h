@@ -66,7 +66,7 @@ namespace kkit {
 
 	// save/load buttons
 	constexpr int BW_BTN_LOGIC{ 7 };
-	constexpr int BW_BTN_SL_IND{ BW_BTN_LOGIC + 2 };
+	constexpr int BW_BTN_SL_IND{ BW_BTN_LOGIC + 3 };
 
 	constexpr int BW_EXML_BTN_X{ BW_TPX };
 	constexpr int BW_EXML_BTN_Y{ BW_FBY + 2 * (BW_FBH + BW_FB_SPACING) };
