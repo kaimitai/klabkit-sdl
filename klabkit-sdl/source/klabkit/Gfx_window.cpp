@@ -63,9 +63,20 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 		}
 	}
 	// save kzp
-	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S)) {
+	else if (p_input.is_ctrl_pressed() && p_input.is_pressed(SDL_SCANCODE_S))
 		this->save_walls_kzp(p_project, p_gfx, !l_shift);
-	}
+	// Home: go to top of tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_HOME))
+		this->tile_row = 0;
+	// End: go to end of tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_END))
+		this->tile_row = c_max_tile_row(p_project.get_wall_image_count());
+	// PgUp: up one page on tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP))
+		tile_row = klib::util::validate(tile_row - GW_TTPC, 0, c_max_tile_row(p_project.get_wall_image_count()));
+	// PgDown: down one tile on tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
+		tile_row = klib::util::validate(tile_row + GW_TTPC, 0, c_max_tile_row(p_project.get_wall_image_count()));
 }
 
 void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
