@@ -252,6 +252,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		return;
 	}
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_P)) {
+		this->prev_tile(p_project, l_shift);
+		return;
+	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H)) {
 		this->center_offset(p_project.get_player_start_pos(board_ind));
 		return;
 	}
@@ -751,5 +755,30 @@ void kkit::Board_window::next_tile(const kkit::Project& p_project, bool p_tp_til
 	if (!p_wrap)
 		this->next_tile(p_project, p_tp_tile, true);
 
-	// no tile found, but wrap was already turned on, return with no changes (should never happen)
+	// no tile found, but wrap was already turned on, return with no changes
+}
+
+// pretty much a lazy copy/past of next_tile
+void kkit::Board_window::prev_tile(const kkit::Project& p_project, bool p_tp_tile, bool p_wrap) {
+	const auto& l_brd{ p_project.get_board(board_ind) };
+	int l_tile_no = p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
+	bool l_first{ true };
+
+	for (int x{ p_wrap ? c::MAP_W - 1 : sel_tile_x }; x >= 0; --x) {
+		for (int y{ l_first && !p_wrap ? sel_tile_y - 1 : c::MAP_H - 1 }; y >= 0; --y)
+			if (l_brd.get_tile_no(x, y) == l_tile_no) {
+				sel_tile_x = x;
+				sel_tile_y = y;
+				sel_tile_2_x = -1;
+				this->center_offset(std::make_pair(sel_tile_x, sel_tile_y));
+				return;
+			}
+		l_first = false;
+	}
+
+	// no tile found, wrap around
+	if (!p_wrap)
+		this->prev_tile(p_project, p_tp_tile, true);
+
+	// no tile found, but wrap was already turned on, return with no changes
 }
