@@ -139,7 +139,7 @@ namespace kkit {
 		// selection operations, copy, paste, cut, flip, rotate etc
 		bool is_empty_selection(const kkit::Project& p_project) const;
 		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
-		void copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary = true);
+		void copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary = false);
 		void cut_selection(kkit::Project& p_project);
 		void paste_from_clipboard(kkit::Project& p_project);
 		bool selection_fits(void) const;
