@@ -122,7 +122,32 @@ std::vector<std::vector<byte>> kkit::compression::decompress_sounds_kzp(const st
 	return result;
 }
 
+std::vector<byte> kkit::compression::compress_sounds_kzp(const std::vector<std::vector<byte>>& p_file_bytes) {
+	constexpr int WAV_HEADER_SIZE = (4 + 4 + 8 + 4 + 2 + 2 + 4 + 4 + 2 + 2 + 4 + 4);
 
+	std::vector<byte> result;
+	int l_file_count = static_cast<int>(p_file_bytes.size());
+
+	// add file count (uint16le)
+	klib::util::append_uint_le(result, static_cast<int>(p_file_bytes.size()), 2);
+
+	int l_cur_offset{ 2 + 6 * l_file_count };
+	// for each file, add offset (uint64le) and length (uint16le)
+	for (const auto& l_file : p_file_bytes) {
+		// "compressed" file size is smaller, as we strip the headers and size metadata from the wav files
+		int l_file_cmp_size = static_cast<int>(l_file.size()) - WAV_HEADER_SIZE;
+		klib::util::append_uint_le(result, l_cur_offset, 4);
+		klib::util::append_uint_le(result, l_file_cmp_size, 2);
+		l_cur_offset += l_file_cmp_size;
+	}
+
+	// append the actual wav files, after removing the headers and size metadata
+	// this data all comes before the actual wave data, so no problem ;)
+	for (const auto& l_file : p_file_bytes)
+		result.insert(end(result), begin(l_file) + WAV_HEADER_SIZE, end(l_file));
+
+	return result;
+}
 
 std::vector<byte> kkit::compression::decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int p_header_size, int p_out_header_size, bool p_klab_1) {
 	std::vector<byte> result(std::vector<byte>(begin(p_bytes), begin(p_bytes) + p_header_size));
