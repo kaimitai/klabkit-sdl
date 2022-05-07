@@ -37,6 +37,7 @@ namespace kkit {
 		std::vector<byte> decompress_story_kzp(const std::vector<byte>& p_bytes);
 		std::vector<std::pair<std::string, std::vector<byte>>> decompress_songs_kzp(const std::vector<byte>& p_bytes);
 		std::vector<std::vector<byte>> decompress_sounds_kzp(const std::vector<byte>& p_bytes);
+		std::vector<byte> decompress_walls_kzp_walken(const std::vector<byte>& p_bytes, int p_wall_count);
 
 		// compression / archiving / encryption
 		std::vector<byte> compress_boards_kzp(const std::vector<byte>& p_bytes, int p_board_count, bool p_klab_1 = false);
@@ -45,6 +46,7 @@ namespace kkit {
 		std::vector<byte> compress_story_kzp(const std::vector<byte>& p_bytes);
 		std::vector<byte> compress_songs_kzp(const std::vector<std::pair<std::string, std::vector<byte>>>& p_file_bytes);
 		std::vector<byte> compress_sounds_kzp(const std::vector<std::vector<byte>>& p_file_bytes);
+		std::vector<byte> compress_walls_kzp_walken(const std::vector<byte>& p_bytes, int p_wall_count);
 
 		// lzw helper
 		std::vector<byte> decompress_file_contents(const std::vector<byte>& p_bytes, int p_block_count, int header_size = 0, int out_header_size = 0, bool p_klab_1 = false);

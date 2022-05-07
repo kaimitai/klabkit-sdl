@@ -25,6 +25,12 @@
     <Filter Include="Source Files\klib">
       <UniqueIdentifier>{558a5660-63bf-4d03-acf2-82934842da80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\klabkit-cli">
+      <UniqueIdentifier>{14a4f32c-18bc-41de-9329-3f83a0cff0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\klabkit-cli">
+      <UniqueIdentifier>{8250a956-e1d7-4faf-9ab5-7ba1af021f35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -39,6 +45,9 @@
     <ClCompile Include="..\klabkit-sdl\source\klib\klib_util.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
+    <ClCompile Include="source\klabkit-cli\kkit_cli_util.cpp">
+      <Filter>Source Files\klabkit-cli</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\klabkit-sdl\source\klabkit\compression.h">
@@ -49,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="..\klabkit-sdl\source\klib\klib_util.h">
       <Filter>Header Files\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit-cli\kkit_cli_constants.h">
+      <Filter>Header Files\klabkit-cli</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit-cli\kkit_cli_util.h">
+      <Filter>Header Files\klabkit-cli</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

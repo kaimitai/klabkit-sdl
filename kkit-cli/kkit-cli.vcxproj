@@ -144,12 +144,15 @@
     <ClCompile Include="..\klabkit-sdl\source\klabkit\compression.cpp" />
     <ClCompile Include="..\klabkit-sdl\source\klib\file.cpp" />
     <ClCompile Include="..\klabkit-sdl\source\klib\klib_util.cpp" />
+    <ClCompile Include="source\klabkit-cli\kkit_cli_util.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\klabkit-sdl\source\klabkit\compression.h" />
     <ClInclude Include="..\klabkit-sdl\source\klib\file.h" />
     <ClInclude Include="..\klabkit-sdl\source\klib\klib_util.h" />
+    <ClInclude Include="source\klabkit-cli\kkit_cli_constants.h" />
+    <ClInclude Include="source\klabkit-cli\kkit_cli_util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -510,3 +510,49 @@ std::vector<byte> kkit::compression::compress_songs_kzp(const std::vector<std::p
 
 	return result;
 }
+
+
+// WALLS.KZP - Walken! :)
+std::vector<byte>  kkit::compression::compress_walls_kzp_walken(const std::vector<byte>& p_bytes, int p_wall_count) {
+	// store header - at the end of decompressed data for some reason
+	std::vector<byte> result(std::vector<byte>(end(p_bytes) - p_wall_count, end(p_bytes)));
+
+	for (int l_w{ 0 }; l_w < p_wall_count; ++l_w) {
+
+		int l_offset{ 4096 * l_w };
+		byte cnt{ 0 }, dat{ p_bytes.at(l_offset) }, old_dat{ 0 };
+
+		for (int i{ 0 }; i < 4096; ++i) {
+			old_dat = dat;
+			dat = p_bytes.at(l_offset + i);
+
+			if ((old_dat != dat) || (cnt == 255)) {
+				result.push_back(old_dat);
+				result.push_back(cnt);
+				cnt = 0;
+			}
+			++cnt;
+		}
+
+		result.push_back(dat);
+		result.push_back(cnt);
+	}
+
+	return result;
+}
+
+std::vector<byte> kkit::compression::decompress_walls_kzp_walken(const std::vector<byte>& p_bytes, int p_wall_count) {
+	std::vector<byte> result;
+
+	for (std::size_t i{ static_cast<std::size_t>(p_wall_count) }; i < p_bytes.size(); i += 2) {
+		byte l_val = p_bytes[i];
+		byte l_cnt = p_bytes[i + 1];
+
+		for (byte j{ 0 }; j < l_cnt; ++j)
+			result.push_back(l_val);
+	}
+
+	result.insert(end(result), begin(p_bytes), begin(p_bytes) + p_wall_count);
+
+	return result;
+}
