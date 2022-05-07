@@ -48,6 +48,9 @@
     <ClCompile Include="source\klabkit-cli\kkit_cli_util.cpp">
       <Filter>Source Files\klabkit-cli</Filter>
     </ClCompile>
+    <ClCompile Include="source\klabkit-cli\Cli_parser.cpp">
+      <Filter>Source Files\klabkit-cli</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\klabkit-sdl\source\klabkit\compression.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files\klabkit-cli</Filter>
     </ClInclude>
     <ClInclude Include="source\klabkit-cli\kkit_cli_util.h">
+      <Filter>Header Files\klabkit-cli</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit-cli\Cli_parser.h">
       <Filter>Header Files\klabkit-cli</Filter>
     </ClInclude>
   </ItemGroup>
