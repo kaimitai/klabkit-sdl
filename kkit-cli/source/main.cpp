@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) try {
 
 				// compress boards
 				if (l_cmp_type == ARG_ALL || l_cmp_type == ARG_BOARDS)
-					kkit_cli::compress_boards(l_folder, l_wcount, l_is_klab_v1);
+					kkit_cli::compress_boards(l_folder, l_bcount, l_is_klab_v1);
 
 				// compress lab3d
 				if (l_cmp_type == ARG_ALL || l_cmp_type == ARG_LAB3D)
@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) try {
 
 				// decompress boards
 				if (l_cmp_type == ARG_ALL || l_cmp_type == ARG_BOARDS)
-					kkit_cli::decompress_boards(l_folder, l_wcount, l_is_klab_v1);
+					kkit_cli::decompress_boards(l_folder, l_bcount, l_is_klab_v1);
 
 				// decompress lab3d
 				if (l_cmp_type == ARG_ALL || l_cmp_type == ARG_LAB3D)
@@ -134,7 +134,8 @@ catch (...) {
 void output_header(void) {
 	std::cout << std::string(69, '-') << "\n"
 		<< "KKIT/CLI - Ken's Labyrinth Developer's Toolkit Command Line Interface\n"
-		<< "https://github.com/kaimitai/klabkit-sdl\n"
+		<< "By \"kaimitai\" (https://github.com/kaimitai/klabkit-sdl)\n"
+		<< "Build date: " + std::string(__DATE__) + " at " + std::string(__TIME__) + " CET\n"
 		<< std::string(69, '-') << "\n\n";
 }
 
