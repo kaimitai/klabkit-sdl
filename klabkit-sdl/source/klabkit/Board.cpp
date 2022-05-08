@@ -41,7 +41,7 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 					this->player_direction = Player_direction::Up;
 
 				l_tile_no = -1;
-				l_inside = false;
+				l_inside = true;
 				l_blast = false;
 				l_vertical = false;
 			}

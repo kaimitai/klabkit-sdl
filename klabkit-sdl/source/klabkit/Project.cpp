@@ -36,7 +36,7 @@ int kkit::Project::save_walls_kzp_walken(bool p_compress) const {
 	std::vector<byte> l_bytes;
 
 	// add all tile graphics apart from our virtual tile at the end
-	for (int i{ 0 }; i < static_cast<int>(walls.size()) - 1; ++i) {
+	for (int i{ 0 }; i < static_cast<int>(walls.size()); ++i) {
 		auto l_img_bytes = walls[i].get_image_bytes();
 		l_bytes.insert(end(l_bytes), begin(l_img_bytes), end(l_img_bytes));
 	}
@@ -215,6 +215,7 @@ void kkit::Project::initialize_maps_walken(void) {
 					l_pdir = kkit::Player_direction::Up;
 
 				l_tile_no = 0;
+				l_inside = true;
 			}
 			else if (l_tile_no >= 128) {
 				l_tile_no -= 128;
