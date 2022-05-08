@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (version alpha 1) - Documentation</title>
+    <title>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (version 0.1b) - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,7 +14,9 @@
             <a href="#intro" class="nav-link">
                 Introduction
             </a>
-
+			<a href="#basics" class="nav-link">
+                Basics
+            </a>
             <a href="#configuration" class="nav-link">
                 Configuration
             </a>
@@ -57,13 +59,31 @@
 
                 <hr>
 
-                <header>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (version alpha 1)</header>
+                <header>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (v0.1b)</header>
 
-                <p>Thank you for checking out the KKIT/SDL editor. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
+                <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
             </section>
 
             <hr>
+
+            <section class="main-section" id="basics">
+
+                <header>Basics</header>
+
+                <p>
+                    This editor will let you edit the game data for level boards (BOARDS.KZP/BOARDS.DAT), and tile graphics (WALLS.KZP/WALLS.DAT) used by these levels. Included with the editor are the original versions of these files, and starting the program out of the box will load these files for the full version of Ken's Labyrinth (version 2.1). See the configuration section for how to alter files in other locations.
+                </p>
+
+				<p>
+				    To play the game, the original executables and full sets of game data can be found on <a href="http://advsys.net/ken/">Ken Silverman's official website</a>, but a modern source port is generally recommended whenever possible.
+				</p>
+				
+				<p>When the editor starts successfully, it will tell you which configuration is loaded, how many boards and tile graphics are loaded into memory - and whether it loaded KZP- or DAT-files.</p>
+
+            </section>
+			
+			<hr>
 
             <section class="main-section" id="configuration">
 
@@ -85,7 +105,7 @@
                 <p>Each configuration points to a project folder, where files will be loaded from and saved to. We support relative paths (relative to the kkit-sdl executable), as well as absolute paths. By default the file points to folders that ship with the editor.</p>
 
                 <p>
-                    If the configuration file does not exist, we will load a default configuration for v2.1, but with no custom tile picker layout. In this case the project folder will be the same as the folder of that of the executable.
+                    If the configuration file does not exist, we will load a default configuration for v2.1, but with no custom tile picker layout. In this case the project folder will be the same as the folder of the executable.
                 </p>
 
                 <p>
@@ -93,7 +113,7 @@
                 </p>
 
                 <p>
-                    Not also that, if WALLS.DAT and/or BOARDS.DAT exist in the project folder, these files take precedence over their KZP counterparts when starting up and initializing the program. (see the next sections for saving to DAT)
+                    Note also that, if the files WALLS.DAT and/or BOARDS.DAT exist in the project folder, these files take precedence over their KZP counterparts when starting up and initializing the program. (see the next sections for saving to DAT)
                 </p>
 
 
@@ -103,7 +123,7 @@
             <hr>
 
             <section class="main-section" id="edit_lvl">
-                <header>Level Editing</header>
+                <header>Editing Levels</header>
 
                 <p>The first of the three screens in the application is called "Boards". This is where you can edit the levels in BOARDS.KZP. (BOARDS.DAT for v1.x)</p>
 
@@ -111,7 +131,7 @@
 
                 <p>The board editor consists of four sub-windows; Board, Tile Picker, Minimap and selected board tile.</p>
 
-                <p>The board window shows the loaded board, and makes up the editable area of the screen. The tile picker shows all tiles (from WALLS.KZP) available, and the layout depends on the configuration in kkit-sdl-conf.xml</p>
+                <p>The board window shows the loaded board, and makes up the editable area of the screen. The tile picker shows all tiles (from WALLS.KZP) available, and the layout depends on the configuration in kkit-sdl-config.xml</p>
 
                 <p>Two tiles will always be selected on this screen; one on the board grid, and one on the tile picker grid. The selected tile sub-window will show the properties of the selected board tile, and the label below the tile picker will show the properties of the selected Tile Picker tile.</p>
 
@@ -123,7 +143,7 @@
 
                 <p>Directional tiles can extend from north to south (horizontal) or west to east (horizontal) which can be indicated by arrows in the editor.</p>
 
-                <p>Each board has a player start position, and a direction, which is indicated by a blue arrow.</p>
+                <p>Each board has a player start position, and a player start direction - which is indicated by a blue arrow.</p>
 
                 <p>The four buttons below the tile picker (Dir, Destr, Clip and Tile) are togglable buttons that will turn on or off indications on the board grid. "Dir" will indicate which way directional tiles span, "Destr" will flash destructible tiles, "Clip" will flash clippable tiles (and empty tiles that are <b>noclip</b>, as monsters cannot move across these!) and "Tile" will flash all tiles of the same type as the currently selected tile picker tile.</p>
 
@@ -133,7 +153,7 @@
 
                 <p>The Export XML button will save the current board as XML, (hold Shift to save all boards) and the Import XML button will load the current board from XML. (hold shift to load all XMLs at once) This is one way to manipulate and share boards individually, and XML is better than binaries for version control among other things.</p>
 
-                <p>The "Save KZP" button will write your current levels back to BOARDS.KZP</p>
+                <p>The "Save KZP" button will write your current levels back to BOARDS.KZP. (if editing a legacy version earlier than v2.0, it will save to BOARDS.DAT instead)</p>
 
                 <p>The "Save DAT" button will write your current levels back to BOARDS.DAT, which is an uncompressed version of the KZP. This is required for v1.x levels, but not much use for v2.x.</p>
 
@@ -187,7 +207,7 @@
             <hr>
 
             <section class="main-section" id="edit_gfx">
-                <header>Graphics Editing</header>
+                <header>Editing Graphics</header>
 
                 <p>The second of the three screens is called "Gfx". This is where you edit the game graphics stored in WALLS.KZP.</p>
                 <img src="./images/01_gfx_editor.png" alt="Graphics Editor" width="1024" />
@@ -250,9 +270,9 @@
             <section class="main-section" id="xml_format">
                 <header>XML formats</header>
 
-                <p>The XMLs for boards store the tiles row by row, left to right. The player start direction and position are stored in the header.</p>
+                <p>The XMLs for boards store the tiles row by row, left to right. The player start direction and position are stored in the header. The name of the configuration is written to the header as attribute "lab3d_version", as a hint to users which version of Ken's Labyrinth the board is meant for.</p>
 
-                <p>The XMLs for tile graphics store the pixels (palette indexes) row by row, left to right. The metadata - tile type, destructible and clip - are stored in the header.</p>
+                <p>The XMLs for tile graphics store the pixels (palette indexes) row by row, left to right. The metadata - tile type, destructible and clip - are stored in the header. The name of the configuration is written to the header as attribute "lab3d_version", as a hint to users which version of Ken's Labyrinth the tile graphics is meant for.</p>
 
 
 
@@ -268,7 +288,7 @@
 
                 <ul>
                     <li>no: The number of the configuration. This should be unique per configuration, and one of them should match the value of active_config_no in the XML root node</li>
-                    <li>label: Just a name for the configuration</li>
+                    <li>label: Just a name for the configuration. This value will be written to header of output XMLs for boards and walls, as a hint to users. No program logic depends on this.</li>
                     <li>
                         project_directory: The folder for the game files we are editing. Can be a relative or absolute path.
                     </li>
@@ -276,7 +296,7 @@
                         board_count/wall_count: The number of boards and walls that will be written to the file header. For version 2.0 the board count differs from the actual number of boards for technical reasons. (the KZP header has 30 entries, whereof 20 are ignored)
                     </li>
                     <li>
-                        lzw_header_type: A value of 1 means we write v1.x-type KZP files. A value of 0 means we write Walken-type files, and any other value means version 2.x.
+                        lzw_header_type: A value of 1 means we write v1.x-type KZP files. A value of 0 means we write Walken-type files, and any other number means version 2.x.
                     </li>
                 </ul>
 
@@ -355,7 +375,7 @@
 				<ul>
 				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
 				  <li>Tile metadata does not have the concept destructible, and neither do board tile instantiations. When saving WALLS or BOARDS, the destructible-property will be ignored.</li>
-				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. It is possible to override the clip-property of a board tile, but only if you turn it on, not off.</li>
+				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. It is possible to override the clip-property of a wall tile, but only if you turn it on, not off.</li>
 				</ul>
 
 				<p>
@@ -373,7 +393,7 @@
                 <p>
                     <br><a href="http://advsys.net/ken/">Ken Silverman</a> for creating Ken's Labyrinth and making the source code for the game and the tools available.
                     <br><a href="https://www.icculus.org/LAB3D/">Jan Lönnberg</a> for creating LAB3D/SDL, a modern port of the game
-                    <br><a href="https://ktpanda.org/software/lab3d_sdl/">Katie Stafford</a> for creating an enhanced version of LAB3D/SDL - this is the version I used the most in my testing
+                    <br><a href="https://ktpanda.org/software/lab3d_sdl/">Katie Stafford</a> for creating an enhanced version of LAB3D/SDL - hers is the version I used the most in my testing
                 </p>
 
             </section>
@@ -424,7 +444,7 @@
             <section class="main-section" id="contact">
                 <header>Contact Information</header>
 
-                <p>For feedback, suggestions, bug reports and questions, the author (Kai E. Frøland aka "kaimitai") can be reached via <a href="mailto:kaimitai@pm.me">email</a>, <a href="https://threema.id/79K5EKHC">Threema</a> or <a href="https://github.com/kaimitai">kaimitai@github</a>.</p>
+                <p>For feedback, suggestions, bug reports and questions, the author (Kai E. Frøland aka "kaimitai") can be reached via <a href="mailto:kaimitai@pm.me">email</a>, <a href="https://threema.id/79K5EKHC">Threema</a> or <a href="https://github.com/kaimitai">GitHub</a>.</p>
 
             </section>
 
