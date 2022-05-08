@@ -9,14 +9,26 @@ using byte = unsigned char;
 
 kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config } {
 	initialize_palette();
-	initialize_walls();
-	initialize_maps();
+
+	if (this->is_walken())
+		initialize_walls_walken();
+	else
+		initialize_walls();
+
+	if (this->is_walken())
+		initialize_maps_walken();
+	else
+		initialize_maps();
 }
 
 int kkit::Project::save_boards_kzp(bool p_compress) const {
-	auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, this->is_klab_v_1()) : this->get_board_bytes());
-	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
-	return static_cast<int>(l_bytes.size());
+	if (this->is_walken())
+		return this->save_boards_dat_walken();
+	else {
+		auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, this->is_klab_v_1()) : this->get_board_bytes());
+		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+		return static_cast<int>(l_bytes.size());
+	}
 }
 
 int kkit::Project::save_walls_kzp(bool p_compress) const {
@@ -35,17 +47,43 @@ void kkit::Project::save_board_xml(int p_board_no) const {
 
 // initializers
 void kkit::Project::initialize_palette(void) {
-	bool l_lab3d_v1{ this->is_klab_v_1() };
+	if (this->is_walken()) {
+		byte c1{ 0 }, c2{ 0 }, c3{ 0 };
 
-	for (int i{ 0 }; i < 16; ++i) {
-		for (int j{ 0 }; j < 16; ++j) {
-			byte l_r = (l_lab3d_v1 ? c::PAL_GEN_V1[i][0] : c::PAL_GEN[i][0]) * (j + 1) / 17;
-			byte l_g = (l_lab3d_v1 ? c::PAL_GEN_V1[i][1] : c::PAL_GEN[i][1]) * (j + 1) / 17;
-			byte l_b = (l_lab3d_v1 ? c::PAL_GEN_V1[i][2] : c::PAL_GEN[i][2]) * (j + 1) / 17;
+		for (int i{ 0 }; i <= 251; ++i) {
+			byte l_r = (c1 * 64) / 6;
+			byte l_g = (c2 * 64) / 7;
+			byte l_b = (c3 * 64) / 6;
 			palette.push_back(std::make_tuple(4 * l_r, 4 * l_g, 4 * l_b));
-		}
-	}
 
+			++c1;
+			if (c1 == 6) {
+				c1 = 0;
+				++c2;
+			}
+			if (c2 == 7) {
+				c2 = 0;
+				++c3;
+			}
+		}
+
+		for (int i{ 0 }; i < 4; ++i)
+			palette.push_back(std::make_tuple(255, 255, 255));
+
+	}
+	else {
+		bool l_lab3d_v1{ this->is_klab_v_1() };
+
+		for (int i{ 0 }; i < 16; ++i) {
+			for (int j{ 0 }; j < 16; ++j) {
+				byte l_r = (l_lab3d_v1 ? c::PAL_GEN_V1[i][0] : c::PAL_GEN[i][0]) * (j + 1) / 17;
+				byte l_g = (l_lab3d_v1 ? c::PAL_GEN_V1[i][1] : c::PAL_GEN[i][1]) * (j + 1) / 17;
+				byte l_b = (l_lab3d_v1 ? c::PAL_GEN_V1[i][2] : c::PAL_GEN[i][2]) * (j + 1) / 17;
+				palette.push_back(std::make_tuple(4 * l_r, 4 * l_g, 4 * l_b));
+			}
+		}
+
+	}
 	palette[255] = c::TRANS_COL_RGB;
 }
 
@@ -61,9 +99,38 @@ void kkit::Project::initialize_walls(void) {
 
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
 
-	for (int i{ 0 }; i < l_num_walls; ++i) {
+	for (int i{ 0 }; i < l_num_walls; ++i)
 		walls.push_back(kkit::Wall(std::vector<unsigned char>(begin(wall_bytes) + c::WALL_DATA_OFFSET + i * c::WALL_IMG_BYTES, begin(wall_bytes) + c::WALL_DATA_OFFSET + (i + 1) * c::WALL_IMG_BYTES), wall_bytes[i]));
+}
+
+void kkit::Project::initialize_walls_walken(void) {
+	std::vector<byte> wall_bytes;
+
+	try {
+		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	}
+	catch (std::exception& ex) {
+		wall_bytes = kkit::compression::decompress_walls_kzp_walken(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count);
+	}
+
+	for (int i{ 0 }; i < config.wall_count; ++i) {
+		byte l_wall_md = wall_bytes.at(c::WALL_IMG_BYTES * config.wall_count + i);
+		kkit::Wall l_wall = kkit::Wall(std::vector<unsigned char>(begin(wall_bytes) + i * c::WALL_IMG_BYTES, begin(wall_bytes) + (i + 1) * c::WALL_IMG_BYTES),
+			0);
+
+		if ((l_wall_md & 1) == 0)
+			l_wall.toggle_inside();
+
+		if ((l_wall_md >> 1) & 1) {
+			l_wall.toggle_type();
+			l_wall.toggle_type();
+		}
+
+		walls.push_back(l_wall);
+	}
+
+	// walken-specific hacK: add wall correpsonding to internal tile  #127 that is a transparent version of the tile #0
+	walls.push_back(kkit::Wall(std::vector<std::vector<byte>>(64, std::vector<byte>(64, 255)), kkit::Wall_type::Cube, false, false));
 }
 
 void kkit::Project::initialize_maps(void) {
@@ -81,22 +148,102 @@ void kkit::Project::initialize_maps(void) {
 
 	for (int i{ 0 }; i < l_num_maps; ++i)
 		maps.push_back(kkit::Board(std::vector<unsigned char>(begin(map_bytes) + i * c::MAP_BYTES, begin(map_bytes) + (i + 1) * c::MAP_BYTES)));
+}
 
-	// DEBUG/TODO: Analysis
-	/*
-	std::map<bool, int> cnt;
-	for (int i{ 0 }; i < 1; ++i) {
-		for (int j{ 0 }; j < 64; ++j)
-			for (int k{ 0 }; k < 64; ++k) {
-				int l_tile_no = maps[i].get_tile_no(j, k);
+void kkit::Project::initialize_maps_walken(void) {
+	std::vector<byte> map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 
-				if(l_tile_no==-1)
-					cnt[maps[i].is_inside(j, k)]++;
+	std::map<byte, int> cnt;
 
+	// calculate the entire board here
+	for (int i{ 0 }; i < config.board_count; ++i) {
+		std::vector<std::vector<kkit::Map_tile>> tiles(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
+		int l_px{ 0 };
+		int l_py{ 0 };
+		kkit::Player_direction l_pdir = kkit::Player_direction::Up;
+
+		for (int j{ 0 }; j < 4096; ++j) {
+			int l_x = j / 64;
+			int l_y = j % 64;
+			int l_tile_no = map_bytes.at(i * 4096 + j);
+
+			++cnt[l_tile_no];
+
+			bool l_inside{ false };
+
+			if (l_tile_no >= 252) {
+				l_px = l_x;
+				l_py = l_y;
+				if (l_tile_no == 252)
+					l_pdir = kkit::Player_direction::Right;
+				else if (l_tile_no == 253)
+					l_pdir = kkit::Player_direction::Down;
+				else if (l_tile_no == 254)
+					l_pdir = kkit::Player_direction::Left;
+				else
+					l_pdir = kkit::Player_direction::Up;
+
+				l_tile_no = 0;
+				l_inside = false;
+			}
+			else if (l_tile_no >= 128) {
+				l_inside = true;
+				l_tile_no = (l_tile_no == 128 ? config.wall_count + 1 : l_tile_no - 128);
+			}
+			else
+				l_inside = (l_tile_no == 0) || this->is_inside(l_tile_no - 1);
+
+			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
+		}
+
+		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
+	}
+}
+
+// walken-specific save boards to file
+int kkit::Project::save_boards_dat_walken() const {
+	std::vector<byte> l_bytes;
+
+	// traverse all boards, and translate the board bytes based on clip indicators and player start position
+	for (int i{ 0 }; i < this->get_board_count(); ++i) {
+		std::vector<byte> l_brd_bytes;
+
+		const auto& l_brd = this->get_board(i);
+		int l_p_index = 64 * l_brd.get_player_start_x() + l_brd.get_player_start_y();
+
+		byte l_pbyte{ 252 };
+		if (l_brd.get_player_start_direction() == kkit::Player_direction::Down)
+			l_pbyte = 253;
+		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Left)
+			l_pbyte = 254;
+		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Up)
+			l_pbyte = 255;
+
+		kkit::Player_direction l_sdir = l_brd.get_player_start_direction();
+
+		for (int x = 0; x < 64; ++x)
+			for (int y = 0; y < 64; ++y) {
+				int l_tile_no = l_brd.get_tile_no(x, y);
+
+				bool l_inside = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
+
+				if (l_tile_no == config.wall_count)
+					l_tile_no = (l_inside ? 127 : -1);
+				else if (l_inside && l_tile_no != -1)
+					l_tile_no += 128;
+
+				l_brd_bytes.push_back(static_cast<byte>(l_tile_no + 1));
 			}
 
+		// overwrite the start direction tile
+
+		l_brd_bytes.at(l_p_index) = l_pbyte;
+		l_bytes.insert(end(l_bytes), begin(l_brd_bytes), end(l_brd_bytes));
 	}
-	*/
+
+	klib::file::write_bytes_to_file(l_bytes, get_file_path("BOARDS-out", c::FILE_EXT_DAT));
+	//klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
+	return static_cast<int>(l_bytes.size());
 }
 
 // utility functions
@@ -237,6 +384,10 @@ int kkit::Project::get_tile_picker_index(int p_tile_no) const {
 
 bool kkit::Project::is_klab_v_1(void) const {
 	return (config.lzw_comp_type == 1);
+}
+
+bool kkit::Project::is_walken(void) const {
+	return (config.lzw_comp_type == 0);
 }
 
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {

@@ -23,6 +23,14 @@ namespace kkit {
 		void initialize_walls(void);
 		void initialize_maps(void);
 
+		// walken-specific initializers
+		void initialize_walls_walken(void);
+		void initialize_maps_walken(void);
+
+		// walken-specific save
+		int save_boards_dat_walken() const;
+		//int save_walls_kzp_walken(bool p_compress = true) const;
+
 		// utility functions
 		std::string get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
 		std::string get_file_path(const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
@@ -41,6 +49,7 @@ namespace kkit {
 		bool is_clip_override(int p_tile_no) const;
 		int get_tile_picker_index(int p_tile_no) const;
 		bool is_klab_v_1(void) const;
+		bool is_walken(void) const;
 
 		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
 		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
