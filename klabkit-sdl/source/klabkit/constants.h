@@ -12,7 +12,7 @@ namespace kkit {
 
 		// application constants
 		constexpr char APP_TITLE[]{ "Ken's Labyrinth Developer's Toolkit/SDL" };
-		constexpr char APP_VERSION[]{ "alpha 1" };
+		constexpr char APP_VERSION[]{ "0.1b" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
 		constexpr char CONF_FILE_NAME[]{ "klabkit-sdl-config.xml" };

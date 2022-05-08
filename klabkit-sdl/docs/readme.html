@@ -27,6 +27,12 @@
             <a href="#xml_format" class="nav-link">
                 XML formats
             </a>
+			<a href="#cli" class="nav-link">
+                KKIT/CLI
+            </a>
+			<a href="#legacy" class="nav-link">
+                Legacy versions
+            </a>
             <a href="#acknowledgments" class="nav-link">
                 Acknowledgments
             </a>
@@ -261,24 +267,101 @@
                 <p>For each configuration block, the following attributes are stored in the header:</p>
 
                 <ul>
-                    <li>no: The number of the configuration. This should be unique per configuration, and one of them should match the value of active_config_no in the root header</li>
+                    <li>no: The number of the configuration. This should be unique per configuration, and one of them should match the value of active_config_no in the XML root node</li>
                     <li>label: Just a name for the configuration</li>
                     <li>
                         project_directory: The folder for the game files we are editing. Can be a relative or absolute path.
                     </li>
                     <li>
-                        board_count/wall_count: The number of boards and walls that will be written to the file header. For version 2.0 the board count differs from the actual number of boards for technical reasons.
+                        board_count/wall_count: The number of boards and walls that will be written to the file header. For version 2.0 the board count differs from the actual number of boards for technical reasons. (the KZP header has 30 entries, whereof 20 are ignored)
                     </li>
                     <li>
-                        lzw_header_type: A value of 1 means we write v1.x-type KZP files. Any other value means 2.x. (although, using a third value, maybe we will support Walken in the future?) ;)
+                        lzw_header_type: A value of 1 means we write v1.x-type KZP files. A value of 0 means we write Walken-type files, and any other value means version 2.x.
                     </li>
                 </ul>
 
-                <p>Only the attribute project_directory should be changed by users.</p>
+                <p>Only the attribute project_directory should be changed by users. Advanced users may change board and wall counts if implementing a port of the game that does not use hard-coded values for these.</p>
 
                 <p>For each configuration we can define a tile picker, the order in which tiles should appear when editing boards. Values not defined here will be put at the end of the tile picker automatically when the configuration has been loaded.</p>
 
                 <p>For each configuration we can also define a clip override; a list of tiles which will flash as clippable on the board grid, even if the clip property does not override the metadata of the tile.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="cli">
+
+                <header>KKIT/CLI - Command Line Interface</header>
+
+                <p>
+                    Included in the release is a command-line executable, kkit-cli.exe. This is a tool which will compress/decompress the rest of the data files, and not only WALLS and BOARDS which can be edited directly in KKIT/SDL. The tool supports all official versions, including Walken. In reality, only tile graphics and boards can really be compressed. For STORY.KZP the tool will encrypt/decrypt, and for the rest of the files the tool will archive/extract files.
+                </p>
+				
+				<p>The cli tool will take switches and argument values. These are:</p>
+				
+				<ul>
+				    <li>-c: compress, can take one optional parameter of which file to write to. If not given, will compress all</li>
+					<li>-d: compress, can take one optional parameter of which file to read from. If not given, will decompress all.</li>
+					<li>-v: version. Values are 21, 20, 11, 10 and 0 for Walken. Will use 21 if not given.</li>
+					<li>-f: data file folder. If the path contains spaces, enclose the argument value in quotes. (will use current directory by default)</li>
+					<li>-b -w: board and wall count. For advanced users. Will only need to be given if your values differ from the ones used in the actual games. Otherwise these will be deduced based on the version.</li>
+				</ul>
+				
+				<p>The following KZP files are subject to compression/decompression</p>
+
+				<p>All versions</p>
+				<ul>
+				<li><b>WALLS</b> - The graphics data. Will read from WALLS.DAT and output WALLS.KZP (-c) or vice versa.</li>
+				</ul>
+				
+				<p>Versions 1.x and up</p>
+				<ul>
+				<li><b>SONGS</b> - the game music. Will extract all to a folder KSM (-d) or write all KSM files to SONGS.KZP (-c). The filenames are part of the archive header, and will be written in alphabetical order. This holds true for all versions apart from 2.0, but the order does not seem to matter - likely the game is using the filename as a key when loading music. To actually edit the music files, there is an editor available on Ken Silverman's webpage, along with technical documentation of the KSM format. Note that the filenames, excluding extenstion, cannot be more than 8 characters.</li>
+				<li><b>SOUNDS</b> - the sound effects. Will extract all to a folder wav (-d) or write all wav files to SOUNDS.KZP (-c). The wav files should be 8-bit mono sounds, and they should be under 32K.</li>
+				<li><b>STORY</b> - The game story text. Will decrypt STORY.KZP to STORY.DAT, or encrypt in the other direction. The text here contains special characters that might signify colors or alignment. Experiment to find out. :)</li>
+				</ul>
+
+				<p>Versions 2.x</p>
+				<ul>
+				  <li><b>BOARDS</b> - The game boards. Will compress BOARDS.DAT and output BOARDS.KZP, or vice versa.</li>
+				  <li><b>LAB3D</b> - Extra graphics. Will archive gifs to LAB3D.KZP, or vice versa. The gifs should be of type GIF87a, but these cannot easily be changed. The original game uses hardcoded offsets to find the frames of the archive. A source port could find these offsets dynamically easily enough though, but I am not sure if any actually do.</li>
+				</ul>
+
+				<p>Examples:</p>
+				<br>To decompress STORY.KZP to STORY.DAT for version 1.1, with game files in folder c:\ken3d 1.1:
+				<br><b>kkit-cli -d story -v 11 -f "c:\ken3d 1.1"</b>
+				<br>To compress all data into KZP files for v2.1 in the current directory:
+				<br><b>kkit-cli -c</b></br>
+				
+				<p><img src="./images/02_cli.png" alt="KKIT/CLI example" /></p>
+				
+				<p>
+				If you decompress all the KZP files for any version, and then compress them back - you should get a result identical to what you started with. The known exception is SONGS.KZP, where the files are not stored in alphabetical order for v2.0. In addition, 9 bytes are reserved per file in the header. (8 bytes for the filename, and 1 byte for the null-terminator) Some KSM filenames are shorter - which leaves a couple of unused bytes. In the official version, where possible, unused bytes are set, unsurprisingly, to the signature KS. ;) The compressor will simply set extra unused header bytes to 0.
+				</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="legacy">
+
+                <header>Legacy Versions</header>
+
+                <p>
+                    It is expected that users of KKIT/SDL will work on editing the game assets for Ken's Labyrinth v2.1, and for this reason this is what we focus on supporting. The file formats for graphics and boards work in the same way for all official versions though, so we try to support all of them for the sake of completeness. It is also for completeness' sake we have decided to support editing boards and graphics of the technical demo Walken. The formats here differ a bit from the official versions, so we have introduced something of a hack for this purpose. The GUI will look the same, but those who are interested in editing Walken need to know the following:
+                </p>
+
+				<ul>
+				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
+				  <li>Tile metadata does not have the concept destructible. When writing WALLS.KZP or WALLS.DAT, the destructible-property will automatically be turned off.</li>
+				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. For this reason, we are using the destructible property to indicate a clip override. When a tile is set to destructible in the editor, it will become noclip in the game.</li>
+				  <li>For the reason given above, there is no use in editing the noclip property of a tile on the board. This comes from the tile metadata anyway, so any changes will be ignored. Instead, set the tile to destructible, as this will have an effect on the output.</li>
+				</ul>
+
+				<p>
+				The reason for using destructible instead of clip to override the clip property, is that otherwise we have no way of determining whether the tile actually overrides the tile metadata. There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but we make it a a point to be able to have our output be 100% equal to the input when we can.
+				</p>
 
             </section>
 

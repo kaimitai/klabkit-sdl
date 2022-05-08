@@ -14,10 +14,13 @@ kkit_cli::Cli_parser::Cli_parser(const std::vector<std::string>& p_args)
 
 			// commands d and c do not require an argument value (no argument value means compress or decompress all)
 			if (l_cmd == "c" || l_cmd == "d") {
-				if (i < p_args.size() - 1 && this->is_command(p_args[i + 1]))
-					arg_dict.insert(std::make_pair(l_cmd, "all"));
+				if (i < p_args.size() - 1)
+					if (this->is_command(p_args[i + 1]))
+						arg_dict.insert(std::make_pair(l_cmd, "all"));
+					else
+						arg_dict.insert(std::make_pair(l_cmd, p_args[++i]));
 				else
-					arg_dict.insert(std::make_pair(l_cmd, p_args[++i]));
+					arg_dict.insert(std::make_pair(l_cmd, "all"));
 			}
 			// other commands require a value
 			else {
