@@ -770,7 +770,7 @@ bool kkit::Board_window::bmp_export(kkit::Project& p_project, int p_board_no) co
 		kkit::gfx::project_map_to_bmp(p_project, p_board_no);
 		return true;
 	}
-	catch (const std::exception& ex) {
+	catch (const std::exception&) {
 		return false;
 	}
 }
@@ -794,9 +794,10 @@ void kkit::Board_window::xml_export(const kkit::Project& p_project, int p_board_
 void kkit::Board_window::save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
 	int l_bytes = p_project.save_boards_kzp(p_compress);
 	int l_board_count(p_project.get_board_count());
-	int l_original_bytes = l_board_count * 2 * c::MAP_W * c::MAP_H;
+	int l_original_bytes = l_board_count * (p_project.is_walken() ? 1 : 2) * c::MAP_W * c::MAP_H;
 
-	if (p_compress)
+	// only v2.x boards should be saved as kzp - there is no real point otherwise
+	if (!p_project.is_walken() && !p_project.is_klab_v_1() && p_compress)
 		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to KZP (" +
 			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
 	else

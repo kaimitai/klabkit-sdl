@@ -7,10 +7,10 @@
 
 namespace kkit {
 
-	constexpr int CONF_DEF_LZW_CTYPE{ 0 };
+	constexpr int CONF_DEF_LZW_CTYPE{ 2 };
 	constexpr int CONF_DEF_BCOUNT{ 30 };
 	constexpr int CONF_DEF_WCOUNT{ 448 };
-	constexpr char CONF_DEF_LABEL[]{ "2.1" };
+	constexpr char CONF_DEF_LABEL[]{ "2.1-DEFAULT" };
 	constexpr char CONF_DEF_PROJ_FOLDER[]{ "." };
 
 	class Project_config {

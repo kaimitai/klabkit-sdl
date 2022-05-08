@@ -70,8 +70,13 @@ int main(int argc, char* args[]) try {
 			uint32_t deltaDraw = 17;
 
 			p_gfx.add_toast_ok("Welcome to Ken's Labyrinth Developer's Toolkit / SDL");
-			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " maps and " +
-				std::to_string(project.get_wall_image_count()) + " gfx tiles");
+			p_gfx.add_toast_ok("Using configuration \"" + project.get_config_label() + "\"");
+			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
+				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
+				") and " +
+				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
+				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
+				+ ")");
 
 			while (!l_exit) {
 

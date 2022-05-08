@@ -18,6 +18,9 @@ namespace kkit {
 		std::vector<Board> maps;
 		std::vector<std::tuple<byte, byte, byte>> palette;
 
+		// walls loaded from kzp or dat?
+		bool kzp_walls, kzp_boards;
+
 		// initializers
 		void initialize_palette(void);
 		void initialize_walls(void);
@@ -50,6 +53,8 @@ namespace kkit {
 		int get_tile_picker_index(int p_tile_no) const;
 		bool is_klab_v_1(void) const;
 		bool is_walken(void) const;
+		bool is_walls_kzp(void) const;
+		bool is_boards_kzp(void) const;
 
 		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
 		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;

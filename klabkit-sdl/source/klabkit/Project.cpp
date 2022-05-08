@@ -7,7 +7,7 @@
 
 using byte = unsigned char;
 
-kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config } {
+kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config }, kzp_walls{ false }, kzp_boards{ false } {
 	initialize_palette();
 
 	if (this->is_walken())
@@ -126,8 +126,9 @@ void kkit::Project::initialize_walls(void) {
 	try {
 		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	}
-	catch (std::exception& ex) {
+	catch (std::exception&) {
 		wall_bytes = kkit::compression::decompress_walls_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count, this->is_klab_v_1());
+		kzp_walls = true;
 	}
 
 	int l_num_walls = (static_cast<int>(wall_bytes.size()) - c::WALL_DATA_OFFSET) / (c::WALL_IMG_BYTES);
@@ -142,8 +143,9 @@ void kkit::Project::initialize_walls_walken(void) {
 	try {
 		wall_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_DAT));
 	}
-	catch (std::exception& ex) {
+	catch (std::exception&) {
 		wall_bytes = kkit::compression::decompress_walls_kzp_walken(klib::file::read_file_as_bytes(get_file_path(c::FILE_WALLS, c::FILE_EXT_KZP)), config.wall_count);
+		kzp_walls = true;
 	}
 
 	for (int i{ 0 }; i < config.wall_count; ++i) {
@@ -170,9 +172,9 @@ void kkit::Project::initialize_maps(void) {
 	try {
 		map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 	}
-	catch (const std::exception& ex) {
-		//map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path("BOARDS_orig", c::FILE_EXT_KZP)));
+	catch (const std::exception&) {
 		map_bytes = kkit::compression::decompress_boards_kzp(klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_KZP)), config.board_count, this->is_klab_v_1());
+		kzp_boards = true;
 	}
 
 	int l_num_maps = static_cast<int>(map_bytes.size()) / c::MAP_BYTES;
@@ -233,6 +235,7 @@ void kkit::Project::initialize_maps_walken(void) {
 
 		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
 	}
+
 }
 
 // walken-specific save boards to file
@@ -425,6 +428,14 @@ bool kkit::Project::is_klab_v_1(void) const {
 
 bool kkit::Project::is_walken(void) const {
 	return (config.lzw_comp_type == 0);
+}
+
+bool kkit::Project::is_walls_kzp(void) const {
+	return this->kzp_walls;
+}
+
+bool kkit::Project::is_boards_kzp(void) const {
+	return this->kzp_boards;
 }
 
 void kkit::Project::clear_tile(int p_board_no, int p_x, int p_y) {
