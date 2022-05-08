@@ -443,12 +443,10 @@ void kkit::Project::toggle_mt_direction(int p_board_no, int p_x, int p_y) {
 }
 
 void kkit::Project::toggle_mt_blast(int p_board_no, int p_x, int p_y) {
-	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0)
 		maps[p_board_no].toggle_blast(p_x, p_y);
 }
 
 void kkit::Project::toggle_mt_inside(int p_board_no, int p_x, int p_y) {
-	if (maps.at(p_board_no).get_tile_no(p_x, p_y) >= 0)
 		maps[p_board_no].toggle_inside(p_x, p_y);
 }
 

@@ -58,8 +58,24 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kli
 		kkit::gfx::get_pulse_color(2, timers[1].get_frame()),
 		0);
 
-	if (l_sel_tile_no >= 0) {
-		klib::gfx::blit_full_spec(p_rnd, p_gfx.get_tile_texture(l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
+	if (l_is_start_tile)
+		buttons[2].draw(p_rnd, p_gfx.get_font(), p_input,
+			"Face: " + p_project.get_board(board_ind).get_player_direction_as_string(),
+			klib::gc::COL_ORANGE);
+	else {
+
+		if (l_sel_tile_no >= 0) {
+			klib::gfx::blit_full_spec(p_rnd, p_gfx.get_tile_texture(l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
+
+			bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
+			if (l_is_dir) {
+				bool l_vertical = p_project.get_board(board_ind).is_vertical(sel_tile_x, sel_tile_y);
+
+				buttons[2].draw(p_rnd, p_gfx.get_font(), p_input,
+					l_vertical ? "Vertical" : "Horizontal",
+					klib::gc::COL_ORANGE);
+			}
+		}
 
 		bool l_blast = p_project.get_board(board_ind).is_blast(sel_tile_x, sel_tile_y);
 		buttons[0].draw(p_rnd, p_gfx.get_font(), p_input,
@@ -70,21 +86,7 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kli
 		buttons[1].draw(p_rnd, p_gfx.get_font(), p_input,
 			l_inside ? "Clip" : "Noclip",
 			l_inside ? klib::gc::COL_GREEN : klib::gc::COL_RED);
-
-		bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
-		if (l_is_dir) {
-			bool l_vertical = p_project.get_board(board_ind).is_vertical(sel_tile_x, sel_tile_y);
-
-			buttons[2].draw(p_rnd, p_gfx.get_font(), p_input,
-				l_vertical ? "Vertical" : "Horizontal",
-				klib::gc::COL_ORANGE);
-		}
-
 	}
-	else if (l_is_start_tile)
-		buttons[2].draw(p_rnd, p_gfx.get_font(), p_input,
-			"Face: " + p_project.get_board(board_ind).get_player_direction_as_string(),
-			klib::gc::COL_ORANGE);
 }
 
 void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
