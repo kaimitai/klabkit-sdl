@@ -17,8 +17,8 @@ namespace kkit {
 		kkit::Board load_board_xml(const std::string& p_file_name);
 
 		// save XMLs
-		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename);
-		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename);
+		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
+		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
 
 		pugi::xml_node create_header(pugi::xml_document& p_doc);
 
@@ -40,6 +40,7 @@ namespace kkit {
 
 		// xml attributes
 		constexpr char XML_ATTR_APP_V[]{ "app_version" };
+		constexpr char XML_ATTR_LAB3D_V[]{ "lab3d_version" };
 
 		constexpr char XML_ATTR_FTYPE[]{ "file_type" };
 

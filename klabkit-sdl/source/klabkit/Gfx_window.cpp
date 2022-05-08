@@ -246,7 +246,7 @@ bool kkit::Gfx_window::xml_import(SDL_Renderer* p_rnd, kkit::Project& p_project,
 void kkit::Gfx_window::xml_export(const kkit::Project& p_project, int p_wall_no) const {
 	auto l_dir = p_project.get_file_directory(c::FILE_EXT_XML, p_wall_no);
 	auto l_file = p_project.get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no);
-	kkit::xml::save_wall_xml(p_project.get_wall(p_wall_no), l_dir, l_file);
+	kkit::xml::save_wall_xml(p_project.get_wall(p_wall_no), l_dir, l_file, p_project.get_config_label());
 }
 
 void kkit::Gfx_window::save_walls_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {

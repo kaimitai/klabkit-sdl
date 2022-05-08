@@ -125,7 +125,7 @@
 
                 <p>Each board has a player start position, and a direction, which is indicated by a blue arrow.</p>
 
-                <p>The four buttons below the tile picker (Dir, Destr, Clip and Tile) are togglable buttons that will turn on or off indications on the board grid. "Dir" will indicate which way directional tiles span, "Destr" will flash destructible tiles, "Clip" will flash clippable tiles and "Tile" will flash all tiles of the same type as the currently selected tile picker tile.</p>
+                <p>The four buttons below the tile picker (Dir, Destr, Clip and Tile) are togglable buttons that will turn on or off indications on the board grid. "Dir" will indicate which way directional tiles span, "Destr" will flash destructible tiles, "Clip" will flash clippable tiles (and empty tiles that are <b>noclip</b>, as monsters cannot move across these!) and "Tile" will flash all tiles of the same type as the currently selected tile picker tile.</p>
 
                 <p>The next three buttons (Prev, Next and Count) will perform logic. "Prev" will go to the previous tile of the same type as the selected tile on the board grid, "Next" will go to the next tile. The order in which we iterate over tiles are the same order in which teleports link to each other. Hold Ctrl when using these two buttons to iterate over tiles of the same type as the selected <b>Tile Picker</b> tile type. (if any exist on the board)</p>
 
@@ -332,7 +332,7 @@
 				<br>To decompress STORY.KZP to STORY.DAT for version 1.1, with game files in folder c:\ken3d 1.1:
 				<br><b>kkit-cli -d story -v 11 -f "c:\ken3d 1.1"</b>
 				<br>To compress all data into KZP files for v2.1 in the current directory:
-				<br><b>kkit-cli -c</b></br>
+				<br><b>kkit-cli -c</b>
 				
 				<p><img src="./images/02_cli.png" alt="KKIT/CLI example" /></p>
 				
@@ -354,12 +354,12 @@
 
 				<ul>
 				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
-				  <li>Tile metadata does not have the concept destructible. When writing WALLS.KZP or WALLS.DAT, the destructible-property will be ignored.</li>
+				  <li>Tile metadata does not have the concept destructible, and neither do board tile instantiations. When saving WALLS or BOARDS, the destructible-property will be ignored.</li>
 				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. It is possible to override the clip-property of a board tile, but only if you turn it on, not off.</li>
 				</ul>
 
 				<p>
-				Since it is not possible to turn off the tile metadata property clip, we cannot easily determine whether a board tile just inherits the clip property from its tile, or if it has an override on top of this. (it can be done of course, but it would require a bigger change to the editor code) There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but this results in a 1-byte difference between input and output, and as far as we know this has no practical consequence.
+				Since it is not possible to turn off the tile metadata property clip, we set the noclip property automatically when loading a board for these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code) There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but this results in a 1-byte difference between input and output when saving the "defualt" level set. As far as we know this has no practical consequence. We consider explicit noclip-setting redundant configuration for noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with.
 				</p>
 
             </section>
@@ -389,6 +389,7 @@
 
                 <ul>
                   <li>Show more informational and error messages in the application</li>
+				  <li>Ability to see the board map tile in the editor</li>
 				  <li>Add support for editing highscore and savegame files</li>
 				  <li>Clean up the code, and reduce wasted cycles :)</li>
                 </ul>

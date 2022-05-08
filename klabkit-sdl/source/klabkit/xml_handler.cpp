@@ -130,17 +130,19 @@ pugi::xml_node kkit::xml::create_header(pugi::xml_document& p_doc) {
 	n_metadata.attribute(XML_ATTR_APP_V).set_value(c::APP_VERSION);
 
 	n_metadata.append_attribute(XML_ATTR_FTYPE);
+	n_metadata.append_attribute(XML_ATTR_LAB3D_V);
 
 	return n_metadata;
 }
 
-void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename) {
+void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version) {
 	std::filesystem::create_directories(p_directory);
 	std::string l_full_file_path = p_directory + "/" + p_filename;
 
 	pugi::xml_document doc;
 	auto n_root = create_header(doc);
 	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_WALL);
+	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
 
 	auto n_wall = n_root.append_child(XML_TAG_WALL);
 	n_wall.append_attribute(XML_ATTR_WALL_TYPE);
@@ -176,13 +178,14 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 		throw std::exception("Could not save XML");
 }
 
-void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename) {
+void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version) {
 	std::filesystem::create_directories(p_directory);
 	std::string l_full_file_path = p_directory + "/" + p_filename;
 
 	pugi::xml_document doc;
 	auto n_root = create_header(doc);
 	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_BOARD);
+	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
 
 	auto n_board = n_root.append_child(XML_TAG_BOARD);
 	n_board.append_attribute(XML_ATTR_PLAYER_X);

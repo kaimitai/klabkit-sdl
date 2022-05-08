@@ -59,6 +59,7 @@ namespace kkit {
 		std::string get_bmp_folder(void) const;
 		std::string get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const;
 		int get_board_count(void) const;
+		std::string get_config_label(void) const;
 
 		// wall attribute getters
 		bool is_blast(int p_wall_no) const;

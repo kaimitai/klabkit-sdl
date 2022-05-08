@@ -71,11 +71,11 @@ int kkit::Project::save_walls_kzp(bool p_compress) const {
 }
 
 void kkit::Project::save_wall_xml(int p_wall_no) const {
-	xml::save_wall_xml(this->walls.at(p_wall_no), this->get_file_directory(c::FILE_EXT_XML, p_wall_no), this->get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no));
+	xml::save_wall_xml(this->walls.at(p_wall_no), this->get_file_directory(c::FILE_EXT_XML, p_wall_no), this->get_file_name(c::FILE_WALLS, c::FILE_EXT_XML, p_wall_no), config.label);
 }
 
 void kkit::Project::save_board_xml(int p_board_no) const {
-	xml::save_board_xml(this->maps.at(p_board_no), this->get_file_directory(c::FILE_EXT_XML, p_board_no), this->get_file_name(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no));
+	xml::save_board_xml(this->maps.at(p_board_no), this->get_file_directory(c::FILE_EXT_XML, p_board_no), this->get_file_name(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no), config.label);
 }
 
 // initializers
@@ -326,6 +326,10 @@ std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, 
 
 int kkit::Project::get_board_count(void) const {
 	return static_cast<int>(this->maps.size());
+}
+
+std::string kkit::Project::get_config_label(void) const {
+	return config.label;
 }
 
 std::string kkit::Project::get_bmp_folder(void) const {
