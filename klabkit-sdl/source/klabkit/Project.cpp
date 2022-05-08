@@ -31,10 +31,43 @@ int kkit::Project::save_boards_kzp(bool p_compress) const {
 	}
 }
 
-int kkit::Project::save_walls_kzp(bool p_compress) const {
-	auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, this->is_klab_v_1()) : this->get_wall_bytes());
-	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+// walken-specific wall save procedure
+int kkit::Project::save_walls_kzp_walken(bool p_compress) const {
+	std::vector<byte> l_bytes;
+
+	// add all tile graphics apart from our virtual tile at the end
+	for (int i{ 0 }; i < static_cast<int>(walls.size()) - 1; ++i) {
+		auto l_img_bytes = walls[i].get_image_bytes();
+		l_bytes.insert(end(l_bytes), begin(l_img_bytes), end(l_img_bytes));
+	}
+
+	// do the same for tile metadata (which comes at the end of the file for walken)
+	for (int i{ 0 }; i < static_cast<int>(walls.size()) - 1; ++i) {
+		byte l_header_byte{ 0 };
+		if (!walls[i].is_inside())
+			l_header_byte |= 0b1;
+		if (walls[i].get_wall_type() != kkit::Wall_type::Cube)
+			l_header_byte |= 0b10;
+
+		l_bytes.push_back(l_header_byte);
+	}
+
+	if (p_compress)
+		l_bytes = kkit::compression::compress_walls_kzp_walken(l_bytes, config.wall_count);
+
+	klib::file::write_bytes_to_file(l_bytes, get_file_path("WALLS-out", (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+
 	return static_cast<int>(l_bytes.size());
+}
+
+int kkit::Project::save_walls_kzp(bool p_compress) const {
+	if (this->is_walken())
+		return this->save_walls_kzp_walken(p_compress);
+	else {
+		auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, this->is_klab_v_1()) : this->get_wall_bytes());
+		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+		return static_cast<int>(l_bytes.size());
+	}
 }
 
 void kkit::Project::save_wall_xml(int p_wall_no) const {
@@ -129,7 +162,7 @@ void kkit::Project::initialize_walls_walken(void) {
 		walls.push_back(l_wall);
 	}
 
-	// walken-specific hacK: add wall correpsonding to internal tile  #127 that is a transparent version of the tile #0
+	// walken-specific hack: add wall correpsonding to internal tile  #127 that is a holo-version of tile #0
 	walls.push_back(kkit::Wall(std::vector<std::vector<byte>>(64, std::vector<byte>(64, 255)), kkit::Wall_type::Cube, false, false));
 }
 
@@ -170,6 +203,7 @@ void kkit::Project::initialize_maps_walken(void) {
 			++cnt[l_tile_no];
 
 			bool l_inside{ false };
+			bool l_destruct{ false };
 
 			if (l_tile_no >= 252) {
 				l_px = l_x;
@@ -187,13 +221,13 @@ void kkit::Project::initialize_maps_walken(void) {
 				l_inside = false;
 			}
 			else if (l_tile_no >= 128) {
-				l_inside = true;
+				l_destruct = true;
 				l_tile_no = (l_tile_no == 128 ? config.wall_count + 1 : l_tile_no - 128);
 			}
-			else
-				l_inside = (l_tile_no == 0) || this->is_inside(l_tile_no - 1);
 
-			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
+			l_inside = (l_tile_no == 0) || this->is_inside(l_tile_no - 1);
+
+			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, l_destruct, false);
 		}
 
 		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
@@ -226,10 +260,11 @@ int kkit::Project::save_boards_dat_walken() const {
 				int l_tile_no = l_brd.get_tile_no(x, y);
 
 				bool l_inside = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
+				bool l_2nd_cycle = (l_tile_no != -1) && (l_brd.is_blast(x, y));
 
 				if (l_tile_no == config.wall_count)
-					l_tile_no = (l_inside ? 127 : -1);
-				else if (l_inside && l_tile_no != -1)
+					l_tile_no = (l_2nd_cycle ? 127 : -1);
+				else if (l_2nd_cycle && l_tile_no != -1)
 					l_tile_no += 128;
 
 				l_brd_bytes.push_back(static_cast<byte>(l_tile_no + 1));

@@ -29,7 +29,7 @@ namespace kkit {
 
 		// walken-specific save
 		int save_boards_dat_walken() const;
-		//int save_walls_kzp_walken(bool p_compress = true) const;
+		int save_walls_kzp_walken(bool p_compress = true) const;
 
 		// utility functions
 		std::string get_file_path(const std::string& p_subfolder, const std::string& p_file_prefix, const std::string& p_file_ext, int p_frame_no = 0) const;
