@@ -55,7 +55,7 @@ int kkit::Project::save_walls_kzp_walken(bool p_compress) const {
 	if (p_compress)
 		l_bytes = kkit::compression::compress_walls_kzp_walken(l_bytes, config.wall_count);
 
-	klib::file::write_bytes_to_file(l_bytes, get_file_path("WALLS-out", (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
 
 	return static_cast<int>(l_bytes.size());
 }
@@ -276,8 +276,7 @@ int kkit::Project::save_boards_dat_walken() const {
 		l_bytes.insert(end(l_bytes), begin(l_brd_bytes), end(l_brd_bytes));
 	}
 
-	klib::file::write_bytes_to_file(l_bytes, get_file_path("BOARDS-out", c::FILE_EXT_DAT));
-	//klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
+	klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 	return static_cast<int>(l_bytes.size());
 }
 
@@ -340,7 +339,7 @@ const std::vector<std::tuple<byte, byte, byte>>& kkit::Project::get_palette(void
 }
 
 int kkit::Project::get_wall_image_count(void) const {
-	return static_cast<int>(this->walls.size());
+	return static_cast<int>(this->walls.size()) - (this->is_walken() ? 1 : 0);
 }
 
 const kkit::Wall& kkit::Project::get_wall(int p_frame_no) const {
