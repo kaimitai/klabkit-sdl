@@ -339,7 +339,7 @@ const std::vector<std::tuple<byte, byte, byte>>& kkit::Project::get_palette(void
 }
 
 int kkit::Project::get_wall_image_count(void) const {
-	return static_cast<int>(this->walls.size()) - (this->is_walken() ? 1 : 0);
+	return static_cast<int>(this->walls.size());
 }
 
 const kkit::Wall& kkit::Project::get_wall(int p_frame_no) const {
