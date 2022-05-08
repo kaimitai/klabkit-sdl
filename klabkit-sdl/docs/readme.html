@@ -354,13 +354,12 @@
 
 				<ul>
 				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
-				  <li>Tile metadata does not have the concept destructible. When writing WALLS.KZP or WALLS.DAT, the destructible-property will automatically be turned off.</li>
-				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. For this reason, we are using the destructible property to indicate a clip override. When a tile is set to destructible in the editor, it will become noclip in the game.</li>
-				  <li>For the reason given above, there is no use in editing the noclip property of a tile on the board. This comes from the tile metadata anyway, so any changes will be ignored. Instead, set the tile to destructible, as this will have an effect on the output.</li>
+				  <li>Tile metadata does not have the concept destructible. When writing WALLS.KZP or WALLS.DAT, the destructible-property will be ignored.</li>
+				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. It is possible to override the clip-property of a board tile, but only if you turn it on, not off.</li>
 				</ul>
 
 				<p>
-				The reason for using destructible instead of clip to override the clip property, is that otherwise we have no way of determining whether the tile actually overrides the tile metadata. There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but we make it a a point to be able to have our output be 100% equal to the input when we can.
+				Since it is not possible to turn off the tile metadata property clip, we cannot easily determine whether a board tile just inherits the clip property from its tile, or if it has an override on top of this. (it can be done of course, but it would require a bigger change to the editor code) There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but this results in a 1-byte difference between input and output, and as far as we know this has no practical consequence.
 				</p>
 
             </section>
@@ -383,13 +382,15 @@
 
             <section class="main-section" id="roadmap">
                 <header>Roadmap</header>
-
-                <p>Before we open the repository and ship the first public release, we will:</p>
+				
+				<p>
+				Apart from fixing bugs as they are discovered, the following ideas are possible extensions in the future:
+				</p>
 
                 <ul>
-                    <li>Make a command line utility for compressing/decompressing the rest of the files: MUSIC.KZP, SOUNDS.KZP, STORY.KZP and LAB3D.KZP. The code is mostly in place, but is not in use at the moment.</li>
-                    <li>Show more informational and error messages in the application</li>
-                    <li>Fix bugs discovered during testing.</li>
+                  <li>Show more informational and error messages in the application</li>
+				  <li>Add support for editing highscore and savegame files</li>
+				  <li>Clean up the code, and reduce wasted cycles :)</li>
                 </ul>
 
             </section>

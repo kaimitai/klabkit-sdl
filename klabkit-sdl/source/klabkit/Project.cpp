@@ -35,14 +35,14 @@ int kkit::Project::save_boards_kzp(bool p_compress) const {
 int kkit::Project::save_walls_kzp_walken(bool p_compress) const {
 	std::vector<byte> l_bytes;
 
-	// add all tile graphics apart from our virtual tile at the end
+	// add all tile graphics
 	for (int i{ 0 }; i < static_cast<int>(walls.size()); ++i) {
 		auto l_img_bytes = walls[i].get_image_bytes();
 		l_bytes.insert(end(l_bytes), begin(l_img_bytes), end(l_img_bytes));
 	}
 
 	// do the same for tile metadata (which comes at the end of the file for walken)
-	for (int i{ 0 }; i < static_cast<int>(walls.size()) - 1; ++i) {
+	for (int i{ 0 }; i < static_cast<int>(walls.size()); ++i) {
 		byte l_header_byte{ 0 };
 		if (!walls[i].is_inside())
 			l_header_byte |= 0b1;
