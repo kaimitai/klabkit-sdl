@@ -162,8 +162,6 @@ void kkit::Project::initialize_walls_walken(void) {
 		walls.push_back(l_wall);
 	}
 
-	// walken-specific hack: add wall correpsonding to internal tile  #127 that is a holo-version of tile #0
-	walls.push_back(kkit::Wall(std::vector<std::vector<byte>>(64, std::vector<byte>(64, 255)), kkit::Wall_type::Cube, false, false));
 }
 
 void kkit::Project::initialize_maps(void) {
@@ -203,7 +201,6 @@ void kkit::Project::initialize_maps_walken(void) {
 			++cnt[l_tile_no];
 
 			bool l_inside{ false };
-			bool l_destruct{ false };
 
 			if (l_tile_no >= 252) {
 				l_px = l_x;
@@ -218,16 +215,19 @@ void kkit::Project::initialize_maps_walken(void) {
 					l_pdir = kkit::Player_direction::Up;
 
 				l_tile_no = 0;
-				l_inside = false;
 			}
 			else if (l_tile_no >= 128) {
-				l_destruct = true;
-				l_tile_no = (l_tile_no == 128 ? config.wall_count + 1 : l_tile_no - 128);
+				l_tile_no -= 128;
+				l_inside = (l_tile_no != 0);
+
 			}
+			else if (l_tile_no == 0)
+				l_inside = true;
 
-			l_inside = (l_tile_no == 0) || this->is_inside(l_tile_no - 1);
+			if (l_tile_no > 0)
+				l_inside |= this->is_inside(l_tile_no - 1);
 
-			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, l_destruct, false);
+			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
 		}
 
 		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
@@ -259,12 +259,10 @@ int kkit::Project::save_boards_dat_walken() const {
 			for (int y = 0; y < 64; ++y) {
 				int l_tile_no = l_brd.get_tile_no(x, y);
 
-				bool l_inside = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
-				bool l_2nd_cycle = (l_tile_no != -1) && (l_brd.is_blast(x, y));
+				bool l_clip_override = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
+				l_clip_override |= (l_tile_no == -1 && !l_brd.is_inside(x, y));
 
-				if (l_tile_no == config.wall_count)
-					l_tile_no = (l_2nd_cycle ? 127 : -1);
-				else if (l_2nd_cycle && l_tile_no != -1)
+				if (l_clip_override)
 					l_tile_no += 128;
 
 				l_brd_bytes.push_back(static_cast<byte>(l_tile_no + 1));

@@ -92,8 +92,8 @@
 
  <config no="4" label="Walken" project_directory="./gamedata/Walken" board_count="10" wall_count="80" lzw_header_type="0">
    <tile_picker>
-    <!-- start position, empty tile and virtual empty tile -->
-    <row no="0" value="-1,0,81" />
+    <!-- empty tile and start position -->
+    <row no="0" value="0,-1" />
 	<!-- monsters -->
 	<row no="1" value="40,49,73,68,66,38,54" />
 	<!-- doors -->
