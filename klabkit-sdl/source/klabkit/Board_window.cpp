@@ -480,22 +480,27 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	SDL_RenderClear(p_rnd);
 
 	for (int i{ 0 }; i < 64; ++i)
-		for (int j{ 0 }; j < 64; ++j)
-			if (!board.is_empty_tile(i, j)) {
-				int l_tile_no = board.get_tile_no(i, j);
+		for (int j{ 0 }; j < 64; ++j) {
+			//if (!board.is_empty_tile(i, j)) {
+			int l_tile_no = board.get_tile_no(i, j);
 
-				bool l_flash = toggles[1] && board.is_blast(i, j);
+			bool l_flash = toggles[1] && board.is_blast(i, j);
+
+			if (l_tile_no >= 0)
 				l_flash |= toggles[2] && board.is_inside(i, j) && (!p_project.is_inside(l_tile_no) || p_project.is_clip_override(l_tile_no));
-				l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no(p_project));
+			else
+				l_flash |= toggles[2] && !board.is_inside(i, j);
 
-				bool l_directional = p_project.is_directional(l_tile_no);
+			l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no(p_project));
 
+			if (l_tile_no >= 0)
 				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
-				if (toggles[0] && l_directional)
-					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
-				if (l_flash)
-					klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
-			}
+
+			if (toggles[0] && p_project.is_directional(l_tile_no))
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+			if (l_flash)
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+		}
 
 	// draw player start
 	int l_px = 64 * board.get_player_start_x() + 32;

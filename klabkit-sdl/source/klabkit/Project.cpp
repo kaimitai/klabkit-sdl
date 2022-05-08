@@ -443,11 +443,11 @@ void kkit::Project::toggle_mt_direction(int p_board_no, int p_x, int p_y) {
 }
 
 void kkit::Project::toggle_mt_blast(int p_board_no, int p_x, int p_y) {
-		maps[p_board_no].toggle_blast(p_x, p_y);
+	maps[p_board_no].toggle_blast(p_x, p_y);
 }
 
 void kkit::Project::toggle_mt_inside(int p_board_no, int p_x, int p_y) {
-		maps[p_board_no].toggle_inside(p_x, p_y);
+	maps[p_board_no].toggle_inside(p_x, p_y);
 }
 
 void kkit::Project::set_player_start_position(int p_board_no, int p_x, int p_y, kkit::Player_direction p_direction) {
@@ -489,17 +489,17 @@ void kkit::Project::set_wall_image(int p_wall_no, const std::vector<std::vector<
 
 // wall attribute getters
 bool kkit::Project::is_blast(int p_wall_no) const {
-	return walls.at(p_wall_no).is_blast();
+	return (p_wall_no == -1 ? false : walls.at(p_wall_no).is_blast());
 }
 
 bool kkit::Project::is_inside(int p_wall_no) const {
-	return walls.at(p_wall_no).is_inside();
+	return (p_wall_no == -1 ? true : walls.at(p_wall_no).is_inside());
 }
 
 kkit::Wall_type kkit::Project::get_wall_type(int p_wall_no) const {
-	return walls.at(p_wall_no).get_wall_type();
+	return (p_wall_no == -1 ? kkit::Wall_type::Cube : walls.at(p_wall_no).get_wall_type());
 }
 
 bool kkit::Project::is_directional(int p_wall_no) const {
-	return this->get_wall_type(p_wall_no) == kkit::Wall_type::Direction;
+	return (p_wall_no == -1 ? false : get_wall_type(p_wall_no) == kkit::Wall_type::Direction);
 }
