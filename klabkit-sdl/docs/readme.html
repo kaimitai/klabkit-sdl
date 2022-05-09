@@ -45,7 +45,7 @@
                 Troubleshooting
             </a>
             <a href="#curiosa" class="nav-link">
-                Curiosa
+                Why Ken3D?
             </a>
             <a href="#contact" class="nav-link">
                 Contact
@@ -139,9 +139,9 @@
 
                 <p>The selected tile sub-window will show the properties of the selected tile on the board grid, as well as make buttons available for toggling up to three properties; destruct, clip and direction. (direction only available for tiles of type Directional, see Gfx-section for tile metadata)</p>
 
-                <p>Destructible tiles can be destroyed by shooting them, and clippable tiles can be walked through. A tile that is both clip and destruct, will typically become clippable after it has been shot once.</p>
+                <p>Destructible tiles can be destroyed by shooting them, and clippable tiles can be walked through. (empty tiles that are noclip will act as invisible barries for enemies, but not for the player) A tile that is both clip and destruct, will typically become clippable after it has been shot once.</p>
 
-                <p>Directional tiles can extend from north to south (horizontal) or west to east (horizontal) which can be indicated by arrows in the editor.</p>
+                <p>Directional tiles can extend from north to south (vertical) or west to east (horizontal) which can be indicated by arrows in the editor.</p>
 
                 <p>Each board has a player start position, and a player start direction - which is indicated by a blue arrow.</p>
 
@@ -193,6 +193,8 @@
                     <br>Home/End - Go to first/last board
 
                 </p>
+
+                <p>Note that copying and pasting will ignore the player start position which is not modeled as a tile in the editor.</p>
 
                 <p>
                     <b>Mouse and keyboard functions for Tile Picker:</b>
@@ -375,11 +377,11 @@
 				<ul>
 				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
 				  <li>Tile metadata does not have the concept destructible, and neither do board tile instantiations. When saving WALLS or BOARDS, the destructible-property will be ignored.</li>
-				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. It is possible to override the clip-property of a wall tile, but only if you turn it on, not off.</li>
+				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. In other words, you can make tiles noclip if the metadata says clip, but not the other way around.</li>
 				</ul>
 
 				<p>
-				Since it is not possible to turn off the tile metadata property clip, we set the noclip property automatically when loading a board for these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code) There is only one such example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the clip property set explicitly, even when the tile metadata already says it should be noclip) but this results in a 1-byte difference between input and output when saving the "defualt" level set. As far as we know this has no practical consequence. We consider explicit noclip-setting redundant configuration for noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with.
+				Since it is not possible to turn off noclip, we set the noclip property automatically when loading these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code)  We consider explicit noclip-setting redundant configuration for instances of noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with. There is only one example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the noclip property set explicitly, even when the tile metadata already says it should be noclip) so this results in a 1-byte difference between input and output when saving the "default" level set using our editor. As far as we know this has no practical consequence in the game, and if this is the case we can sleep well at night even with this discrepancy. :)
 				</p>
 
             </section>
@@ -395,6 +397,11 @@
                     <br><a href="https://www.icculus.org/LAB3D/">Jan Lönnberg</a> for creating LAB3D/SDL, a modern port of the game
                     <br><a href="https://ktpanda.org/software/lab3d_sdl/">Katie Stafford</a> for creating an enhanced version of LAB3D/SDL - hers is the version I used the most in my testing
                 </p>
+				
+				<p>Program written in C++20, using the following external libraries:
+				  <br><a href="https://www.libsdl.org/">SDL2 (2.0.16)</a>
+				  <br><a href="https://pugixml.org/">pugixml</a>
+				</p>
 
             </section>
 
@@ -433,9 +440,13 @@
 
             <section class="main-section" id="curiosa">
 
-                <header>Curiosa</header>
+                <header>Why Ken3D?</header>
 
-                <p>Section to be created...</p>
+                <p>When I got my first computer in the early 90s, I discovered Ken Silverman's work when I got hold of a sharware CD containing, among a lot of other games, both Kentris and Ken's Labyrinth. At this time I was very interested in learning how to make my own programs, and 3D-games were beginning to become extremely popular. Ken3D was the first Wolfenstein clone, and it had some interesting features like teleports, an interactive environment (slot machines, dynamic map showing the player position etc) which I had not seen before. On top of that it appealed to me how the Ken3D universe was so surreal and dream-like. :)</p>
+				
+				<p>Not only did I love the game for its atmosphere, I was interested in the technical aspects of how it worked. A very cherished memory of mine is sending a letter (snail-mail, as this was before internet connections at home were common) to Silverman himself, using an address I found in Kentris I believe, and I actually got a (cross-continent) reply with a picture of him (which I requested) as well as answers to the questions I had. An absolute legend!</p>
+				
+				<p>The work on Walken began in 1992, so consider this editor my celebration of the 30-year anniversary of Ken's Labyrinth. :)</p>
 
             </section>
 
