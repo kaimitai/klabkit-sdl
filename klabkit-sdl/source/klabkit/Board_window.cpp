@@ -792,12 +792,14 @@ void kkit::Board_window::xml_export(const kkit::Project& p_project, int p_board_
 
 
 void kkit::Board_window::save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
-	int l_bytes = p_project.save_boards_kzp(p_compress);
+	bool l_compress = (p_compress && !p_project.is_walken() && !p_project.is_klab_v_1());
+
+	int l_bytes = p_project.save_boards_kzp(l_compress);
 	int l_board_count(p_project.get_board_count());
 	int l_original_bytes = l_board_count * (p_project.is_walken() ? 1 : 2) * c::MAP_W * c::MAP_H;
 
 	// only v2.x boards should be saved as kzp - there is no real point otherwise
-	if (!p_project.is_walken() && !p_project.is_klab_v_1() && p_compress)
+	if (l_compress)
 		p_gfx.add_toast_ok(std::to_string(l_board_count) + " boards saved to KZP (" +
 			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
 	else
