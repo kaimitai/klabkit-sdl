@@ -14,7 +14,7 @@
             <a href="#intro" class="nav-link">
                 Introduction
             </a>
-			<a href="#basics" class="nav-link">
+            <a href="#basics" class="nav-link">
                 Basics
             </a>
             <a href="#configuration" class="nav-link">
@@ -29,10 +29,10 @@
             <a href="#xml_format" class="nav-link">
                 XML formats
             </a>
-			<a href="#cli" class="nav-link">
+            <a href="#cli" class="nav-link">
                 KKIT/CLI
             </a>
-			<a href="#legacy" class="nav-link">
+            <a href="#legacy" class="nav-link">
                 Legacy versions
             </a>
             <a href="#acknowledgments" class="nav-link">
@@ -63,6 +63,11 @@
 
                 <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
+                <p>
+                    <br>"Ken's Labyrinth" Copyright (c) 1992-1993 Ken Silverman
+                    <br>Ken Silverman's official web site: <a href="http://www.advsys.net/ken">"http://www.advsys.net/ken"</a>
+                </p>
+
             </section>
 
             <hr>
@@ -75,15 +80,15 @@
                     This editor will let you edit the game data for level boards (BOARDS.KZP/BOARDS.DAT), and tile graphics (WALLS.KZP/WALLS.DAT) used by these levels. Included with the editor are the original versions of these files, and starting the program out of the box will load these files for the full version of Ken's Labyrinth (version 2.1). See the configuration section for how to alter files in other locations.
                 </p>
 
-				<p>
-				    To play the game, the original executables and full sets of game data can be found on <a href="http://advsys.net/ken/">Ken Silverman's official website</a>, but a modern source port is generally recommended whenever possible.
-				</p>
-				
-				<p>When the editor starts successfully, it will tell you which configuration is loaded, how many boards and tile graphics are loaded into memory - and whether it loaded KZP- or DAT-files.</p>
+                <p>
+                    To play the game, the original executables and full sets of game data can be found on <a href="http://advsys.net/ken/">Ken Silverman's official website</a>, but a modern source port is generally recommended whenever possible.
+                </p>
+
+                <p>When the editor starts successfully, it will tell you which configuration is loaded, how many boards and tile graphics are loaded into memory - and whether it loaded KZP- or DAT-files.</p>
 
             </section>
-			
-			<hr>
+
+            <hr>
 
             <section class="main-section" id="configuration">
 
@@ -224,7 +229,7 @@
                 <ul>
                     <li>Tile type: Block, Plane or Directional</li>
                     <li>Clip or not</li>
-                    <li>Destrutible or not</li>
+                    <li>Destructible or not</li>
                 </ul>
 
                 <p>
@@ -319,48 +324,48 @@
                 <p>
                     Included in the release is a command-line executable, kkit-cli.exe. This is a tool which will compress/decompress the rest of the data files, and not only WALLS and BOARDS which can be edited directly in KKIT/SDL. The tool supports all official versions, including Walken. In reality, only tile graphics and boards can really be compressed. For STORY.KZP the tool will encrypt/decrypt, and for the rest of the files the tool will archive/extract files.
                 </p>
-				
-				<p>The cli tool will take switches and argument values. These are:</p>
-				
-				<ul>
-				    <li>-c: compress, can take one optional parameter of which file to write to. If not given, will compress all</li>
-					<li>-d: compress, can take one optional parameter of which file to read from. If not given, will decompress all.</li>
-					<li>-v: version. Values are 21, 20, 11, 10 and 0 for Walken. Will use 21 if not given.</li>
-					<li>-f: data file folder. If the path contains spaces, enclose the argument value in quotes. (will use current directory by default)</li>
-					<li>-b -w: board and wall count. For advanced users. Will only need to be given if your values differ from the ones used in the actual games. Otherwise these will be deduced based on the version.</li>
-				</ul>
-				
-				<p>The following KZP files are subject to compression/decompression</p>
 
-				<p>All versions</p>
-				<ul>
-				<li><b>WALLS</b> - The graphics data. Will read from WALLS.DAT and output WALLS.KZP (-c) or vice versa.</li>
-				</ul>
-				
-				<p>Versions 1.x and up</p>
-				<ul>
-				<li><b>SONGS</b> - the game music. Will extract all to a folder KSM (-d) or write all KSM files to SONGS.KZP (-c). The filenames are part of the archive header, and will be written in alphabetical order. This holds true for all versions apart from 2.0, but the order does not seem to matter - likely the game is using the filename as a key when loading music. To actually edit the music files, there is an editor available on Ken Silverman's webpage, along with technical documentation of the KSM format. Note that the filenames, excluding extenstion, cannot be more than 8 characters.</li>
-				<li><b>SOUNDS</b> - the sound effects. Will extract all to a folder wav (-d) or write all wav files to SOUNDS.KZP (-c). The wav files should be 8-bit mono sounds, and they should be under 32K.</li>
-				<li><b>STORY</b> - The game story text. Will decrypt STORY.KZP to STORY.DAT, or encrypt in the other direction. The text here contains special characters that might signify colors or alignment. Experiment to find out. :)</li>
-				</ul>
+                <p>The cli tool will take switches and argument values. These are:</p>
 
-				<p>Versions 2.x</p>
-				<ul>
-				  <li><b>BOARDS</b> - The game boards. Will compress BOARDS.DAT and output BOARDS.KZP, or vice versa.</li>
-				  <li><b>LAB3D</b> - Extra graphics. Will archive gifs to LAB3D.KZP, or vice versa. The gifs should be of type GIF87a, but these cannot easily be changed. The original game uses hardcoded offsets to find the frames of the archive. A source port could find these offsets dynamically easily enough though, but I am not sure if any actually do.</li>
-				</ul>
+                <ul>
+                    <li>-c: compress, can take one optional parameter of which file to write to. If not given, will compress all</li>
+                    <li>-d: compress, can take one optional parameter of which file to read from. If not given, will decompress all.</li>
+                    <li>-v: version. Values are 21, 20, 11, 10 and 0 for Walken. Will use 21 if not given.</li>
+                    <li>-f: data file folder. If the path contains spaces, enclose the argument value in quotes. (will use current directory by default)</li>
+                    <li>-b -w: board and wall count. For advanced users. Will only need to be given if your values differ from the ones used in the actual games. Otherwise these will be deduced based on the version.</li>
+                </ul>
 
-				<p>Examples:</p>
-				<br>To decompress STORY.KZP to STORY.DAT for version 1.1, with game files in folder c:\ken3d 1.1:
-				<br><b>kkit-cli -d story -v 11 -f "c:\ken3d 1.1"</b>
-				<br>To compress all data into KZP files for v2.1 in the current directory:
-				<br><b>kkit-cli -c</b>
-				
-				<p><img src="./images/02_cli.png" alt="KKIT/CLI example" /></p>
-				
-				<p>
-				If you decompress all the KZP files for any version, and then compress them back - you should get a result identical to what you started with. The known exception is SONGS.KZP, where the files are not stored in alphabetical order for v2.0. In addition, 9 bytes are reserved per file in the header. (8 bytes for the filename, and 1 byte for the null-terminator) Some KSM filenames are shorter - which leaves a couple of unused bytes. In the official version, where possible, unused bytes are set, unsurprisingly, to the signature KS. ;) The compressor will simply set extra unused header bytes to 0.
-				</p>
+                <p>The following KZP files are subject to compression/decompression</p>
+
+                <p>All versions</p>
+                <ul>
+                    <li><b>WALLS</b> - The graphics data. Will read from WALLS.DAT and output WALLS.KZP (-c) or vice versa.</li>
+                </ul>
+
+                <p>Versions 1.x and up</p>
+                <ul>
+                    <li><b>SONGS</b> - the game music. Will extract all to a folder KSM (-d) or write all KSM files to SONGS.KZP (-c). The filenames are part of the archive header, and will be written in alphabetical order. This holds true for all versions apart from 2.0, but the order does not seem to matter - likely the game is using the filename as a key when loading music. To actually edit the music files, there is an editor available on Ken Silverman's webpage, along with technical documentation of the KSM format. Note that the filenames, excluding extenstion, cannot be more than 8 characters.</li>
+                    <li><b>SOUNDS</b> - the sound effects. Will extract all to a folder wav (-d) or write all wav files to SOUNDS.KZP (-c). The wav files should be 8-bit mono sounds, and they should be under 32K.</li>
+                    <li><b>STORY</b> - The game story text. Will decrypt STORY.KZP to STORY.DAT, or encrypt in the other direction. The text here contains special characters that might signify colors or alignment. Experiment to find out. :)</li>
+                </ul>
+
+                <p>Versions 2.x</p>
+                <ul>
+                    <li><b>BOARDS</b> - The game boards. Will compress BOARDS.DAT and output BOARDS.KZP, or vice versa.</li>
+                    <li><b>LAB3D</b> - Extra graphics. Will archive gifs to LAB3D.KZP, or vice versa. The gifs should be of type GIF87a, but these cannot easily be changed. The original game uses hardcoded offsets to find the frames of the archive. A source port could find these offsets dynamically easily enough though, but I am not sure if any actually do.</li>
+                </ul>
+
+                <p>Examples:</p>
+                <br>To decompress STORY.KZP to STORY.DAT for version 1.1, with game files in folder c:\ken3d 1.1:
+                <br><b>kkit-cli -d story -v 11 -f "c:\ken3d 1.1"</b>
+                <br>To compress all data into KZP files for v2.1 in the current directory:
+                <br><b>kkit-cli -c</b>
+
+                <p><img src="./images/02_cli.png" alt="KKIT/CLI example" /></p>
+
+                <p>
+                    If you decompress all the KZP files for any version, and then compress them back - you should get a result identical to what you started with. The known exception is SONGS.KZP, where the files are not stored in alphabetical order for v2.0. In addition, 9 bytes are reserved per file in the header. (8 bytes for the filename, and 1 byte for the null-terminator) Some KSM filenames are shorter - which leaves a couple of unused bytes. In the official version, where possible, unused bytes are set, unsurprisingly, to the signature KS. ;) The compressor will simply set extra unused header bytes to 0.
+                </p>
 
             </section>
 
@@ -374,15 +379,15 @@
                     It is expected that users of KKIT/SDL will work on editing the game assets for Ken's Labyrinth v2.1, and for this reason this is what we focus on supporting. The file formats for graphics and boards work in the same way for all official versions though, so we try to support all of them for the sake of completeness. It is also for completeness' sake we have decided to support editing boards and graphics of the technical demo Walken. The formats here differ a bit from the official versions, so we have introduced something of a hack for this purpose. The GUI will look the same, but those who are interested in editing Walken need to know the following:
                 </p>
 
-				<ul>
-				  <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
-				  <li>Tile metadata does not have the concept destructible, and neither do board tile instantiations. When saving WALLS or BOARDS, the destructible-property will be ignored.</li>
-				  <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. In other words, you can make tiles noclip if the metadata says clip, but not the other way around.</li>
-				</ul>
+                <ul>
+                    <li>Tile metadata do not support tile type Direction, only Cube and Plane. When writing WALLS.KZP or WALLS.DAT, walls of type Directional will become Cube.</li>
+                    <li>Tile metadata does not have the concept destructible, and neither do board tile instantiations. When saving WALLS or BOARDS, the destructible-property will be ignored.</li>
+                    <li>The board tiles automatically inherit the clip-property of the tile metadata, if the tile metadata says it is a noclip-tile. In other words, you can make tiles noclip if the metadata says clip, but not the other way around.</li>
+                </ul>
 
-				<p>
-				Since it is not possible to turn off noclip, we set the noclip property automatically when loading these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code)  We consider explicit noclip-setting redundant configuration for instances of noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with. There is only one example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the noclip property set explicitly, even when the tile metadata already says it should be noclip) so this results in a 1-byte difference between input and output when saving the "default" level set using our editor. As far as we know this has no practical consequence in the game, and if this is the case we can sleep well at night even with this discrepancy. :)
-				</p>
+                <p>
+                    Since it is not possible to turn off noclip, we set the noclip property automatically when loading these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code)  We consider explicit noclip-setting redundant configuration for instances of noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with. There is only one example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the noclip property set explicitly, even when the tile metadata already says it should be noclip) so this results in a 1-byte difference between input and output when saving the "default" level set using our editor. As far as we know this has no practical consequence in the game, and if this is the case we can sleep well at night even with this discrepancy. :)
+                </p>
 
             </section>
 
@@ -397,11 +402,12 @@
                     <br><a href="https://www.icculus.org/LAB3D/">Jan Lönnberg</a> for creating LAB3D/SDL, a modern port of the game
                     <br><a href="https://ktpanda.org/software/lab3d_sdl/">Katie Stafford</a> for creating an enhanced version of LAB3D/SDL - hers is the version I used the most in my testing
                 </p>
-				
-				<p>Program written in C++20, using the following external libraries:
-				  <br><a href="https://www.libsdl.org/">SDL2 (2.0.16)</a>
-				  <br><a href="https://pugixml.org/">pugixml</a>
-				</p>
+
+                <p>
+                    Program written in C++20, using the following external libraries:
+                    <br><a href="https://www.libsdl.org/">SDL2 (2.0.16)</a>
+                    <br><a href="https://pugixml.org/">pugixml</a>
+                </p>
 
             </section>
 
@@ -409,16 +415,16 @@
 
             <section class="main-section" id="roadmap">
                 <header>Roadmap</header>
-				
-				<p>
-				Apart from fixing bugs as they are discovered, the following ideas are possible extensions in the future:
-				</p>
+
+                <p>
+                    Apart from fixing bugs as they are discovered, the following ideas are possible extensions in the future:
+                </p>
 
                 <ul>
-                  <li>Show more informational and error messages in the application</li>
-				  <li>Ability to see the board map tile in the editor</li>
-				  <li>Add support for editing highscore and savegame files</li>
-				  <li>Clean up the code, and reduce wasted cycles :)</li>
+                    <li>Show more informational and error messages in the application</li>
+                    <li>Ability to see the board map tile in the editor</li>
+                    <li>Add support for editing highscore and savegame files</li>
+                    <li>Clean up the code, and reduce wasted cycles :)</li>
                 </ul>
 
             </section>
@@ -442,11 +448,11 @@
 
                 <header>Why Ken3D?</header>
 
-                <p>When I got my first computer in the early 90s, I discovered Ken Silverman's work when I got hold of a sharware CD containing, among a lot of other games, both Kentris and Ken's Labyrinth. At this time I was very interested in learning how to make my own programs, and 3D-games were beginning to become extremely popular. Ken3D was the first Wolfenstein clone, and it had some interesting features like teleports, an interactive environment (slot machines, dynamic map showing the player position etc) which I had not seen before. On top of that it appealed to me how the Ken3D universe was so surreal and dream-like. :)</p>
-				
-				<p>Not only did I love the game for its atmosphere, I was interested in the technical aspects of how it worked. A very cherished memory of mine is sending a letter (snail-mail, as this was before internet connections at home were common) to Silverman himself, using an address I found in Kentris I believe, and I actually got a (cross-continent) reply with a picture of him (which I requested) as well as answers to the questions I had. An absolute legend!</p>
-				
-				<p>The work on Walken began in 1992, so consider this editor my celebration of the 30-year anniversary of Ken's Labyrinth. :)</p>
+                <p>When I got my first computer in the early 90s, I discovered Ken Silverman's work when I got hold of a shareware CD containing, among a lot of other games, both Kentris and Ken's Labyrinth. At this time I was very interested in learning how to make my own programs, and 3D-games were beginning to become extremely popular. Ken3D was the first Wolfenstein clone, and it had some interesting features like teleports, an interactive environment (slot machines, dynamic map showing the player position etc) which I had not seen before. On top of that it appealed to me how the Ken3D universe was so surreal and dream-like. :)</p>
+
+                <p>Not only did I love the game for its atmosphere, I was interested in the technical aspects of how it worked. A very cherished memory of mine is sending a letter (snail-mail, as this was before internet connections at home were common) to Silverman himself, using an address I found in Kentris I believe, and I actually got a (cross-continent) reply with a picture of him (which I requested) as well as answers to the questions I had. An absolute legend!</p>
+
+                <p>The work on Walken began in 1992, so consider this editor my celebration of the 30-year anniversary of Ken's Labyrinth. :)</p>
 
             </section>
 
