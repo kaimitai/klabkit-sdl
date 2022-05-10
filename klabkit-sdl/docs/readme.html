@@ -81,6 +81,10 @@
                 </p>
 
                 <p>
+                    The DAT-format is uncompressed data, and KZP is compressed. We allow saving to DAT-files where the game uses KZP-files, to be compatible with Ken Silverman's editing tools. (which only read uncompressed formats) If you are not using these, stick to KZP where possible, because some source ports will determine the game version based on whether BOARDS.DAT exists in the game directory - and will crash if making the wrong assumptions.
+                </p>
+
+                <p>
                     To play the game, the original executables and full sets of game data can be found on <a href="http://advsys.net/ken/">Ken Silverman's official website</a>, but a modern source port is generally recommended whenever possible.
                 </p>
 
@@ -266,7 +270,7 @@
                 </ul>
 
 
-                <p>The exported BMPs will be 256-color images with the palette used by the game. When altering graphics, try to use a graphics editor that does not change the palette of the image, as the colors cannot be changed anyway. When a BMP is imported, the editor does a nearest-color scheme to translate the BMP palette into the game palette. (Windows Paint, for example, in my experience, is not good at preserving the palette, and does not yield good results)</p>
+                <p>The exported BMPs will be 256-color images with the palette used by the game. When altering graphics, try to use a graphics editor that does not change the palette of the image, as the colors cannot be changed anyway. When a BMP is imported, the editor does a nearest-color scheme to translate the BMP palette into the game palette. (Microsoft Paint, for example, in my experience, is not good at preserving the palette, and does not yield good results)</p>
 
                 <p>The rgb-value indicating transparency is (204, 92, 112)</p>
 
@@ -386,7 +390,7 @@
                 </ul>
 
                 <p>
-                    Since it is not possible to turn off noclip, we set the noclip property automatically when loading these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code)  We consider explicit noclip-setting redundant configuration for instances of noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with. There is only one example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the noclip property set explicitly, even when the tile metadata already says it should be noclip) so this results in a 1-byte difference between input and output when saving the "default" level set using our editor. As far as we know this has no practical consequence in the game, and if this is the case we can sleep well at night even with this discrepancy. :)
+                    Since it is not possible to turn off noclip, we set the noclip property automatically when loading these tiles - since we may want them to flash as noclip tiles. (it can be handled more properly of course, but it would require a bigger change to the editor code)  We consider explicit noclip-setting redundant configuration for instances of noclip-tiles, and will keep it this way in our logic since it makes the editor easier to work with. There is only one example in the "official" Walken BOARDS.DAT-file (a "Walk through this wall"-tile on board 10 has the noclip property set explicitly, even when the tile metadata already says it should be noclip) so this results in a 1-byte difference between input and output when saving the "default" level set using our editor. As far as we know this has no practical consequence in the game, and therefore we can sleep well at night even with this discrepancy. :)
                 </p>
 
             </section>
@@ -425,6 +429,7 @@
                     <li>Ability to see the board map tile in the editor</li>
                     <li>Add support for editing highscore and savegame files</li>
                     <li>Clean up the code, and reduce wasted cycles :)</li>
+                    <li>Do something for KSM-file editing. We know how the format works, but creating a user-friendly KSM editor with audio capabilites would be a big undertaking.</li>
                 </ul>
 
             </section>
@@ -439,6 +444,10 @@
                 <p>If Windows gives you a message that the program cannot be started, make sure you have the x64 Visual C++ Redistributables. This should be part of most Windows installations by default, but can also be found at <a href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0">Microsoft Support Visual C++ downloads</a>.</p>
 
                 <p>If the edited graphics look terrible, or lose transparency - try to use a graphics editor that does not change the palette of the image.</p>
+
+                <p>If the game crashes when trying to load your files, it is possible that you saved a DAT file in a directory where the game expected a KZP-file. Remove BOARDS.DAT from the game folder (replace it with KZP) and try to load the game again. (some ports determine the lab3d-version based on the existence of BOARDS.DAT) If the editor truly creates invalid output files, email them to me!</p>
+
+                <p>It is possible that there are hard coded limits in the game I am not aware about. In particular, I believe the maximum number of teleports you can use on one board is 16. Also, there are some hard coded things happening on the boss boards (10, 20 and 30) where the bosses drop keys and teleports - but I do not have all the details on how this works yet.</p>
 
             </section>
 

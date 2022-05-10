@@ -1,6 +1,6 @@
 # KKIT/SDL - Ken's Labyrinth Developer's Toolkit
 
-Welcome to the KKIT/SDL code repository and release page. The current version of the editor is 0.1b. The code is standard C++20, and was created using Microsoft Visual Studio Community 2022. You can compile the code from source, or get the latest precompiled win-x64 distribution under the repository releases. \
+Welcome to the KKIT/SDL code repository and release page. The current version of the editor is 0.1b. The code is standard C++20, and was created using Microsoft Visual Studio Community 2022. You can compile the code from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/klabkit-sdl/releases/). \
 Make sure to read the included documentation (readme.html in the docs folder) for a detailed overview.
 <br></br>
 ### Editor Capabilities
