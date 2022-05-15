@@ -51,7 +51,7 @@ int main(int argc, char* args[]) try {
 			}
 
 			// load resources
-			kkit::Project project(kkit::xml::read_config_xml("kkit-sdl-config.xml"));
+			kkit::Project project(kkit::xml::read_config_xml(kkit::c::CONF_FILE_NAME));
 			kkit::gfx::set_application_icon(l_window, project);
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
@@ -69,8 +69,7 @@ int main(int argc, char* args[]) try {
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
 
-			p_gfx.add_toast_ok("Welcome to Ken's Labyrinth Developer's Toolkit / SDL");
-			p_gfx.add_toast_ok("Using configuration \"" + project.get_config_label() + "\"");
+			p_gfx.add_toast_ok("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
 			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
 				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
 				") and " +

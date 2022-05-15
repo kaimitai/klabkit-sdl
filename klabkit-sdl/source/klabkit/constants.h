@@ -11,11 +11,11 @@ namespace kkit {
 		std::string get_application_window_caption(void);
 
 		// application constants
-		constexpr char APP_TITLE[]{ "Ken's Labyrinth Developer's Toolkit/SDL" };
-		constexpr char APP_VERSION[]{ "0.1b" };
+		constexpr char APP_TITLE[]{ "KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit" };
+		constexpr char APP_VERSION[]{ "0.1c" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
-		constexpr char CONF_FILE_NAME[]{ "klabkit-sdl-config.xml" };
+		constexpr char CONF_FILE_NAME[]{ "kkit-sdl-config.xml" };
 
 		using byte = unsigned char;
 

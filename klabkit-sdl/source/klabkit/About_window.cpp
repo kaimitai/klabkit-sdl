@@ -10,7 +10,7 @@ void kkit::About_window::draw(SDL_Renderer* rnd, const klib::User_input& p_input
 	klib::gfx::blit_tiled(rnd, p_gfx.get_bg_texture(bg_index), timers.at(0).get_frame(), 40 + static_cast <int>(30 * cos(2.0f * 3.14f * static_cast<float>(timers.at(0).get_frame()) / 256.0f)));
 	auto co = get_coords(timers.at(1).get_frame());
 
-	constexpr int x_offset = 170;
+	constexpr int x_offset = 80;
 	constexpr int y_offset = 150;
 
 	for (int j{ 0 }; j < static_cast<int>(co.second); ++j)

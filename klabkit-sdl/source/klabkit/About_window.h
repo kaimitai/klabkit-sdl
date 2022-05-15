@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "constants.h"
 #include "./../klib/User_input.h"
 #include "./../klib/Timer.h"
 #include "Project_gfx.h"
@@ -20,7 +21,7 @@ namespace kkit {
 		std::vector<klib::Timer> timers;
 
 		std::vector<std::string> ABOUT_MESSAGE{
-			"KKIT/SDL - Ken's Labyrinth Developer's Toolkit",
+			std::string(c::APP_TITLE),
 			"Version: " + std::string(c::APP_VERSION),
 			"",
 			"Written by Kai E. Fr" + std::string(1, 127) + "land aka \"kaimitai\"",

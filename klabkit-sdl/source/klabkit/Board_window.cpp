@@ -284,6 +284,9 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	// ctrl+H: center on player start position
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H))
 		this->center_offset(p_project.get_player_start_pos(board_ind));
+	// shift+H: set selected board tile to player start position
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_H))
+		p_project.set_player_start_position(board_ind, sel_tile_x, sel_tile_y);
 	// ctrl+X: cut selection
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
 		this->cut_selection(p_project);
