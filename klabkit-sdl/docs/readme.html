@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (version 0.1b) - Documentation</title>
+    <title>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.1c) - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -38,6 +38,9 @@
             <a href="#acknowledgments" class="nav-link">
                 Acknowledgments
             </a>
+			<a href="#changelog" class="nav-link">
+                Changelog
+            </a>
             <a href="#roadmap" class="nav-link">
                 Roadmap
             </a>
@@ -59,9 +62,9 @@
 
                 <hr>
 
-                <header>KKIT/SDL - Ken's Labyrinth Developer's Toolkit (v0.1b)</header>
+                <header>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.1c)</header>
 
-                <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
+                <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as - with the help of an external bmp file editor - modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
                 <p>
                     <br>"Ken's Labyrinth" Copyright (c) 1992-1993 Ken Silverman
@@ -112,6 +115,20 @@
                 </p>
 
                 <p>Each configuration points to a project folder, where files will be loaded from and saved to. We support relative paths (relative to the kkit-sdl executable), as well as absolute paths. By default the file points to folders that ship with the editor.</p>
+
+				<img src="./images/03_config_xml.png" alt="Board Editor screen" width="1024" />
+				
+				<p>
+				The screenshot above shows how to switch between configurations. The XML root node has an attribute "active_config_no", which should be set to a value matching one of the concrete configurations in the XML. In this example it is 0, so the config-block where attribute "no" equals 0 will be loaded on program start. This configuration block has the attribute "project_folder" set to "./gamedata/Ken2.1", meaning this is the folder it will load files from, and save files to.
+				</p>
+				
+				<p>
+				The editor comes with default configuration blocks for all official versions of Ken's Labyrinth. Using the default configuration XML, other values for active_config_no in the root node can be 1, 2, 3 or 4 - which will load v2.0, v1.1, v1.0 or Walken, respectively -  when the program starts.
+				</p>
+
+				<p>
+				It might be a good idea to take a backup of the config xml if you make major changes, like making your own configurations. For most users it should not be necessary to change more than the project folders, and active config no in the XML root.
+				</p>
 
                 <p>
                     If the configuration file does not exist, we will load a default configuration for v2.1, but with no custom tile picker layout. In this case the project folder will be the same as the folder of the executable.
@@ -193,11 +210,12 @@
                     <br>F - Flip selection around horizontal axis (hold shift to flip around vertical axis)
                     <br>R - Rotate clipboard counter-clockwise 90 degrees (hold Shift to rotate clockwise)
                     <br>Ctrl+Plus/Minus - Zoom in and out (centered)
-                    <br>Ctrl+H - Center on player start position
+                    <br>Ctrl+H - Center on player start position ([H]ome)
+					<br>Shift+H - Set the player start position at cursor
                     <br>Ctrl+N - Same as the "Next" button
                     <br>Ctrl+P - Same as the "Prev" button
                     <br>Ctrl+F - Center the board view on the selected board tile
-                    <br>Ctrl+S - Save KZP (hold Shift to save DAT)
+                    <br>Ctrl+S - Save KZP (hold Shift to save DAT where applicable)
                     <br>PgUp/PgDown - Go to next/prev board
                     <br>Home/End - Go to first/last board
 
@@ -220,7 +238,7 @@
             <section class="main-section" id="edit_gfx">
                 <header>Editing Graphics</header>
 
-                <p>The second of the three screens is called "Gfx". This is where you edit the game graphics stored in WALLS.KZP.</p>
+                <p>The second of the three screens is called "Gfx". This is where you edit the tile metadata in WALLS.KZP. This screen will also allow you to export and import BMP files (or XMLs) - giving you a means to changing the game graphics themselves.</p>
                 <img src="./images/01_gfx_editor.png" alt="Graphics Editor" width="1024" />
 
                 <p>On the left is the list of available tiles, and on the right we see the selected tile and its metadata.</p>
@@ -246,14 +264,12 @@
                     <li>Plane: The tile makes up one plane that always faces the player. Example: Barrels, tables, pick-up items and powerups</li>
                 </ul>
 
-
-
                 <p>
-                    The other properties - clip and destructible - only give these default properties of the tile. The instantiations on a board can override them.
+                    The other properties - clip and destructible - only give these default properties of the tile as a hint to the board editor. The instantiations on a board can override them.
                 </p>
 
                 <p>
-                    Keep in mind also that certain blocks have special meaning which is hard-coded in the game, so change tile metadata with caution.
+                    Keep in mind also that certain tiles have special meaning which is hard-coded in the game, so change tile metadata with caution.
                 </p>
 
                 <p>
@@ -397,12 +413,30 @@
 
             <hr>
 
+            <section class="main-section" id="changelog">
+
+                <header>Changelog</header>
+
+                <p>
+                    Changes since v0.1b
+                </p>
+				
+				<ul>
+				 <li>Changed the application name to KKIT/CLI: Unofficial Ken's Labyrinth Editor's Toolkit (to avoid any confusion with the <a href="http://advsys.net/ken/klab.htm#klabkit">original Developer's Toolkit</a>)</li>
+				 <li>Updated documentation; clarified how to switch between lab3d-versions (will be changed to use a launcher in a later version)</li>
+				 <li>Added shortcut shift+H to set player start position at selected board tile (to avoid having to use the tile picker)</li>
+				</ul>
+
+            </section>
+
+            <hr>
+
             <section class="main-section" id="acknowledgments">
 
                 <header>Thanks and Acknowledgments</header>
 
                 <p>
-                    <br><a href="http://advsys.net/ken/">Ken Silverman</a> for creating Ken's Labyrinth and making the source code for the game and the tools available.
+                    <br><a href="http://advsys.net/ken/">Ken Silverman</a> for creating Ken's Labyrinth, making the source code for the game and the tools available - and giving feedback on this editor!
                     <br><a href="https://www.icculus.org/LAB3D/">Jan Lönnberg</a> for creating LAB3D/SDL, a modern port of the game
                     <br><a href="https://ktpanda.org/software/lab3d_sdl/">Katie Stafford</a> for creating an enhanced version of LAB3D/SDL - hers is the version I used the most in my testing
                 </p>
@@ -426,7 +460,8 @@
 
                 <ul>
                     <li>Show more informational and error messages in the application</li>
-                    <li>Ability to see the board map tile in the editor</li>
+					<li>Add a help/quickstart screen in the application</li>
+                    <li>Ability to see the board map tile (the one that is autogenerated as a map in-game) in the editor</li>
                     <li>Add support for editing highscore and savegame files</li>
                     <li>Clean up the code, and reduce wasted cycles :)</li>
                     <li>Do something for KSM-file editing. We know how the format works, but creating a user-friendly KSM editor with audio capabilites would be a big undertaking.</li>
