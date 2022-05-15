@@ -132,11 +132,11 @@ catch (...) {
 }
 
 void output_header(void) {
-	std::cout << std::string(69, '-') << "\n"
+	std::cout << std::string(77, '-') << "\n"
 		<< "KKIT/CLI - Unofficial Ken's Labyrinth Editor's Toolkit Command Line Interface\n"
 		<< "By \"kaimitai\" (https://github.com/kaimitai/klabkit-sdl)\n"
 		<< "Build date: " + std::string(__DATE__) + " at " + std::string(__TIME__) + " CET\n"
-		<< std::string(69, '-') << "\n\n";
+		<< std::string(77, '-') << "\n\n";
 }
 
 void output_help(void) {
