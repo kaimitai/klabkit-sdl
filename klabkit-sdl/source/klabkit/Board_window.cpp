@@ -104,6 +104,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
+	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_minimap_texture(board_ind), BW_MX, BW_MY, 1);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H,
@@ -213,7 +214,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	}
 }
 
-void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
 
@@ -405,6 +406,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (p_input.mouse_held() &&
 		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW))
 		this->click_minimap(p_input.mx() - BW_MX, p_input.my() - BW_MY);
+	// minimap right clicked, regenerate minimap texture
+	else if (p_input.mouse_clicked(false) &&
+		klib::util::is_p_in_rect(p_input.mx(), p_input.my(), BW_MX, BW_MY, BW_MW, BW_MW))
+		p_gfx.reload_minimap_texture(p_rnd, p_project, board_ind);
 	// tile picker clicked, select tile
 	else if (p_input.mouse_held() && mouse_over_tile_picker)
 		this->click_tile_picker(p_project, p_input.mx() - BW_TPX, p_input.my() - BW_TPY);
@@ -543,7 +548,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 
 
 void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const {
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 0,0,0 }, 0);
+	//klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 0,0,0 }, 0);
 
 	int l_sel_factor = static_cast<int>(16.0f / zoom_factor);
 

@@ -20,7 +20,7 @@ void kkit::Main_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 			}
 
 	if (window_index == 0)
-		board_window.move(p_input, p_delta_ms, p_project, p_gfx);
+		board_window.move(p_rnd, p_input, p_delta_ms, p_project, p_gfx);
 	else if (window_index == 1)
 		gfx_window.move(p_rnd, p_input, p_delta_ms, p_project, p_gfx);
 	else
