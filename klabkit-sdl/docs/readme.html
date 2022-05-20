@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.1c) - Documentation</title>
+    <title>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2b-snapshot) - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -38,7 +38,7 @@
             <a href="#acknowledgments" class="nav-link">
                 Acknowledgments
             </a>
-			<a href="#changelog" class="nav-link">
+            <a href="#changelog" class="nav-link">
                 Changelog
             </a>
             <a href="#roadmap" class="nav-link">
@@ -62,7 +62,7 @@
 
                 <hr>
 
-                <header>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.1c)</header>
+                <header>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2b-snapshot)</header>
 
                 <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as - with the help of an external bmp file editor - modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
@@ -116,19 +116,19 @@
 
                 <p>Each configuration points to a project folder, where files will be loaded from and saved to. We support relative paths (relative to the kkit-sdl executable), as well as absolute paths. By default the file points to folders that ship with the editor.</p>
 
-				<img src="./images/03_config_xml.png" alt="Board Editor screen" width="1024" />
-				
-				<p>
-				The screenshot above shows how to switch between configurations. The XML root node has an attribute "active_config_no", which should be set to a value matching one of the concrete configurations in the XML. In this example it is 0, so the config-block where attribute "no" equals 0 will be loaded on program start. This configuration block has the attribute "project_folder" set to "./gamedata/Ken2.1", meaning this is the folder it will load files from, and save files to.
-				</p>
-				
-				<p>
-				The editor comes with default configuration blocks for all official versions of Ken's Labyrinth. Using the default configuration XML, other values for active_config_no in the root node can be 1, 2, 3 or 4 - which will load v2.0, v1.1, v1.0 or Walken, respectively -  when the program starts.
-				</p>
+                <img src="./images/03_config_xml.png" alt="Board Editor screen" width="1024" />
 
-				<p>
-				It might be a good idea to take a backup of the config xml if you make major changes, like making your own configurations. For most users it should not be necessary to change more than the project folders, and active config no in the XML root.
-				</p>
+                <p>
+                    The screenshot above shows how to switch between configurations. The XML root node has an attribute "active_config_no", which should be set to a value matching one of the concrete configurations in the XML. In this example it is 0, so the config-block where attribute "no" equals 0 will be loaded on program start. This configuration block has the attribute "project_folder" set to "./gamedata/Ken2.1", meaning this is the folder it will load files from, and save files to.
+                </p>
+
+                <p>
+                    The editor comes with default configuration blocks for all official versions of Ken's Labyrinth. Using the default configuration XML, other values for active_config_no in the root node can be 1, 2, 3 or 4 - which will load v2.0, v1.1, v1.0 or Walken, respectively -  when the program starts.
+                </p>
+
+                <p>
+                    It might be a good idea to take a backup of the config xml if you make major changes, like making your own configurations. For most users it should not be necessary to change more than the project folders, and active config no in the XML root.
+                </p>
 
                 <p>
                     If the configuration file does not exist, we will load a default configuration for v2.1, but with no custom tile picker layout. In this case the project folder will be the same as the folder of the executable.
@@ -203,6 +203,8 @@
                     <br>Ctrl+X - Cut selection
                     <br>Delete - Clear selection
                     <br>Shift+V - Show where clipboard would be pasted, if using Ctrl+V (if clipboard fits)
+                    <br>Ctrl+A - Select all (whole board)
+                    <br>Esc - Unset selection rectangle
                     <br>Arrow keys - Move board view (hold Ctrl for faster panning)
                     <br>B - Toggle cursor destructible property ([B]last)
                     <br>C - Toggle cursor clip property
@@ -211,12 +213,13 @@
                     <br>R - Rotate clipboard counter-clockwise 90 degrees (hold Shift to rotate clockwise)
                     <br>Ctrl+Plus/Minus - Zoom in and out (centered)
                     <br>Ctrl+H - Center on player start position ([H]ome)
-					<br>Shift+H - Set the player start position at cursor
+                    <br>Shift+H - Set the player start position at cursor
                     <br>Ctrl+N - Same as the "Next" button
                     <br>Ctrl+P - Same as the "Prev" button
                     <br>Ctrl+F - Center the board view on the selected board tile
                     <br>Ctrl+S - Save KZP (hold Shift to save DAT where applicable)
                     <br>PgUp/PgDown - Go to next/prev board
+                    <br>Shift+Plus/Minus - Go to next/prev board
                     <br>Home/End - Go to first/last board
 
                 </p>
@@ -418,14 +421,23 @@
                 <header>Changelog</header>
 
                 <p>
+                    Changes since v0.1c
+                </p>
+
+                <ul>
+                    <li>Board screen: Added keyboard shortcut Ctrl+A to select the whole board</li>
+                    <li>Board screen: Added textured minimap, which will give a live view of the in-game minimap</li>
+                </ul>
+
+                <p>
                     Changes since v0.1b
                 </p>
-				
-				<ul>
-				 <li>Changed the application name to KKIT/CLI: Unofficial Ken's Labyrinth Editor's Toolkit (to avoid any confusion with the <a href="http://advsys.net/ken/klab.htm#klabkit">original Developer's Toolkit</a>)</li>
-				 <li>Updated documentation; clarified how to switch between lab3d-versions (will be changed to use a launcher in a later version)</li>
-				 <li>Added shortcut shift+H to set player start position at selected board tile (to avoid having to use the tile picker)</li>
-				</ul>
+
+                <ul>
+                    <li>Changed the application name to KKIT/CLI: Unofficial Ken's Labyrinth Editor's Toolkit (to avoid any confusion with the <a href="http://advsys.net/ken/klab.htm#klabkit">original Developer's Toolkit</a>)</li>
+                    <li>Updated documentation; clarified how to switch between lab3d-versions (will be changed to use a launcher in a later version)</li>
+                    <li>Added shortcut shift+H to set player start position at selected board tile (to avoid having to use the tile picker)</li>
+                </ul>
 
             </section>
 
@@ -460,7 +472,7 @@
 
                 <ul>
                     <li>Show more informational and error messages in the application</li>
-					<li>Add a help/quickstart screen in the application</li>
+                    <li>Add a help/quickstart screen in the application</li>
                     <li>Ability to see the board map tile (the one that is autogenerated as a map in-game) in the editor</li>
                     <li>Add support for editing highscore and savegame files</li>
                     <li>Clean up the code, and reduce wasted cycles :)</li>

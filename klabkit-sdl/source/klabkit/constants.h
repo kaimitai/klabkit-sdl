@@ -12,7 +12,7 @@ namespace kkit {
 
 		// application constants
 		constexpr char APP_TITLE[]{ "KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit" };
-		constexpr char APP_VERSION[]{ "0.1c" };
+		constexpr char APP_VERSION[]{ "0.2b-snapshot" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
 		constexpr char CONF_FILE_NAME[]{ "kkit-sdl-config.xml" };
