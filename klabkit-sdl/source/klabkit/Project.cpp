@@ -1,4 +1,3 @@
-#include <map>
 #include "Project.h"
 #include "constants.h"
 #include "compression.h"
@@ -186,8 +185,6 @@ void kkit::Project::initialize_maps(void) {
 void kkit::Project::initialize_maps_walken(void) {
 	std::vector<byte> map_bytes = klib::file::read_file_as_bytes(get_file_path(c::FILE_BOARDS, c::FILE_EXT_DAT));
 
-	std::map<byte, int> cnt;
-
 	// calculate the entire board here
 	for (int i{ 0 }; i < config.board_count; ++i) {
 		std::vector<std::vector<kkit::Map_tile>> tiles(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
@@ -199,8 +196,6 @@ void kkit::Project::initialize_maps_walken(void) {
 			int l_x = j / 64;
 			int l_y = j % 64;
 			int l_tile_no = map_bytes.at(i * 4096 + j);
-
-			++cnt[l_tile_no];
 
 			bool l_inside{ false };
 
