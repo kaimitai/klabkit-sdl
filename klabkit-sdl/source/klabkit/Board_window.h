@@ -134,7 +134,7 @@ namespace kkit {
 		// given an absolute underlying board pixel coordinate, make it be a given absolute screen grid coordinate
 		void translate_grid_offset(int p_gx, int p_gy, int p_sx, int p_sy);
 
-		void button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input);
+		void button_click(std::size_t p_button_no, SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input);
 
 		// selection operations, copy, paste, cut, flip, rotate etc
 		bool is_empty_selection(const kkit::Project& p_project) const;
@@ -159,9 +159,12 @@ namespace kkit {
 		bool bmp_export(kkit::Project& p_project, int p_board_no) const;
 		void save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const;
 
+		// call when board data is altered
+		void board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+
 	public:
 		Board_window(SDL_Renderer* p_rnd);
-		void move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+		void move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 	};
 }

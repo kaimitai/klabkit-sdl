@@ -104,6 +104,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
+	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_minimap_texture(board_ind), BW_MX, BW_MY, 1);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H,
@@ -133,7 +134,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	}
 }
 
-void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input) {
+void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, const klib::User_input& p_input) {
 	bool l_shift_held = p_input.is_shift_pressed();
 	bool l_ctrl_held = p_input.is_ctrl_pressed();
 
@@ -179,8 +180,10 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 		int l_imported{ 0 };
 
 		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i)
-			if (this->xml_import(p_project, i))
+			if (this->xml_import(p_project, i)) {
 				++l_imported;
+				p_gfx.reload_minimap_texture(p_rnd, p_project, i);
+			}
 
 		if (l_imported > 0)
 			p_gfx.add_toast_ok(std::to_string(l_imported) + " xml file(s) imported");
@@ -213,7 +216,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, kkit::Project& p_
 	}
 }
 
-void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
 
@@ -225,7 +228,7 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		for (std::size_t i{ 0 }; i < buttons.size(); ++i)
 			if (buttons[i].is_hit(p_input.mx(), p_input.my())) {
 				try {
-					button_click(i, p_project, p_gfx, p_input);
+					button_click(i, p_rnd, p_project, p_gfx, p_input);
 				}
 				catch (const std::exception& ex) {
 					p_gfx.add_toast_error(ex.what());
@@ -261,14 +264,25 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
 		this->copy_to_clipboard(p_project);
 	// ctrl+V: paste from clipboard
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
 		this->paste_from_clipboard(p_project);
+		this->board_changed(p_rnd, p_project, p_gfx);
+	}
+	// ctrl+A: select all
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_A)) {
+		this->sel_tile_x = 0;
+		this->sel_tile_y = 0;
+		this->sel_tile_2_x = c::MAP_W - 1;
+		this->sel_tile_2_y = c::MAP_H - 1;
+	}
 	// shift+V: show where clipboard WOULD BE pasted
 	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
 		this->show_selection_rectangle();
 	// delete: set all tiles in selection to 0 (internal -1)
-	else if (p_input.is_pressed(SDL_SCANCODE_DELETE))
+	else if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
 		this->clear_selection(p_project);
+		this->board_changed(p_rnd, p_project, p_gfx);
+	}
 	// shift+Minus / PgDown: previous board
 	else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
 		board_ind = klib::util::validate(board_ind - 1, 0, p_project.get_board_count() - 1);
@@ -288,8 +302,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_H))
 		p_project.set_player_start_position(board_ind, sel_tile_x, sel_tile_y);
 	// ctrl+X: cut selection
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X)) {
 		this->cut_selection(p_project);
+		this->board_changed(p_rnd, p_project, p_gfx);
+	}
 	// esc: clear selection rectangle
 	else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
 		this->clear_secondary_selection();
@@ -315,6 +331,8 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 			p_project.flip_vertical(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
 		else
 			p_project.flip_horizontal(board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+
+		this->board_changed(p_rnd, p_project, p_gfx);
 	}
 	// R: rotate clipboard counter-clockwise, if shift held: rotate clockwise
 	else if (p_input.is_pressed(SDL_SCANCODE_R)) {
@@ -373,8 +391,10 @@ void kkit::Board_window::move(const klib::User_input& p_input, int p_delta_ms, k
 		int l_stile_no{ this->get_selected_tile_no(p_project) };
 		if (l_stile_no == -2)
 			p_project.set_player_start_position(board_ind, l_tcoords.first, l_tcoords.second);
-		else
+		else {
 			p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
+			this->board_changed(p_rnd, p_project, p_gfx);
+		}
 	}
 	// mouse down on board grid, no shift: select clicked tile
 	// if ctrl held: "color picker" (make tile picker tile equal to selected board tile)
@@ -543,7 +563,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 
 
 void kkit::Board_window::draw_minimap(SDL_Renderer* p_rnd, int p_x, int p_y) const {
-	klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 0,0,0 }, 0);
+	//klib::gfx::draw_rect(p_rnd, p_x, p_y, BW_MW, BW_MW, SDL_Color{ 0,0,0 }, 0);
 
 	int l_sel_factor = static_cast<int>(16.0f / zoom_factor);
 
@@ -872,4 +892,8 @@ void kkit::Board_window::prev_tile(const kkit::Project& p_project, bool p_tp_til
 		this->prev_tile(p_project, p_tp_tile, true);
 
 	// no tile found, but wrap was already turned on, return with no changes
+}
+
+void kkit::Board_window::board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	p_gfx.reload_minimap_texture(p_rnd, p_project, this->board_ind);
 }

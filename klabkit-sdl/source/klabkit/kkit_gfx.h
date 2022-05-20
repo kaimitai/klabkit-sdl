@@ -28,6 +28,10 @@ namespace kkit {
 		std::vector<SDL_Texture*> get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		SDL_Texture* get_project_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);
 		std::vector<SDL_Texture*> get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
+		std::vector<SDL_Texture*> get_minimap_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
+
+		SDL_Surface* create_board_minimap_surface(const kkit::Project& p_project, int p_board_no);
+		SDL_Texture* create_board_minimap_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_board_no, bool p_destroy_texture = true);
 
 		// utility functions
 		SDL_Texture* create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no);

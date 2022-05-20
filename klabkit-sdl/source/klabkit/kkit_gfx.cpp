@@ -197,6 +197,37 @@ std::vector<SDL_Texture*> kkit::gfx::get_program_textures(SDL_Renderer* p_rnd, c
 	return result;
 }
 
+std::vector<SDL_Texture*> kkit::gfx::get_minimap_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
+	std::vector<SDL_Texture*> result;
+
+	for (int i{ 0 }; i < p_project.get_board_count(); ++i)
+		result.push_back(create_board_minimap_texture(p_rnd, p_project, i));
+
+	return result;
+}
+
+SDL_Surface* kkit::gfx::create_board_minimap_surface(const kkit::Project& p_project, int p_board_no) {
+	std::vector<std::vector<byte>> l_minimap_image;
+	const kkit::Board l_board = p_project.get_board(p_board_no);
+
+	for (int j{ 0 }; j < c::MAP_H; ++j) {
+		std::vector<byte> l_pixel_row;
+		for (int i{ 0 }; i < c::MAP_W; ++i) {
+			byte l_pal_ind = static_cast<byte>((l_board.get_tile_no(j, i) + 1) & 255);
+			l_pixel_row.push_back(l_pal_ind);
+		}
+		l_minimap_image.push_back(l_pixel_row);
+	}
+
+	SDL_Surface* result = image_to_sdl_surface(l_minimap_image, p_project.get_palette());
+
+	return result;
+}
+
+SDL_Texture* kkit::gfx::create_board_minimap_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_board_no, bool p_destroy_surface) {
+	return klib::gfx::surface_to_texture(p_rnd, create_board_minimap_surface(p_project, p_board_no));
+}
+
 std::vector<std::vector<byte>> kkit::gfx::flat_image_to_2d(const std::vector<byte>& p_input) {
 	std::vector<std::vector<byte>> result;
 
@@ -218,7 +249,7 @@ SDL_Color kkit::gfx::get_pulse_color(int p_color_no, int p_frame_no) {
 	else if (p_color_no == 3)
 		return SDL_Color(l_frame_no / 4, l_frame_no / 4, 255 - l_frame_no / 2);
 	else
-		return SDL_Color(180 - l_frame_no/2, 240 - l_frame_no/2, 0);
+		return SDL_Color(180 - l_frame_no / 2, 240 - l_frame_no / 2, 0);
 }
 
 bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path) {
