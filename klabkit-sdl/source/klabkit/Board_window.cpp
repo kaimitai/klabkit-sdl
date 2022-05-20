@@ -302,8 +302,10 @@ void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_H))
 		p_project.set_player_start_position(board_ind, sel_tile_x, sel_tile_y);
 	// ctrl+X: cut selection
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X)) {
 		this->cut_selection(p_project);
+		this->board_changed(p_rnd, p_project, p_gfx);
+	}
 	// esc: clear selection rectangle
 	else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
 		this->clear_secondary_selection();
