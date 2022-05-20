@@ -391,10 +391,10 @@ void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 		int l_stile_no{ this->get_selected_tile_no(p_project) };
 		if (l_stile_no == -2)
 			p_project.set_player_start_position(board_ind, l_tcoords.first, l_tcoords.second);
-		else
+		else {
 			p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
-
-		this->board_changed(p_rnd, p_project, p_gfx);
+			this->board_changed(p_rnd, p_project, p_gfx);
+		}
 	}
 	// mouse down on board grid, no shift: select clicked tile
 	// if ctrl held: "color picker" (make tile picker tile equal to selected board tile)
