@@ -261,6 +261,56 @@ bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const
 	return (file_status != -1);
 }
 
+void kkit::gfx::tilemap_to_bmp(const kkit::Project& p_project) {
+	constexpr int TILES_PER_ROW = 16;
+	int l_tile_h = 1 + (p_project.get_wall_image_count() - 1) / TILES_PER_ROW;
+
+	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, c::WALL_IMG_W * TILES_PER_ROW, c::WALL_IMG_H * l_tile_h, 8, 0, 0, 0, 0);
+	set_surface_project_palette(l_bmp, p_project);
+
+	for (int i{ 0 }; i < l_tile_h; ++i)
+		for (int j{ 0 }; j < TILES_PER_ROW && (i * TILES_PER_ROW + j < p_project.get_wall_image_count()); ++j)
+			draw_wall_tile_on_surface(l_bmp, p_project.get_wall(i * TILES_PER_ROW + j).get_image(),
+				j * c::WALL_IMG_W, i * c::WALL_IMG_H);
+
+	std::string l_out_file = p_project.get_file_name("tilemap", c::FILE_EXT_BMP);
+	save_bmp_file(l_bmp, p_project.get_bmp_folder(), l_out_file);
+}
+
+void kkit::gfx::palette_to_bmp(const kkit::Project& p_project) {
+	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, 16, 16, 8, 0, 0, 0, 0);
+	set_surface_project_palette(l_bmp, p_project);
+
+	for (int i{ 0 }; i < 16; ++i)
+		for (int j{ 0 }; j < 16; ++j)
+			klib::gfx::put_pixel(l_bmp, i, j, i * 16 + j);
+
+	std::string l_out_file = p_project.get_file_name("palette", c::FILE_EXT_BMP);
+	save_bmp_file(l_bmp, p_project.get_bmp_folder(), l_out_file);
+}
+
+void kkit::gfx::draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index) {
+
+	for (int i{ 0 }; i < c::WALL_IMG_W; ++i)
+		for (int j = 0; j < c::WALL_IMG_H; ++j) {
+			byte l_pal_ind = p_image[i][j];
+			klib::gfx::put_pixel(p_bmp, p_x + i, p_y + j,
+				l_pal_ind == 255 ? p_trans_index : l_pal_ind);
+		}
+}
+
+void kkit::gfx::save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folder, const std::string& p_out_file) {
+	std::filesystem::create_directory(p_out_folder);
+	std::string l_out_file = p_out_folder + "/" + p_out_file;
+
+	if (SDL_SaveBMP(p_bmp, l_out_file.c_str()) == -1) {
+		SDL_FreeSurface(p_bmp);
+		throw std::exception("Could not save BMP files");
+	}
+
+	SDL_FreeSurface(p_bmp);
+}
+
 void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
 	auto l_palette = p_project.get_palette();
 

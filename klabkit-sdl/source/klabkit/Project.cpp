@@ -305,13 +305,15 @@ std::string kkit::Project::get_file_directory(const std::string& p_extension, in
 
 std::string kkit::Project::get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {
 	std::string l_frame = "";
+
 	if (p_frame_no != -1) {
 		l_frame = std::to_string(p_frame_no + 1);
 		while (l_frame.size() < 3)
 			l_frame.insert(begin(l_frame), '0');
+		l_frame.insert(begin(l_frame), '-');
 	}
 
-	return p_filename + "-" + l_frame + "." + p_extension;
+	return p_filename + l_frame + "." + p_extension;
 }
 
 std::string kkit::Project::get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {

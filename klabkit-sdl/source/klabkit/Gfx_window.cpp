@@ -21,6 +21,9 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 
 	buttons.push_back(klib::Button("Save KZP", GW_SAV_X, GW_SAV_Y, GW_SAV_W));
 	buttons.push_back(klib::Button("Save DAT", GW_SAV_X, GW_SAV_Y + GW_SAV_H + GW_AB_SPACING, GW_SAV_W));
+
+	buttons.push_back(klib::Button("Save Tilemap BMP", GW_SAV2_X, GW_SAV2_Y, GW_SAV2_W));
+	buttons.push_back(klib::Button("Save Palette BMP", GW_SAV2_X, GW_SAV2_Y + GW_SAV2_H + GW_AB_SPACING, GW_SAV2_W));
 }
 
 void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
@@ -208,6 +211,16 @@ void kkit::Gfx_window::button_click(SDL_Renderer* p_rnd, std::size_t p_button_no
 	// save dat
 	else if (p_button_no == GW_PROP_BTN_CNT + 5)
 		this->save_walls_kzp(p_project, p_gfx, false);
+	// save tilemap to bmp
+	else if (p_button_no == GW_PROP_BTN_CNT + 6) {
+		kkit::gfx::tilemap_to_bmp(p_project);
+		p_gfx.add_toast_ok("Tilemap saved to BMP");
+	}
+	// save palette to bmp
+	else if (p_button_no == GW_PROP_BTN_CNT + 7) {
+		kkit::gfx::palette_to_bmp(p_project);
+		p_gfx.add_toast_ok("Palette saved to BMP");
+	}
 }
 
 bool kkit::Gfx_window::bmp_import(SDL_Renderer* p_rnd, kkit::Project& p_project, kkit::Project_gfx& p_gfx, int p_wall_no) const {

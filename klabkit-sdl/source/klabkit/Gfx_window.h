@@ -42,9 +42,15 @@ namespace kkit {
 
 	// save kzp/dat
 	constexpr int GW_SAV_X{ GW_SX };
-	constexpr int GW_SAV_Y{ GW_BMP_Y + 5 * GW_AB_H };
+	constexpr int GW_SAV_Y{ GW_BMP_Y + 3 * GW_AB_H };
 	constexpr int GW_SAV_W{ GW_SW };
 	constexpr int GW_SAV_H{ GW_AB_H };
+
+	// save tilemap/palette bmps
+	constexpr int GW_SAV2_X{ GW_SX };
+	constexpr int GW_SAV2_Y{ GW_BMP_Y + 6 * GW_AB_H };
+	constexpr int GW_SAV2_W{ GW_SW };
+	constexpr int GW_SAV2_H{ GW_AB_H };
 
 	// number of metadata properties
 	constexpr int GW_PROP_BTN_CNT{ 3 };

@@ -23,6 +23,12 @@ namespace kkit {
 		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
 		byte find_nearest_palette_index(SDL_Color p_color, const palette& p_palette);
 
+
+		void tilemap_to_bmp(const kkit::Project& p_project);
+		void palette_to_bmp(const kkit::Project& p_project);
+		void draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index = 255);
+		void save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folder, const std::string& p_out_file);
+
 		// program graphics
 		void set_application_icon(SDL_Window* p_window, const kkit::Project& p_project);
 		std::vector<SDL_Texture*> get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
