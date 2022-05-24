@@ -291,8 +291,8 @@ void kkit::gfx::palette_to_bmp(const kkit::Project& p_project) {
 
 void kkit::gfx::draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index) {
 
-	for (int i{ 0 }; i < c::WALL_IMG_W; ++i)
-		for (int j = 0; j < c::WALL_IMG_H; ++j) {
+	for (int i{ 0 }; i < static_cast<int>(p_image.size()); ++i)
+		for (int j = 0; j < static_cast<int>(p_image[i].size()); ++j) {
 			byte l_pal_ind = p_image[i][j];
 			klib::gfx::put_pixel(p_bmp, p_x + i, p_y + j,
 				l_pal_ind == 255 ? p_trans_index : l_pal_ind);
