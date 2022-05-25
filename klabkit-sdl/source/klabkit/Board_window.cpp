@@ -202,7 +202,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_r
 		int l_exported{ 0 };
 
 		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
-			kkit::gfx::project_map_to_bmp(p_project, i, BG_COLOR);
+			kkit::gfx::project_map_to_bmp(p_project, i, BG_COLOR, toggles[1], toggles[2]);
 			++l_exported;
 		}
 		p_gfx.add_toast_ok(std::to_string(l_exported) + " bmp file(s) saved");

@@ -325,19 +325,51 @@ void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
 	}
 }
 
-void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_col) {
+void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_col, bool p_flash_blast, bool p_flash_noclip) {
 	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, c::WALL_IMG_W * c::MAP_W, c::WALL_IMG_H * c::MAP_H, 8, 0, 0, 0, 0);
 	set_surface_project_palette(l_bmp, p_project);
+
+	auto l_program_gfx = generate_project_gfx_2dv();
+	auto l_star = klib::util::sparsify<byte>(l_program_gfx[6], 2);
 
 	int l_floor_index = find_nearest_palette_index(p_floor_col, p_project.get_palette());
 
 	const auto& l_board = p_project.get_board(p_board_no);
 
+	// draw board tiles first, using floor color as "background"
 	for (int t_y{ 0 }; t_y < c::MAP_H; ++t_y)
 		for (int t_x{ 0 }; t_x < c::MAP_W; ++t_x) {
 			int l_tile_no = l_board.get_tile_no(t_x, t_y);
 			draw_wall_tile_on_surface(l_bmp, p_project.get_image_as_2dv(l_tile_no), c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index);
+
+			// draw flash if applicable
+			if (p_flash_blast && l_board.is_blast(t_x, t_y))
+				draw_wall_tile_on_surface(l_bmp, l_star, c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index, true);
+
+			bool l_inside = false;
+
+			if (l_tile_no >= 0)
+				l_inside |= l_board.is_inside(t_x, t_y) && (!p_project.is_inside(l_tile_no) || p_project.is_clip_override(l_tile_no));
+			else
+				l_inside |= !l_board.is_inside(t_x, t_y);
+
+			if (p_flash_noclip && l_inside)
+				draw_wall_tile_on_surface(l_bmp, l_star, c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y + c::WALL_IMG_H / 2, l_floor_index, true);
 		}
+
+	int l_player_dir = 0;
+	if (l_board.get_player_start_direction() == kkit::Player_direction::Left)
+		l_player_dir = 1;
+	else if (l_board.get_player_start_direction() == kkit::Player_direction::Down)
+		l_player_dir = 2;
+	else if (l_board.get_player_start_direction() == kkit::Player_direction::Right)
+		l_player_dir = 3;
+
+	// draw player start position
+	draw_wall_tile_on_surface(l_bmp, l_program_gfx[2 + l_player_dir],
+		c::WALL_IMG_W * l_board.get_player_start_x(),
+		c::WALL_IMG_H * l_board.get_player_start_y(),
+		l_floor_index, true);
 
 	std::filesystem::create_directory(p_project.get_bmp_folder());
 	std::string l_out_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_BMP, p_board_no);

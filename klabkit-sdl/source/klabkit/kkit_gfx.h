@@ -17,7 +17,7 @@ namespace kkit {
 		// bmp functions
 		bool wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path);
 		void project_walls_to_bmps(const kkit::Project& p_project);
-		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color);
+		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color, bool p_flash_blast, bool p_flash_noclip);
 		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
 		SDL_Surface* image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, bool p_transp = true);
 		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);

@@ -51,6 +51,20 @@ namespace klib {
 		}
 
 		template <class T>
+		std::vector<std::vector<T>> sparsify(std::vector<std::vector<T>> p_v, std::size_t p_step) {
+			std::vector<std::vector<T>> result;
+
+			for (std::size_t j{ 0 }; j < p_v.size(); j += p_step) {
+				std::vector<T> l_row;
+				for (std::size_t i{ 0 }; i < p_v[j].size(); i += p_step)
+					l_row.push_back(p_v[j][i]);
+				result.push_back(l_row);
+			}
+
+			return result;
+		}
+
+		template <class T>
 		std::vector<T> string_split(const std::string& p_values, char p_delimeter) {
 			std::vector<T> result;
 
