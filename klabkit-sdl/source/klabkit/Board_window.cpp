@@ -8,7 +8,7 @@
 #include "./../klib/gfx.h"
 #include "kkit_gfx.h"
 
-kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool>(4, false)) {
+kkit::Board_window::Board_window(SDL_Renderer* p_rnd, bool p_is_klab_v2) : toggles(std::vector<bool>(4, false)) {
 	grid_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096);
 
 	// tile flash timer
@@ -37,7 +37,7 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd) : toggles(std::vector<bool
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 
-	buttons.push_back(klib::Button("Save KZP", BW_EXML_BTN_X, BW_EXML_BTN_Y + BW_EXML_BTN_H + BW_FB_SPACING, BW_TPW, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Save KZP", BW_EXML_BTN_X, BW_EXML_BTN_Y + BW_EXML_BTN_H + BW_FB_SPACING, BW_TPW, BW_EXML_BTN_H, klib::gc::COL_BLACK, p_is_klab_v2 ? klib::gc::COL_GRAY : klib::gc::COL_RED));
 	buttons.push_back(klib::Button("Save DAT", BW_EXML_BTN_X, BW_EXML_BTN_Y + 2 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Save BMP", BW_EXML_BTN_X, BW_EXML_BTN_Y + 3 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
 
@@ -393,7 +393,7 @@ void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 
 		if (l_stile_no == -2)
 			p_project.set_player_start_position(board_ind, l_tcoords.first, l_tcoords.second);
-		else if(l_stile_no != t_tile_no) {
+		else if (l_stile_no != t_tile_no) {
 			p_project.set_tile(this->board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, l_stile_no));
 			this->board_changed(p_rnd, p_project, p_gfx);
 		}

@@ -56,7 +56,7 @@ int main(int argc, char* args[]) try {
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing
-			kkit::Main_window main_window(l_rnd);
+			kkit::Main_window main_window(l_rnd, !project.is_klab_v_1() && !project.is_walken());
 
 			// input handler
 			klib::User_input input;
