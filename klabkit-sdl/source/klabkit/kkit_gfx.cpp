@@ -412,11 +412,15 @@ void kkit::gfx::set_surface_project_palette(SDL_Surface* p_surface, const kkit::
 	SDL_SetPaletteColors(p_surface->format->palette, out_palette, 0, 256);
 }
 
+SDL_Color kkit::gfx::tuple_to_sdl_color(const std::tuple<byte, byte, byte>& p_col) {
+	return SDL_Color{ std::get<0>(p_col), std::get<1>(p_col), std::get<2>(p_col) };
+}
+
 std::vector<SDL_Color> kkit::gfx::tuple_to_sdl_palette(const std::vector<std::tuple<byte, byte, byte>>& p_palette) {
 	std::vector<SDL_Color> result;
 
 	for (const auto& l_col : p_palette)
-		result.push_back(SDL_Color{ std::get<0>(l_col), std::get<1>(l_col), std::get<2>(l_col) });
+		result.push_back(tuple_to_sdl_color(l_col));
 
 	return result;
 }

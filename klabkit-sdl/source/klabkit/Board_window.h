@@ -12,9 +12,6 @@
 
 namespace kkit {
 
-	// colors
-	constexpr SDL_Color BG_COLOR{ 72, 56, 28 };
-
 	// min and max values for interacting with the grid
 	constexpr float ZOOM_MIN{ 0.125f };
 	constexpr float ZOOM_MAX{ 2.0f };

@@ -70,6 +70,7 @@ namespace kkit {
 		} };
 
 		constexpr std::tuple<byte, byte, byte> TRANS_COL_RGB{ 204, 92, 112 };
+		constexpr std::tuple<byte, byte, byte> FLOOR_COL_RGB{ 72, 56, 28 };
 
 		// wall files
 		constexpr int WALL_IMG_W{ 64 };

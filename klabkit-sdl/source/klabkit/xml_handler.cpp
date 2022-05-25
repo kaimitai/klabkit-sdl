@@ -4,6 +4,7 @@
 #include "../klib/klib_util.h"
 #include <filesystem>
 #include <set>
+#include <tuple>
 #include <vector>
 
 using byte = unsigned char;
@@ -97,6 +98,13 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 			std::vector l_clip_overrides_v = klib::util::string_split<int>(n_conf.child(XML_TAG_CLIP_OVERRIDES).attribute(XML_ATTR_VALUE).as_string(), ',');
 			std::vector<int> l_tile_picker;
 
+			std::vector l_floor_rgb = klib::util::string_split<byte>(n_conf.attribute(XML_ATTR_FLOOR_RGB).as_string(), ',');
+
+
+			std::tuple<byte, byte, byte> l_floor_rgb_t = (l_floor_rgb.empty() ?
+				kkit::c::FLOOR_COL_RGB :
+				std::make_tuple(l_floor_rgb.at(0), l_floor_rgb.at(1), l_floor_rgb.at(2)));
+
 			if (auto n_tp_node = n_conf.child(XML_TAG_TILE_PICKER)) {
 				for (auto n_tpr_node = n_tp_node.child(XML_TAG_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_ROW)) {
 					std::vector<int> l_tp_row = klib::util::string_split<int>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
@@ -115,7 +123,8 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 
 			return kkit::Project_config(l_label, l_proj_dir, l_bcount, l_wcount, l_lzw_type,
 				l_clip_overrides,
-				l_tile_picker);
+				l_tile_picker,
+				l_floor_rgb_t);
 
 		}
 

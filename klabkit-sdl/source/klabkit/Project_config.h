@@ -3,9 +3,13 @@
 
 #include <set>
 #include <string>
+#include <tuple>
 #include <vector>
+#include "constants.h"
 
 namespace kkit {
+
+	using byte = unsigned char;
 
 	constexpr int CONF_DEF_LZW_CTYPE{ 2 };
 	constexpr int CONF_DEF_BCOUNT{ 30 };
@@ -28,6 +32,7 @@ namespace kkit {
 		std::set<int> clip_overrides;
 		// the tiles in the tile picker, in the boards screen
 		std::vector<int> tile_picker;
+		std::tuple<byte, byte, byte> floor_color;
 
 		// fill the tile picker with tiles that have not been explicitly set
 		void fill_tile_picker(void);
@@ -38,7 +43,9 @@ namespace kkit {
 			const std::string& p_folder,
 			int p_bcount, int p_wcount, int p_lzw_ctype,
 			const std::set<int>& p_clip_overrides,
-			const std::vector<int>& p_tile_picker);
+			const std::vector<int>& p_tile_picker,
+			const std::tuple<byte, byte, byte>& p_floor_rgb);
+		std::tuple<byte, byte, byte> get_floor_color(void) const;
 
 		bool is_clip_override(int p_tile_no) const;
 	};

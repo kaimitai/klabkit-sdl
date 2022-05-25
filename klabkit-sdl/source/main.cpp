@@ -51,9 +51,11 @@ int main(int argc, char* args[]) try {
 			}
 
 			// load resources
-			kkit::Project project(kkit::xml::read_config_xml(kkit::c::CONF_FILE_NAME));
+			auto l_config = kkit::xml::read_config_xml(kkit::c::CONF_FILE_NAME);
+
+			kkit::Project project(l_config);
 			kkit::gfx::set_application_icon(l_window, project);
-			kkit::Project_gfx p_gfx(l_rnd, project);
+			kkit::Project_gfx p_gfx(l_rnd, project, l_config.get_floor_color());
 
 			// main window object to handle all logic and drawing
 			kkit::Main_window main_window(l_rnd, !project.is_klab_v_1() && !project.is_walken());

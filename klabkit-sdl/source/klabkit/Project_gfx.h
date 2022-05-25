@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <array>
 #include <map>
+#include <tuple>
 #include <vector>
 #include "Project.h"
 #include "../klib/Font.h"
@@ -22,11 +23,12 @@ namespace kkit {
 		klib::Font font;
 		klib::Toast_notification_handler toasts;
 		std::map<int, std::vector<SDL_Texture*>> textures;
+		SDL_Color floor_color;
 
 		void load_background_textures(SDL_Renderer* p_rnd);
 
 	public:
-		Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project);
+		Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project, const std::tuple<byte, byte, byte>& p_floor_col);
 		~Project_gfx(void);
 
 		void reload_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);
@@ -36,6 +38,7 @@ namespace kkit {
 		SDL_Texture* get_app_texture(int p_frame_no) const;
 		SDL_Texture* get_bg_texture(int p_frame_no) const;
 		SDL_Texture* get_minimap_texture(int p_frame_no) const;
+		SDL_Color get_floor_color(void) const;
 		const klib::Font& get_font(void) const;
 
 		void move(int p_delta_ms);

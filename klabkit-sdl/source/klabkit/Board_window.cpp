@@ -126,7 +126,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 			int l_h = 2 * c::WALL_IMG_H;
 
 			klib::gfx::draw_rect(p_rnd, l_x - 1, l_y - 1, l_w + 2, l_h + 2, klib::gc::COL_WHITE, 1);
-			klib::gfx::draw_rect(p_rnd, l_x, l_y, l_w, l_h, BG_COLOR, 0);
+			klib::gfx::draw_rect(p_rnd, l_x, l_y, l_w, l_h, p_gfx.get_floor_color(), 0);
 
 			if (l_tile_index >= 0 || l_tile_index == -2)
 				klib::gfx::blit_p2_scale(p_rnd, l_tile_index >= 0 ? p_gfx.get_tile_texture(l_tile_index) : p_gfx.get_app_texture(2), l_x, l_y, 1);
@@ -202,7 +202,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_r
 		int l_exported{ 0 };
 
 		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
-			kkit::gfx::project_map_to_bmp(p_project, i, BG_COLOR, toggles[1], toggles[2]);
+			kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), toggles[1], toggles[2]);
 			++l_exported;
 		}
 		p_gfx.add_toast_ok(std::to_string(l_exported) + " bmp file(s) saved");
@@ -501,7 +501,8 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	float l_shrink_factor = 0.25f + static_cast<float>(timers[0].get_frame()) / 100.0f;
 
 	SDL_SetRenderTarget(p_rnd, grid_texture);
-	SDL_SetRenderDrawColor(p_rnd, BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, 0);
+	SDL_Color l_floor_col = p_gfx.get_floor_color();
+	SDL_SetRenderDrawColor(p_rnd, l_floor_col.r, l_floor_col.g, l_floor_col.b, 0);
 	SDL_RenderClear(p_rnd);
 
 	for (int i{ 0 }; i < 64; ++i)

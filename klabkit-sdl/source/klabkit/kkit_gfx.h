@@ -43,6 +43,7 @@ namespace kkit {
 		// utility functions
 		SDL_Texture* create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no);
 		std::vector<SDL_Texture*> create_bg_textures(SDL_Renderer* p_rnd);
+		SDL_Color tuple_to_sdl_color(const std::tuple<byte, byte, byte>& p_col);
 		std::vector<SDL_Color> tuple_to_sdl_palette(const palette&);
 		void bmp_to_lzw_file(const palette& p_palette, const std::string& p_out_file);
 		std::vector<std::vector<byte>> flat_image_to_2d(const std::vector<byte>& p_input);
