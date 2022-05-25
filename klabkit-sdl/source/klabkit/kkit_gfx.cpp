@@ -20,7 +20,16 @@ void kkit::gfx::bmp_to_lzw_file(const palette& p_palette, const std::string& p_f
 	for (const auto& w : l_bytes)
 		out_bytes.insert(end(out_bytes), begin(w), end(w));
 	std::string p_out_file = p_filename + ".lzw";
-	klib::file::write_bytes_to_file(kkit::compression::compress_lzw_block(out_bytes), p_out_file);
+	auto l_cbytes = kkit::compression::compress_lzw_block(out_bytes);
+
+	std::string l_file_text = "constexpr std::array<byte," + std::to_string(l_cbytes.size()) + "> LZW_BYTES_X { {";
+	for (byte b : l_cbytes)
+		l_file_text += std::to_string(static_cast<int>(b)) + ",";
+
+	l_file_text.pop_back();
+	l_file_text += "} };";
+
+	klib::file::append_string_to_file(l_file_text, "lzw_pic.cpp");
 }
 
 SDL_Texture* kkit::gfx::create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no) {
@@ -129,13 +138,10 @@ std::vector<std::vector<byte>> kkit::gfx::load_bmp(const palette& p_palette, con
 }
 
 void kkit::gfx::set_application_icon(SDL_Window* p_window, const kkit::Project& p_project) {
-	auto icon_image{ flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_ICON), end(LZW_BYTES_ICON)))) };
-	auto l_palette = p_project.get_palette();
-	SDL_Surface* l_icon_srf = image_to_sdl_surface(icon_image, l_palette);
+	SDL_Surface* l_icon_srf = image_to_sdl_surface(flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_ICON), end(LZW_BYTES_ICON)))),
+		p_project.get_palette());
 
-	SDL_SetColorKey(l_icon_srf, true, SDL_MapRGB(l_icon_srf->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
 	SDL_SetWindowIcon(p_window, l_icon_srf);
-
 	SDL_FreeSurface(l_icon_srf);
 }
 
@@ -180,6 +186,7 @@ std::vector<std::vector<std::vector<byte>>> kkit::gfx::generate_project_gfx_2dv(
 	}
 
 	result.push_back(flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_STAR), end(LZW_BYTES_STAR)))));
+	result.push_back(flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_STAR2), end(LZW_BYTES_STAR2)))));
 
 	return result;
 }
@@ -250,7 +257,7 @@ SDL_Color kkit::gfx::get_pulse_color(int p_color_no, int p_frame_no) {
 }
 
 bool kkit::gfx::wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path) {
-	SDL_Surface* l_bmp = image_to_sdl_surface(p_image, p_palette);
+	SDL_Surface* l_bmp = image_to_sdl_surface(p_image, p_palette, false);
 	std::filesystem::create_directory(p_directory);
 	int file_status = SDL_SaveBMP(l_bmp, p_file_full_path.c_str());
 
@@ -310,27 +317,13 @@ void kkit::gfx::save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folde
 	SDL_FreeSurface(p_bmp);
 }
 
-void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
-	auto l_palette = p_project.get_palette();
-
-	for (int i{ 0 }; i < p_project.get_wall_image_count(); ++i) {
-		auto l_image = p_project.get_wall(i).get_image();
-		SDL_Surface* l_bmp = image_to_sdl_surface(l_image, l_palette);
-
-		std::filesystem::create_directory(p_project.get_bmp_folder());
-		std::string l_out_file = p_project.get_bmp_file_path(c::FILE_WALLS, i);
-		auto file_status = SDL_SaveBMP(l_bmp, l_out_file.c_str());
-
-		SDL_FreeSurface(l_bmp);
-	}
-}
-
 void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_col, bool p_flash_blast, bool p_flash_noclip) {
 	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, c::WALL_IMG_W * c::MAP_W, c::WALL_IMG_H * c::MAP_H, 8, 0, 0, 0, 0);
 	set_surface_project_palette(l_bmp, p_project);
 
 	auto l_program_gfx = generate_project_gfx_2dv();
 	auto l_star = klib::util::sparsify<byte>(l_program_gfx[6], 2);
+	auto l_star_2 = klib::util::sparsify<byte>(l_program_gfx[7], 2);
 
 	int l_floor_index = find_nearest_palette_index(p_floor_col, p_project.get_palette());
 
@@ -344,7 +337,7 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 
 			// draw flash if applicable
 			if (p_flash_blast && l_board.is_blast(t_x, t_y))
-				draw_wall_tile_on_surface(l_bmp, l_star, c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index, true);
+				draw_wall_tile_on_surface(l_bmp, l_star_2, c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index, true);
 
 			bool l_inside = false;
 
