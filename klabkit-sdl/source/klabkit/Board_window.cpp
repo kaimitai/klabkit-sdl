@@ -202,7 +202,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_r
 		int l_exported{ 0 };
 
 		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
-			kkit::gfx::project_map_to_bmp(p_project, i);
+			kkit::gfx::project_map_to_bmp(p_project, i, BG_COLOR);
 			++l_exported;
 		}
 		p_gfx.add_toast_ok(std::to_string(l_exported) + " bmp file(s) saved");
@@ -790,16 +790,6 @@ void kkit::Board_window::rotate_selection(const kkit::Project& p_project, bool p
 
 
 // save/load
-bool kkit::Board_window::bmp_export(kkit::Project& p_project, int p_board_no) const {
-	try {
-		kkit::gfx::project_map_to_bmp(p_project, p_board_no);
-		return true;
-	}
-	catch (const std::exception&) {
-		return false;
-	}
-}
-
 bool kkit::Board_window::xml_import(kkit::Project& p_project, int p_board_no) const {
 	auto l_in_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no);
 

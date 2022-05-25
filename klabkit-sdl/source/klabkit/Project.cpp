@@ -514,3 +514,9 @@ kkit::Wall_type kkit::Project::get_wall_type(int p_wall_no) const {
 bool kkit::Project::is_directional(int p_wall_no) const {
 	return (p_wall_no == -1 ? false : get_wall_type(p_wall_no) == kkit::Wall_type::Direction);
 }
+
+const std::vector<std::vector<byte>> kkit::Project::get_image_as_2dv(int p_wall_no) const {
+	if (p_wall_no == -1)
+		return std::vector<std::vector<byte>>(64, std::vector<byte>(64, 255));
+	return walls.at(p_wall_no).get_image();
+}

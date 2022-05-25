@@ -156,7 +156,6 @@ namespace kkit {
 		// save/load
 		void xml_export(const kkit::Project& p_project, int p_board_no) const;
 		bool xml_import(kkit::Project& p_project, int p_board_no) const;
-		bool bmp_export(kkit::Project& p_project, int p_board_no) const;
 		void save_boards_kzp(const kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const;
 
 		// call when board data is altered

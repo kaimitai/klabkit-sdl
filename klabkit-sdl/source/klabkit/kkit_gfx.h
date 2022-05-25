@@ -17,7 +17,7 @@ namespace kkit {
 		// bmp functions
 		bool wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path);
 		void project_walls_to_bmps(const kkit::Project& p_project);
-		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no);
+		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color);
 		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
 		SDL_Surface* image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette);
 		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
@@ -26,7 +26,7 @@ namespace kkit {
 
 		void tilemap_to_bmp(const kkit::Project& p_project);
 		void palette_to_bmp(const kkit::Project& p_project);
-		void draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index = 255);
+		void draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index = 255, bool p_skip_trans = false);
 		void save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folder, const std::string& p_out_file);
 
 		// program graphics

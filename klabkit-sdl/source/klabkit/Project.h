@@ -71,6 +71,7 @@ namespace kkit {
 		bool is_inside(int p_wall_no) const;
 		bool is_directional(int p_wall_no) const;
 		kkit::Wall_type get_wall_type(int p_wall_no) const;
+		const std::vector<std::vector<byte>> get_image_as_2dv(int p_wall_no) const;
 
 		// gfx
 		const std::vector<std::tuple<byte, byte, byte>>& get_palette(void) const;

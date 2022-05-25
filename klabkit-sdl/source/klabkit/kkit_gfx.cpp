@@ -289,13 +289,15 @@ void kkit::gfx::palette_to_bmp(const kkit::Project& p_project) {
 	save_bmp_file(l_bmp, p_project.get_bmp_folder(), l_out_file);
 }
 
-void kkit::gfx::draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index) {
+void kkit::gfx::draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index, bool p_skip_trans) {
 
 	for (int i{ 0 }; i < static_cast<int>(p_image.size()); ++i)
 		for (int j = 0; j < static_cast<int>(p_image[i].size()); ++j) {
 			byte l_pal_ind = p_image[i][j];
-			klib::gfx::put_pixel(p_bmp, p_x + i, p_y + j,
-				l_pal_ind == 255 ? p_trans_index : l_pal_ind);
+			if (!p_skip_trans || l_pal_ind != c::TRANSP_PAL_INDEX) {
+				klib::gfx::put_pixel(p_bmp, p_x + i, p_y + j,
+					l_pal_ind == 255 ? p_trans_index : l_pal_ind);
+			}
 		}
 }
 
@@ -326,27 +328,18 @@ void kkit::gfx::project_walls_to_bmps(const kkit::Project& p_project) {
 	}
 }
 
-void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no) {
+void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_col) {
 	SDL_Surface* l_bmp = SDL_CreateRGBSurface(0, c::WALL_IMG_W * c::MAP_W, c::WALL_IMG_H * c::MAP_H, 8, 0, 0, 0, 0);
 	set_surface_project_palette(l_bmp, p_project);
+
+	int l_floor_index = find_nearest_palette_index(p_floor_col, p_project.get_palette());
 
 	const auto& l_board = p_project.get_board(p_board_no);
 
 	for (int t_y{ 0 }; t_y < c::MAP_H; ++t_y)
 		for (int t_x{ 0 }; t_x < c::MAP_W; ++t_x) {
-			// skip the empty tiles, otherwise draw the wall gfx
-			if (!l_board.is_empty_tile(t_x, t_y)) {
-				const auto& l_wall = p_project.get_wall(l_board.get_tile_no(t_x, t_y));
-
-				for (int w_x{ 0 }; w_x < c::WALL_IMG_W; ++w_x)
-					for (int w_y{ 0 }; w_y < c::WALL_IMG_H; ++w_y) {
-						int l_pal_index = l_wall.get_palette_index(w_x, w_y);
-						// skip transparent pixels
-						if (l_pal_index != c::TRANSP_PAL_INDEX)
-							klib::gfx::put_pixel(l_bmp, c::WALL_IMG_W * t_x + w_x, c::WALL_IMG_H * t_y + w_y, l_pal_index);
-					}
-
-			}
+			int l_tile_no = l_board.get_tile_no(t_x, t_y);
+			draw_wall_tile_on_surface(l_bmp, p_project.get_image_as_2dv(l_tile_no), c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index);
 		}
 
 	std::filesystem::create_directory(p_project.get_bmp_folder());
