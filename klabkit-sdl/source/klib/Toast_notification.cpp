@@ -6,7 +6,7 @@ klib::Toast_notification::Toast_notification(const std::vector<std::string>& p_m
 	:
 	ms_counter{ p_ms },
 	message{ p_msg },
-	texture{ nullptr },
+	//texture{ nullptr },
 	status{ p_status }
 { }
 
@@ -38,36 +38,22 @@ void klib::Toast_notification::move(int delta_ms) {
 	ms_counter -= delta_ms;
 }
 
-void klib::Toast_notification::draw(SDL_Renderer* rnd, const klib::Font& p_font) const {
-	if (this->texture == nullptr)
-		populate_texture(rnd, p_font);
-	gfx::blit(rnd, this->texture, TN_X, TN_Y);
+void klib::Toast_notification::draw(SDL_Renderer* p_rnd, const klib::Font& p_font) const {
+	this->draw_texture(p_rnd, p_font, TN_X, TN_Y);
 }
 
 bool klib::Toast_notification::is_expired(void) const {
 	return (ms_counter < 0);
 }
 
-void klib::Toast_notification::populate_texture(SDL_Renderer* rnd, const klib::Font& p_font) const {
-	this->texture = SDL_CreateTexture(rnd,
-		SDL_PIXELFORMAT_RGBA8888,
-		SDL_TEXTUREACCESS_TARGET, this->get_w(this->message, p_font), this->get_h(this->message, p_font));
-
-	SDL_SetRenderTarget(rnd, this->texture);
-	gfx::draw_rect(rnd, 0, 0, this->get_w(this->message, p_font), this->get_h(this->message, p_font), gc::COL_BLACK, 1);
-	gfx::draw_rect(rnd, TN_OFFSET, TN_OFFSET, this->get_w(this->message, p_font) - 2 * TN_OFFSET, this->get_h(this->message, p_font) - 2 * TN_OFFSET, status_to_color(this->status), 0);
+void klib::Toast_notification::draw_texture(SDL_Renderer* rnd, const klib::Font& p_font, int p_x, int p_y) const {
+	gfx::draw_rect(rnd, p_x, p_y, this->get_w(this->message, p_font), this->get_h(this->message, p_font), gc::COL_BLACK, 1);
+	gfx::draw_rect(rnd, p_x + TN_OFFSET, p_y + TN_OFFSET, this->get_w(this->message, p_font) - 2 * TN_OFFSET, this->get_h(this->message, p_font) - 2 * TN_OFFSET, status_to_color(this->status), 0);
 
 	for (int i = 0; i < static_cast<int>(message.size()); ++i)
-		p_font.write_text(rnd, message.at(i), TN_OFFSET, TN_OFFSET + (TN_OFFSET + i * p_font.h()), gc::COL_BLACK);
-
-	SDL_SetRenderTarget(rnd, nullptr);
+		p_font.write_text(rnd, message.at(i), p_x + TN_OFFSET, p_y + TN_OFFSET + (TN_OFFSET + i * p_font.h()), gc::COL_BLACK);
 }
 
 bool klib::Toast_notification::msg_equals(const std::vector<std::string>& p_msg) const {
 	return (this->message == p_msg);
-}
-
-klib::Toast_notification::~Toast_notification(void) {
-	if (this->texture != nullptr)
-		SDL_DestroyTexture(this->texture);
 }
