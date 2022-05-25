@@ -23,5 +23,15 @@ In the Gfx screen, the tile metadata can be viewed and edited. The bitmaps thems
 ### Command-line interface
 We also include a command-line tool, KKIT/CLI, which can decompress and compress the rest of the game data, like music and sounds. This tool also supports all versions.
 <br></br>
+### Upcoming changes in the next release
+* Textured Minimap! The minimap in the Boards-screen will show a live texture of what the in-game map looks like. (replacing the current all-black square)
+* The Gfx-screen will have new buttons to save the entire tilemap as a single BMP file, and for dumping the palette as a 16x16 image.
+* Saving a board as BMP will include the player start position, a configurable floor color, and will indicate all noclip and destructible tiles - if the corresponding flash toggles are turned on in the Boards-screen.
+* More keyboard shortcuts: Ctrl+A to select all in the Boards-screen, arrow keys for navigating the Gfx screen.
+* Fixed a bug where the toast notification would render as a black rectangle when resizing the window.
+* The "Save KZP"-button in the Boards-screen will be red when editing boards for a version earlier than Ken3D v2, to indicate that only the DAT-format is relevant here.
+* Adding missing documentation: Shift+Plus/Minus in the Boards-screen will go to the next/previous board.
+
+<br></br>
 "Ken's Labyrinth" Copyright (c) 1992-1993 Ken Silverman \
 Ken Silverman's official web site: "http://www.advsys.net/ken"
