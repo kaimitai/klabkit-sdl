@@ -19,7 +19,8 @@ namespace kkit {
 		void project_walls_to_bmps(const kkit::Project& p_project);
 		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color);
 		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
-		SDL_Surface* image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette);
+		SDL_Surface* image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, bool p_transp = true);
+		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
 		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
 		byte find_nearest_palette_index(SDL_Color p_color, const palette& p_palette);
 
@@ -45,6 +46,7 @@ namespace kkit {
 		std::vector<SDL_Color> tuple_to_sdl_palette(const palette&);
 		void bmp_to_lzw_file(const palette& p_palette, const std::string& p_out_file);
 		std::vector<std::vector<byte>> flat_image_to_2d(const std::vector<byte>& p_input);
+		std::vector<std::vector<std::vector<byte>>> generate_project_gfx_2dv(void);
 		SDL_Color get_pulse_color(int p_color_no, int p_frame_no);
 
 		// constant graphics

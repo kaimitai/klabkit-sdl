@@ -164,35 +164,32 @@ SDL_Texture* kkit::gfx::get_project_texture(SDL_Renderer* p_rnd, const kkit::Pro
 	return result;
 }
 
-std::vector<SDL_Texture*> kkit::gfx::get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
-	std::vector<SDL_Texture*> result;
-	palette l_palette{ p_project.get_palette() };
+std::vector<std::vector<std::vector<byte>>> kkit::gfx::generate_project_gfx_2dv(void) {
+	std::vector<std::vector<std::vector<byte>>> result;
 
 	auto l_dir_sprite{ flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_DIR_ARROW), end(LZW_BYTES_DIR_ARROW)))) };
-	SDL_Surface* l_bmp;
-
 	for (int i{ 0 }; i < 2; ++i) {
-		l_bmp = image_to_sdl_surface(l_dir_sprite, l_palette);
-		SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
-		result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
-
+		result.push_back(l_dir_sprite);
 		klib::util::rot_sq_matrix_ccw(l_dir_sprite);
 	}
 
 	l_dir_sprite = flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_PLAYER_POS), end(LZW_BYTES_PLAYER_POS))));
-
 	for (int i{ 0 }; i < 4; ++i) {
-		l_bmp = image_to_sdl_surface(l_dir_sprite, l_palette);
-		SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
-		result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
-
+		result.push_back(l_dir_sprite);
 		klib::util::rot_sq_matrix_ccw(l_dir_sprite);
 	}
 
-	l_dir_sprite = flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_STAR), end(LZW_BYTES_STAR))));
-	l_bmp = image_to_sdl_surface(l_dir_sprite, l_palette);
-	SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
-	result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
+	result.push_back(flat_image_to_2d(kkit::compression::decompress_lzw_block(std::vector<byte>(begin(LZW_BYTES_STAR), end(LZW_BYTES_STAR)))));
+
+	return result;
+}
+
+std::vector<SDL_Texture*> kkit::gfx::get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
+	std::vector<SDL_Texture*> result;
+	palette l_palette{ p_project.get_palette() };
+
+	for (const auto& l_v : generate_project_gfx_2dv())
+		result.push_back(klib::gfx::surface_to_texture(p_rnd, image_to_sdl_surface(l_v, l_palette)));
 
 	return result;
 }
@@ -349,7 +346,7 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 	SDL_FreeSurface(l_bmp);
 }
 
-SDL_Surface* kkit::gfx::image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette) {
+SDL_Surface* kkit::gfx::image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, bool p_transp) {
 	auto l_palette = tuple_to_sdl_palette(p_palette);
 	int l_h{ static_cast<int>(p_image.size()) };
 	int l_w{ static_cast<int>(p_image.size() > 0 ? p_image[0].size() : 0) };
@@ -364,6 +361,11 @@ SDL_Surface* kkit::gfx::image_to_sdl_surface(const std::vector<std::vector<byte>
 	for (int i{ 0 }; i < l_w; ++i)
 		for (int j = 0; j < l_h; ++j)
 			klib::gfx::put_pixel(l_bmp, i, j, p_image[i][j]);
+
+	if (p_transp) {
+		SDL_Color l_trans_rgb = l_palette.at(c::TRANSP_PAL_INDEX);
+		SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, l_trans_rgb.r, l_trans_rgb.g, l_trans_rgb.b));
+	}
 
 	return l_bmp;
 }
