@@ -520,3 +520,7 @@ const std::vector<std::vector<byte>> kkit::Project::get_image_as_2dv(int p_wall_
 		return std::vector<std::vector<byte>>(64, std::vector<byte>(64, 255));
 	return walls.at(p_wall_no).get_image();
 }
+
+std::tuple<byte, byte, byte> kkit::Project::get_floor_color(void) const {
+	return this->config.floor_color;
+}

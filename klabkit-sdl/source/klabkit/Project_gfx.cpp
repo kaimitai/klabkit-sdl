@@ -1,9 +1,9 @@
 #include "Project_gfx.h"
 #include "kkit_gfx.h"
 
-kkit::Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project, const std::tuple<byte, byte, byte>& p_floor_col) :
+kkit::Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project) :
 	font(p_rnd, std::vector<byte>(begin(FONT_BYTES), end(FONT_BYTES)), 16, 22),
-	floor_color{ kkit::gfx::tuple_to_sdl_color(p_floor_col) }
+	floor_color{ kkit::gfx::tuple_to_sdl_color(p_project.get_floor_color()) }
 {
 	this->textures[INDEX_WALL_TEXTURES] = kkit::gfx::get_project_textures(p_rnd, p_project);
 	this->textures[INDEX_APP_TEXTURES] = kkit::gfx::get_program_textures(p_rnd, p_project);

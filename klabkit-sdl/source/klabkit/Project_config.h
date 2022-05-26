@@ -45,7 +45,6 @@ namespace kkit {
 			const std::set<int>& p_clip_overrides,
 			const std::vector<int>& p_tile_picker,
 			const std::tuple<byte, byte, byte>& p_floor_rgb);
-		std::tuple<byte, byte, byte> get_floor_color(void) const;
 
 		bool is_clip_override(int p_tile_no) const;
 	};

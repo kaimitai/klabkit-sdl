@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <array>
 #include <map>
-#include <tuple>
 #include <vector>
 #include "Project.h"
 #include "../klib/Font.h"
@@ -28,7 +27,7 @@ namespace kkit {
 		void load_background_textures(SDL_Renderer* p_rnd);
 
 	public:
-		Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project, const std::tuple<byte, byte, byte>& p_floor_col);
+		Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		~Project_gfx(void);
 
 		void reload_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);

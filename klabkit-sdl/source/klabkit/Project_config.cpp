@@ -30,11 +30,6 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	this->fill_tile_picker();
 }
 
-std::tuple<byte, byte, byte> kkit::Project_config::get_floor_color(void) const {
-	return this->floor_color;
-}
-
-
 bool kkit::Project_config::is_clip_override(int p_tile_no) const {
 	return this->clip_overrides.find(p_tile_no) != end(this->clip_overrides);
 }
