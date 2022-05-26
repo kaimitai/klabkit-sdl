@@ -148,13 +148,8 @@ void kkit::gfx::set_application_icon(SDL_Window* p_window, const kkit::Project& 
 std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project) {
 	std::vector<SDL_Texture*> result;
 
-	auto l_palette = p_project.get_palette();
-
-	for (int i{ 0 }; i < p_project.get_wall_image_count(); ++i) {
-		SDL_Surface* l_bmp = image_to_sdl_surface(p_project.get_wall(i).get_image(), l_palette);
-		SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
-		result.push_back(klib::gfx::surface_to_texture(p_rnd, l_bmp));
-	}
+	for (int i{ 0 }; i < p_project.get_wall_image_count(); ++i)
+		result.push_back(get_project_texture(p_rnd, p_project, i));
 
 	//bmp_to_lzw_file(l_palette, "C:\\Users\\Kai\\Documents\\star.bmp");
 
@@ -162,9 +157,7 @@ std::vector<SDL_Texture*> kkit::gfx::get_project_textures(SDL_Renderer* p_rnd, c
 }
 
 SDL_Texture* kkit::gfx::get_project_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no) {
-	auto l_palette = p_project.get_palette();
-	SDL_Surface* l_bmp = image_to_sdl_surface(p_project.get_wall(p_frame_no).get_image(), l_palette);
-	SDL_SetColorKey(l_bmp, true, SDL_MapRGB(l_bmp->format, std::get<0>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<1>(l_palette.at(c::TRANSP_PAL_INDEX)), std::get<2>(l_palette.at(c::TRANSP_PAL_INDEX))));
+	SDL_Surface* l_bmp = image_to_sdl_surface(p_project.get_wall(p_frame_no).get_image(), p_project.get_palette());
 	SDL_Texture* result = klib::gfx::surface_to_texture(p_rnd, l_bmp);
 
 	return result;
