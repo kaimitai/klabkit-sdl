@@ -85,6 +85,11 @@ namespace kkit {
 		constexpr int MAP_BYTES_PER_TILE{ 2 };
 		constexpr int MAP_BYTES{ MAP_W * MAP_H * MAP_BYTES_PER_TILE };
 
+		// gfx constants - indexes to project graphic map entries
+		constexpr int INDEX_WALL_TEXTURES{ 0 };
+		constexpr int INDEX_APP_TEXTURES{ INDEX_WALL_TEXTURES + 1 };
+		constexpr int INDEX_BG_TEXTURES{ INDEX_APP_TEXTURES + 1 };
+		constexpr int INDEX_MM_TEXTURES{ INDEX_BG_TEXTURES + 1 }; // minimaps
 	}
 }
 

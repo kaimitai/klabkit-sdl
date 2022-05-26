@@ -65,7 +65,7 @@ void kkit::Board_window::draw_selected_board_tile(SDL_Renderer* p_rnd, const kli
 	else {
 
 		if (l_sel_tile_no >= 0) {
-			klib::gfx::blit_full_spec(p_rnd, p_gfx.get_tile_texture(l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
+			klib::gfx::blit_full_spec(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_sel_tile_no), BW_SBTX, BW_SBTY, 128, 128, 0, 0, 128, 128);
 
 			bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
 			if (l_is_dir) {
@@ -104,7 +104,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 	draw_board(p_rnd, p_project, p_gfx, BW_BX, BW_BY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Minimap", BW_MX - 1, BW_MY - klib::gc::BUTTON_H - 1, BW_MW + 2, BW_MW + 4 + klib::gc::BUTTON_H);
-	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_minimap_texture(board_ind), BW_MX, BW_MY, 1);
+	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_texture(c::INDEX_MM_TEXTURES, board_ind), BW_MX, BW_MY, 1);
 	draw_minimap(p_rnd, BW_MX, BW_MY);
 
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tile Picker", BW_TPX - 1, BW_TPY - klib::gc::BUTTON_H - 1, BW_TPW + 2, BW_TPH + 4 + klib::gc::BUTTON_H,
@@ -129,7 +129,7 @@ void kkit::Board_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 			klib::gfx::draw_rect(p_rnd, l_x, l_y, l_w, l_h, p_gfx.get_floor_color(), 0);
 
 			if (l_tile_index >= 0 || l_tile_index == -2)
-				klib::gfx::blit_p2_scale(p_rnd, l_tile_index >= 0 ? p_gfx.get_tile_texture(l_tile_index) : p_gfx.get_app_texture(2), l_x, l_y, 1);
+				klib::gfx::blit_p2_scale(p_rnd, l_tile_index >= 0 ? p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_index) : p_gfx.get_texture(c::INDEX_APP_TEXTURES, 2), l_x, l_y, 1);
 		}
 	}
 }
@@ -412,8 +412,8 @@ void kkit::Board_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inp
 			int l_index = p_project.get_tile_picker_index(l_sel_tile_no);
 
 			if (l_index >= 0) {
-				this->tile_x = l_index % 14; // TODO: Replace with constants
-				this->tile_y = l_index / 14;
+				this->tile_x = l_index % BW_TPR;
+				this->tile_y = l_index / BW_TPR;
 			}
 		}
 
@@ -521,12 +521,12 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 			l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no(p_project));
 
 			if (l_tile_no >= 0)
-				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_tile_no), 64 * i, 64 * j);
+				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
 
 			if (toggles[0] && p_project.is_directional(l_tile_no))
-				klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 			if (l_flash)
-				klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, 6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 		}
 
 	// draw player start
@@ -541,7 +541,7 @@ void kkit::Board_window::draw_board(SDL_Renderer* p_rnd, const kkit::Project& p_
 	else if (l_pdir == kkit::Player_direction::Right)
 		l_pstart_sprite_no = 5;
 
-	klib::gfx::blit_factor(p_rnd, p_gfx.get_app_texture(l_pstart_sprite_no), l_px, l_py, l_shrink_factor);
+	klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, l_pstart_sprite_no), l_px, l_py, l_shrink_factor);
 
 	// draw selected tile
 	klib::gfx::draw_rect(p_rnd, sel_tile_x * 64, sel_tile_y * 64, 64, 64,
@@ -587,9 +587,9 @@ void kkit::Board_window::draw_tile_picker(SDL_Renderer* p_rnd, const kkit::Proje
 		int l_x = (i - tile_row * BW_TPR) % BW_TPR;
 		int l_index = p_project.get_tile_picker()[i];
 		if (l_index >= 0)
-			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_index), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
+			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_index), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
 		else if (l_index == -2)
-			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_app_texture(2), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
+			klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, 2), p_x + l_x * BW_TP_TW, p_y + l_y * BW_TP_TW, -1);
 	}
 
 	if (tile_y >= tile_row && tile_y < tile_row + BW_TPC)

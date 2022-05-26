@@ -15,10 +15,11 @@ namespace kkit {
 
 	class About_window {
 
-		mutable int bg_index{ 0 };
+		int bg_index{ 0 };
 		std::size_t str_index{ 0 };
 		std::pair<std::size_t, std::size_t> get_coords(int) const;
 		std::vector<klib::Timer> timers;
+		bool snausty;
 
 		std::vector<std::string> ABOUT_MESSAGE{
 			std::string(c::APP_TITLE),
@@ -40,7 +41,7 @@ namespace kkit {
 	public:
 		About_window(void);
 		void draw(SDL_Renderer*, const klib::User_input& p_input, const kkit::Project_gfx& p_gfx) const;
-		void move(unsigned int delta_ms, const klib::User_input& p_input);
+		void move(unsigned int delta_ms, const klib::User_input& p_input, const kkit::Project_gfx& p_gfx);
 	};
 
 }

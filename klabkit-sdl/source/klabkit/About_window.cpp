@@ -4,10 +4,10 @@
 #include "./../klib/gfx.h"
 
 void kkit::About_window::draw(SDL_Renderer* rnd, const klib::User_input& p_input, const kkit::Project_gfx& p_gfx) const {
-	if (bg_index > 4)
-		bg_index = 0;
 
-	klib::gfx::blit_tiled(rnd, p_gfx.get_bg_texture(bg_index), timers.at(0).get_frame(), 40 + static_cast <int>(30 * cos(2.0f * 3.14f * static_cast<float>(timers.at(0).get_frame()) / 256.0f)));
+	klib::gfx::blit_tiled(rnd,
+		p_gfx.get_texture(this->snausty ? kkit::c::INDEX_WALL_TEXTURES : kkit::c::INDEX_BG_TEXTURES, bg_index),
+		timers.at(0).get_frame(), 40 + static_cast <int>(30 * cos(2.0f * 3.14f * static_cast<float>(timers.at(0).get_frame()) / 256.0f)));
 	auto co = get_coords(timers.at(1).get_frame());
 
 	constexpr int x_offset = 80;
@@ -25,7 +25,7 @@ void kkit::About_window::draw(SDL_Renderer* rnd, const klib::User_input& p_input
 
 }
 
-void kkit::About_window::move(unsigned int delta_ms, const klib::User_input& p_input) {
+void kkit::About_window::move(unsigned int delta_ms, const klib::User_input& p_input, const kkit::Project_gfx& p_gfx) {
 	for (auto& timer : timers)
 		timer.move(delta_ms);
 
@@ -34,9 +34,15 @@ void kkit::About_window::move(unsigned int delta_ms, const klib::User_input& p_i
 			timers.at(1).reset();
 		else
 			++bg_index;
+
+	if (p_input.mouse_clicked(false))
+		this->snausty = !this->snausty;
+
+	if (bg_index >= p_gfx.get_texture_count(snausty ? kkit::c::INDEX_WALL_TEXTURES : kkit::c::INDEX_BG_TEXTURES))
+		bg_index = 0;
 }
 
-kkit::About_window::About_window(void) {
+kkit::About_window::About_window(void) : snausty{ false } {
 	timers.push_back(klib::Timer(256, 20));
 
 	int text_size{ 0 };

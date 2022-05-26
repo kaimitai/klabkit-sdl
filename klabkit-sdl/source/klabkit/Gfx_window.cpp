@@ -108,7 +108,7 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 			if (l_index >= p_project.get_wall_image_count())
 				break;
 			else {
-				klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(l_index),
+				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_index),
 					GW_TX + i * c::WALL_IMG_W, GW_TY + j * c::WALL_IMG_W);
 			}
 		}
@@ -122,7 +122,7 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 		kkit::gfx::get_pulse_color(2, timers[0].get_frame()),
 		0);
 
-	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_tile_texture(l_selected_tile_no),
+	klib::gfx::blit_p2_scale(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_selected_tile_no),
 		GW_SX, GW_SY, 2);
 
 	if (tile_y >= tile_row && tile_y < tile_row + GW_TTPC) {

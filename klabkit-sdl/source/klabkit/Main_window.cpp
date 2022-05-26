@@ -24,7 +24,7 @@ void kkit::Main_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_inpu
 	else if (window_index == 1)
 		gfx_window.move(p_rnd, p_input, p_delta_ms, p_project, p_gfx);
 	else
-		about_window.move(p_delta_ms, p_input);
+		about_window.move(p_delta_ms, p_input, p_gfx);
 
 	// move toast notifcations
 	p_gfx.move(p_delta_ms);
