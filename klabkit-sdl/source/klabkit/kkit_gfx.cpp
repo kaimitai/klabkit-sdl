@@ -304,10 +304,16 @@ void kkit::gfx::save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folde
 
 	if (SDL_SaveBMP(p_bmp, l_out_file.c_str()) == -1) {
 		SDL_FreeSurface(p_bmp);
-		throw std::exception("Could not save BMP files");
+		throw std::exception("Could not save BMP file");
 	}
 
 	SDL_FreeSurface(p_bmp);
+}
+
+void kkit::gfx::project_minimap_to_bmp(const kkit::Project& p_project, int p_board_no) {
+	save_bmp_file(create_board_minimap_surface(p_project, p_board_no),
+		p_project.get_bmp_folder(),
+		p_project.get_file_name("BOARDS-minimap", c::FILE_EXT_BMP, p_board_no));
 }
 
 void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_col, bool p_flash_blast, bool p_flash_noclip) {
@@ -357,11 +363,9 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 		c::WALL_IMG_H * l_board.get_player_start_y(),
 		l_floor_index, true);
 
-	std::filesystem::create_directory(p_project.get_bmp_folder());
-	std::string l_out_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_BMP, p_board_no);
-	auto file_status = SDL_SaveBMP(l_bmp, l_out_file.c_str());
-
-	SDL_FreeSurface(l_bmp);
+	save_bmp_file(l_bmp,
+		p_project.get_bmp_folder(),
+		p_project.get_file_name(c::FILE_BOARDS, c::FILE_EXT_BMP, p_board_no));
 }
 
 SDL_Surface* kkit::gfx::image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, bool p_transp) {

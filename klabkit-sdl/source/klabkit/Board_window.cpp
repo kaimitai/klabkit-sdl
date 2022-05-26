@@ -203,9 +203,10 @@ void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_r
 
 		for (int i{ l_shift_held ? 0 : board_ind }; i < (l_shift_held ? p_project.get_board_count() : board_ind + 1); ++i) {
 			kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), toggles[1], toggles[2]);
+			kkit::gfx::project_minimap_to_bmp(p_project, i);
 			++l_exported;
 		}
-		p_gfx.add_toast_ok(std::to_string(l_exported) + " bmp file(s) saved");
+		p_gfx.add_toast_ok(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
 
 	}
 	// flash toggles
