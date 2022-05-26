@@ -15,26 +15,23 @@ namespace kkit {
 	namespace gfx {
 
 		// bmp functions
-		bool wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path);
-		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color, bool p_flash_blast, bool p_flash_noclip);
-		void project_minimap_to_bmp(const kkit::Project& p_project, int p_board_no);
-		
 		void set_surface_project_palette(SDL_Surface* p_surface, const kkit::Project& p_project);
 		SDL_Surface* image_to_sdl_surface(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, bool p_transp = true);
 		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
-		std::vector<std::vector<byte>> load_bmp(const palette& p_palette, const std::string& p_filename);
 		byte find_nearest_palette_index(SDL_Color p_color, const palette& p_palette);
-
 
 		void tilemap_to_bmp(const kkit::Project& p_project);
 		void palette_to_bmp(const kkit::Project& p_project);
 		void draw_wall_tile_on_surface(SDL_Surface* p_bmp, const std::vector<std::vector<byte>> p_image, int p_x, int p_y, int p_trans_index = 255, bool p_skip_trans = false);
+		bool wall_to_bmp(const std::vector<std::vector<byte>>& p_image, const palette& p_palette, const std::string& p_directory, const std::string& p_file_full_path);
+		void project_map_to_bmp(const kkit::Project& p_project, int p_board_no, SDL_Color p_floor_color, bool p_flash_blast, bool p_flash_noclip);
+		void project_minimap_to_bmp(const kkit::Project& p_project, int p_board_no);
 		void save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folder, const std::string& p_out_file);
 
 		// program graphics
 		void set_application_icon(SDL_Window* p_window, const kkit::Project& p_project);
-		std::vector<SDL_Texture*> get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		SDL_Texture* get_project_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_frame_no);
+		std::vector<SDL_Texture*> get_project_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		std::vector<SDL_Texture*> get_program_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 		std::vector<SDL_Texture*> get_minimap_textures(SDL_Renderer* p_rnd, const kkit::Project& p_project);
 
@@ -42,11 +39,11 @@ namespace kkit {
 		SDL_Texture* create_board_minimap_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, int p_board_no, bool p_destroy_texture = true);
 
 		// utility functions
+		void bmp_to_lzw_file(const palette& p_palette, const std::string& p_out_file); // TODO: Remove
 		SDL_Texture* create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no);
 		std::vector<SDL_Texture*> create_bg_textures(SDL_Renderer* p_rnd);
 		SDL_Color tuple_to_sdl_color(const std::tuple<byte, byte, byte>& p_col);
 		std::vector<SDL_Color> tuple_to_sdl_palette(const palette&);
-		void bmp_to_lzw_file(const palette& p_palette, const std::string& p_out_file);
 		std::vector<std::vector<byte>> flat_image_to_2d(const std::vector<byte>& p_input);
 		std::vector<std::vector<std::vector<byte>>> generate_project_gfx_2dv(void);
 		SDL_Color get_pulse_color(int p_color_no, int p_frame_no);

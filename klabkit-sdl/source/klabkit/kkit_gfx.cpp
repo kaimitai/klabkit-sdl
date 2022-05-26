@@ -19,7 +19,7 @@ void kkit::gfx::bmp_to_lzw_file(const palette& p_palette, const std::string& p_f
 	std::vector<byte> out_bytes;
 	for (const auto& w : l_bytes)
 		out_bytes.insert(end(out_bytes), begin(w), end(w));
-	std::string p_out_file = p_filename + ".lzw";
+	std::string p_out_file = p_filename + ".cpp";
 	auto l_cbytes = kkit::compression::compress_lzw_block(out_bytes);
 
 	std::string l_file_text = "constexpr std::array<byte," + std::to_string(l_cbytes.size()) + "> LZW_BYTES_X { {";
@@ -29,7 +29,7 @@ void kkit::gfx::bmp_to_lzw_file(const palette& p_palette, const std::string& p_f
 	l_file_text.pop_back();
 	l_file_text += "} };";
 
-	klib::file::append_string_to_file(l_file_text, "lzw_pic.cpp");
+	klib::file::append_string_to_file(l_file_text, p_out_file);
 }
 
 SDL_Texture* kkit::gfx::create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no) {

@@ -23,7 +23,7 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd, bool p_is_klab_v2) : toggl
 		buttons.push_back(klib::Button("", BW_SBT_LBL_DESTR_X, BW_SBT_LBL_DESTR_Y + i * BW_SBT_LBL_DESTR_H, BW_SBT_LBL_DESTR_W, BW_SBT_LBL_DESTR_H));
 
 	// toggle buttons
-	buttons.push_back(klib::Button("Dir", BW_FBX, BW_FBY, BW_FBW, BW_FBH, klib::gc::COL_BLACK, klib::gc::COL_GREEN));
+	buttons.push_back(klib::Button("Dir", BW_FBX, BW_FBY, BW_FBW, BW_FBH, klib::gc::COL_BLACK, klib::gc::COL_YELLOW));
 	buttons.push_back(klib::Button("Destr", BW_FBX + 1 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 	buttons.push_back(klib::Button("Clip", BW_FBX + 2 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
 	buttons.push_back(klib::Button("Tile", BW_FBX + 3 * (BW_FBW + BW_FB_SPACING), BW_FBY, BW_FBW, BW_FBH));
@@ -37,8 +37,8 @@ kkit::Board_window::Board_window(SDL_Renderer* p_rnd, bool p_is_klab_v2) : toggl
 	buttons.push_back(klib::Button("Export XML", BW_EXML_BTN_X, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 	buttons.push_back(klib::Button("Import XML", BW_TPX + BW_TPW - BW_EXML_BTN_W, BW_EXML_BTN_Y, BW_EXML_BTN_W, BW_EXML_BTN_H));
 
-	buttons.push_back(klib::Button("Save KZP", BW_EXML_BTN_X, BW_EXML_BTN_Y + BW_EXML_BTN_H + BW_FB_SPACING, BW_TPW, BW_EXML_BTN_H, klib::gc::COL_BLACK, p_is_klab_v2 ? klib::gc::COL_GRAY : klib::gc::COL_RED));
-	buttons.push_back(klib::Button("Save DAT", BW_EXML_BTN_X, BW_EXML_BTN_Y + 2 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
+	buttons.push_back(klib::Button("Save KZP", BW_EXML_BTN_X, BW_EXML_BTN_Y + BW_EXML_BTN_H + BW_FB_SPACING, BW_TPW, BW_EXML_BTN_H, klib::gc::COL_BLACK, p_is_klab_v2 ? klib::gc::COL_GREEN : klib::gc::COL_GRAY));
+	buttons.push_back(klib::Button("Save DAT", BW_EXML_BTN_X, BW_EXML_BTN_Y + 2 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H, klib::gc::COL_BLACK, p_is_klab_v2 ? klib::gc::COL_GRAY : klib::gc::COL_GREEN));
 	buttons.push_back(klib::Button("Save BMP", BW_EXML_BTN_X, BW_EXML_BTN_Y + 3 * (BW_EXML_BTN_H + BW_FB_SPACING), BW_TPW, BW_EXML_BTN_H));
 
 	// direction indicator is turned on by default
@@ -213,7 +213,7 @@ void kkit::Board_window::button_click(std::size_t p_button_no, SDL_Renderer* p_r
 	else if (p_button_no >= 3) {
 		bool l_toggle = !toggles[p_button_no - 3];
 		toggles[p_button_no - 3] = l_toggle;
-		buttons[p_button_no].set_bg_color(l_toggle ? klib::gc::COL_GREEN : klib::gc::COL_GRAY);
+		buttons[p_button_no].set_bg_color(l_toggle ? klib::gc::COL_YELLOW : klib::gc::COL_GRAY);
 	}
 }
 
