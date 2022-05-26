@@ -77,9 +77,15 @@ void kkit::Gfx_window::move(SDL_Renderer* p_rnd, const klib::User_input& p_input
 	// PgUp: up one page on tile grid
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEUP))
 		tile_row = klib::util::validate(tile_row - GW_TTPC, 0, c_max_tile_row(p_project.get_wall_image_count()));
-	// PgDown: down one tile on tile grid
+	// PgDown: down one page on tile grid
 	else if (p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
 		tile_row = klib::util::validate(tile_row + GW_TTPC, 0, c_max_tile_row(p_project.get_wall_image_count()));
+	// Arrow Up: up one tile on tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_UP))
+		tile_row = klib::util::validate(tile_row - (l_ctrl ? 4 : 1), 0, c_max_tile_row(p_project.get_wall_image_count()));
+	// Arrow down: down one tile on tile grid
+	else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
+		tile_row = klib::util::validate(tile_row + (l_ctrl ? 4 : 1), 0, c_max_tile_row(p_project.get_wall_image_count()));
 }
 
 void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
