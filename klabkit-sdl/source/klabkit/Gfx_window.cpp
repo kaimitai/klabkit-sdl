@@ -107,6 +107,9 @@ void kkit::Gfx_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input
 
 	// draw tile selector window
 	klib::gfx::draw_window(p_rnd, p_gfx.get_font(), "Tiles", GW_TX - 1, GW_TY - (1 + klib::gc::BUTTON_H), GW_TW + 2, GW_TH + 4 + klib::gc::BUTTON_H);
+	klib::gfx::draw_rect(p_rnd, GW_TX, GW_TY, GW_TW, GW_TH,
+		kkit::gfx::get_pulse_color(2, timers[0].get_frame()),
+		0);
 
 	for (int j{ 0 }; j < GW_TTPC; ++j)
 		for (int i{ 0 }; i < GW_TTPR; ++i) {
