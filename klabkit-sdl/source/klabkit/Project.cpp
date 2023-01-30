@@ -21,11 +21,13 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 }
 
 int kkit::Project::save_boards_kzp(bool p_compress) const {
+	bool l_compress = p_compress && config.get_ext_boards() == Data_ext::KZP;
+
 	if (this->is_walken())
 		return this->save_boards_dat_walken();
 	else {
-		auto l_bytes = (p_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, this->is_klab_v_1()) : this->get_board_bytes());
-		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+		auto l_bytes = (l_compress ? kkit::compression::compress_boards_kzp(this->get_board_bytes(), config.board_count, this->is_klab_v_1()) : this->get_board_bytes());
+		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_BOARDS, (l_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
 		return static_cast<int>(l_bytes.size());
 	}
 }
@@ -60,11 +62,13 @@ int kkit::Project::save_walls_kzp_walken(bool p_compress) const {
 }
 
 int kkit::Project::save_walls_kzp(bool p_compress) const {
+	bool l_compress = p_compress && config.get_ext_walls() == Data_ext::KZP;
+
 	if (this->is_walken())
-		return this->save_walls_kzp_walken(p_compress);
+		return this->save_walls_kzp_walken(l_compress);
 	else {
-		auto l_bytes = (p_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, this->is_klab_v_1()) : this->get_wall_bytes());
-		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (p_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
+		auto l_bytes = (l_compress ? kkit::compression::compress_walls_kzp(this->get_wall_bytes(), config.wall_count, this->is_klab_v_1()) : this->get_wall_bytes());
+		klib::file::write_bytes_to_file(l_bytes, get_file_path(c::FILE_WALLS, (l_compress ? c::FILE_EXT_KZP : c::FILE_EXT_DAT)));
 		return static_cast<int>(l_bytes.size());
 	}
 }

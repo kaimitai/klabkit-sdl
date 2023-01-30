@@ -279,7 +279,9 @@ void kkit::Gfx_window::save_walls_kzp(const kkit::Project& p_project, kkit::Proj
 	int l_wall_count(p_project.get_wall_image_count());
 	int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
 
-	if (p_compress)
+	bool l_pref_kzp{ p_project.get_config().get_ext_walls() == Data_ext::KZP };
+
+	if (p_compress && l_pref_kzp)
 		p_gfx.add_toast_ok(std::to_string(l_wall_count) + " wall tiles saved to KZP (" +
 			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
 	else
