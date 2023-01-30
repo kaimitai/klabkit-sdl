@@ -122,7 +122,7 @@
       <!-- powerups and items -->
       <row no="4" value="32,36,39,46,49,45" />
       <!-- decorative items -->
-      <row no="6" value="33,35,41,42,43,47,50,58,59" />
+      <row no="6" value="64,33,35,41,42,43,47,50,58,59" />
     </tile_picker>
     <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
     <clip_overrides value="22,23,24,25,26,27,28,29,51" />
