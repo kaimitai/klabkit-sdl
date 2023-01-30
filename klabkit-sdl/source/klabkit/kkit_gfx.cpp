@@ -61,7 +61,7 @@ SDL_Texture* kkit::gfx::create_bg_texture(SDL_Renderer* p_rnd, int p_bg_no) {
 				klib::gfx::put_pixel(result, i, j, SDL_MapRGB(result->format, (i + j) % 256, i, j));
 
 	else
-		throw std::exception("Invalid background no");
+		throw std::runtime_error("Invalid background no");
 
 	return(klib::gfx::surface_to_texture(p_rnd, result));
 }
@@ -103,14 +103,14 @@ std::vector<std::vector<byte>> kkit::gfx::load_bmp(const palette& p_palette, con
 	auto frame_srf = SDL_LoadBMP(p_filename.c_str());
 
 	if (frame_srf == nullptr)
-		throw std::exception("Could not load BMP");
+		throw std::runtime_error("Could not load BMP");
 	else if (frame_srf->format->BitsPerPixel != 8) {
 		SDL_FreeSurface(frame_srf);
-		throw std::exception("Not a 256-color BMP");
+		throw std::runtime_error("Not a 256-color BMP");
 	}
 	else if (frame_srf->w != 64 || frame_srf->h != 64) {
 		SDL_FreeSurface(frame_srf);
-		throw std::exception("Image dimensions not 64x64 pixels");
+		throw std::runtime_error("Image dimensions not 64x64 pixels");
 	}
 
 	// initialize empty result
@@ -304,7 +304,7 @@ void kkit::gfx::save_bmp_file(SDL_Surface* p_bmp, const std::string& p_out_folde
 
 	if (SDL_SaveBMP(p_bmp, l_out_file.c_str()) == -1) {
 		SDL_FreeSurface(p_bmp);
-		throw std::exception("Could not save BMP file");
+		throw std::runtime_error("Could not save BMP file");
 	}
 
 	SDL_FreeSurface(p_bmp);

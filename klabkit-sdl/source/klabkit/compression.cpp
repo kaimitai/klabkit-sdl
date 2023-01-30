@@ -1,5 +1,6 @@
 #include "compression.h"
 #include "../klib/klib_util.h"
+#include <stdexcept>
 
 using byte = unsigned char;
 
@@ -373,7 +374,7 @@ std::pair<int, int> kkit::compression::calculate_lzw_block_count(const std::vect
 		}
 	}
 
-	throw std::exception("Could not determine lzw file metadata");
+	throw std::runtime_error("Could not determine lzw file metadata");
 
 }
 

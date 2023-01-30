@@ -2,7 +2,10 @@
 #include "./../klib/gfx.h"
 #include "constants.h"
 
-kkit::Main_window::Main_window(SDL_Renderer* p_rnd, bool p_is_klab_v2) : board_window{ Board_window(p_rnd, p_is_klab_v2) }, window_index{ 0 } {
+kkit::Main_window::Main_window(SDL_Renderer* p_rnd, const Project_config& p_config) :
+	board_window{ Board_window(p_rnd, p_config) }, gfx_window{ p_config },
+	window_index{ 0 }
+{
 	buttons.push_back(klib::Button("Boards", MW_BX, MW_BY, MW_BW, MW_BH, klib::gc::COL_BLACK,
 		klib::gc::COL_ORANGE, klib::gc::COL_YELLOW));
 	buttons.push_back(klib::Button("Gfx", MW_BX + MW_BW, MW_BY, MW_BW, MW_BH, klib::gc::COL_BLACK,

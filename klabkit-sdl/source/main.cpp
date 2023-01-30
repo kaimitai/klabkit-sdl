@@ -1,4 +1,4 @@
-#include <exception>
+#include <stdexcept>
 #include <string>
 #include "klabkit/constants.h"
 #include "klabkit/Project.h"
@@ -32,19 +32,19 @@ int main(int argc, char* args[]) try {
 	float l_scale{ 1.0f };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		throw std::exception(std::string("SDL could not initialize! SDL_Error: " + std::string(SDL_GetError())).c_str());
+		throw std::runtime_error(std::string("SDL could not initialize! SDL_Error: " + std::string(SDL_GetError())).c_str());
 	else {
 		// Event handler
 		SDL_Event e;
 
 		l_window = SDL_CreateWindow(kkit::c::get_application_window_caption().c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, kkit::c::APP_W, kkit::c::APP_H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
-			throw std::exception(std::string("Window could not be created! SDL_Error: " + std::string(SDL_GetError())).c_str());
+			throw std::runtime_error(std::string("Window could not be created! SDL_Error: " + std::string(SDL_GetError())).c_str());
 		else {
 			l_rnd = SDL_CreateRenderer(l_window, -1, SDL_RENDERER_ACCELERATED);
 
 			if (l_rnd == nullptr)
-				throw std::exception(std::string("Renderer could not be created!SDL Error: " + std::string(SDL_GetError())).c_str());
+				throw std::runtime_error(std::string("Renderer could not be created!SDL Error: " + std::string(SDL_GetError())).c_str());
 			else {
 				//Initialize renderer color
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
@@ -56,7 +56,7 @@ int main(int argc, char* args[]) try {
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
 			// main window object to handle all logic and drawing
-			kkit::Main_window main_window(l_rnd, !project.is_klab_v_1() && !project.is_walken());
+			kkit::Main_window main_window(l_rnd, project.get_config());
 
 			// input handler
 			klib::User_input input;

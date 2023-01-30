@@ -66,6 +66,7 @@ namespace kkit {
 		int get_board_count(void) const;
 		std::string get_config_label(void) const;
 		std::tuple<byte, byte, byte> get_floor_color(void) const;
+		const Project_config& get_config(void) const;
 
 		// wall attribute getters
 		bool is_blast(int p_wall_no) const;

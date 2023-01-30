@@ -7,6 +7,7 @@
 #include "Board_window.h"
 #include "Gfx_window.h"
 #include "Project.h"
+#include "Project_config.h"
 #include "Project_gfx.h"
 #include "./../klib/User_input.h"
 #include "./../klib/Button.h"
@@ -31,7 +32,7 @@ namespace kkit {
 		void button_click(std::size_t p_button_no);
 
 	public:
-		Main_window(SDL_Renderer* p_rnd, bool p_is_klab_v2);
+		Main_window(SDL_Renderer* p_rnd, const Project_config& p_config);
 
 		void move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, Project& p_project, Project_gfx& p_gfx);
 		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, Project& p_project, Project_gfx& p_gfx);

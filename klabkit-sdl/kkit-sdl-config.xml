@@ -2,130 +2,130 @@
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
 <kkit_sdl app_version="0.1c" file_type="config" active_config_no="0">
 
- <config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2">
-   <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-   <tile_picker>
-    <!-- empty tile and start position -->
-    <row no="0" value="0,-1" />
-	<!-- monsters -->
-	<row no="1" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
-	<!-- doors -->
-	<row no="2" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
-	<!-- walls -->
-	<row no="3" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
-	<!-- powerups and items -->
-	<row no="4" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
-	<!-- consumed items -->
-	<row no="5" value="175,177,179,181,183,187,189,192,209" />
-	<!-- decorative items -->
-	<row no="6" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
-   </tile_picker>
-   <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-   <clip_overrides value="82,123,419,420" />
- </config>
+  <config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
+      <!-- doors -->
+      <row no="2" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
+      <!-- walls -->
+      <row no="3" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
+      <!-- powerups and items -->
+      <row no="4" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
+      <!-- consumed items -->
+      <row no="5" value="175,177,179,181,183,187,189,192,209" />
+      <!-- decorative items -->
+      <row no="6" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="82,123,419,420" />
+  </config>
 
- <config no="1" label="2.0" project_directory="./gamedata/Ken2.0" board_count="30" wall_count="448" lzw_header_type="2">
-   <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-   <tile_picker>
-    <!-- empty tile and start position -->
-    <row no="0" value="0,-1" />
-	<!-- monsters -->
-	<row no="1" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
-	<!-- doors -->
-	<row no="2" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
-	<!-- walls -->
-	<row no="3" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
-	<!-- powerups and items -->
-	<row no="4" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
-	<!-- consumed items -->
-	<row no="5" value="175,177,179,181,183,187,189,192,209" />
-	<!-- decorative items -->
-	<row no="6" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
-   </tile_picker>
-   <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-   <clip_overrides value="82,123,419,420" />
- </config>
+  <config no="1" label="2.0" project_directory="./gamedata/Ken2.0" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
+      <!-- doors -->
+      <row no="2" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
+      <!-- walls -->
+      <row no="3" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
+      <!-- powerups and items -->
+      <row no="4" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
+      <!-- consumed items -->
+      <row no="5" value="175,177,179,181,183,187,189,192,209" />
+      <!-- decorative items -->
+      <row no="6" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="82,123,419,420" />
+  </config>
 
- <config no="2" label="1.1" project_directory="./gamedata/Ken1.1" board_count="27" wall_count="224" lzw_header_type="1">
-  <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-  <tile_picker>
-   <!-- empty tile and start position -->
-   <row no="0" value="0,-1" />
-   <!-- monsters -->
-   <row no="1" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
-   <!-- doors -->
-   <row no="2" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
-   <!-- walls -->
-   <row no="3" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
-   <!-- powerups and items -->
-   <row no="4" value="63,123,179,37,107,56,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
-   <!-- consumed items -->
-   <row no="5" value="84,83,81,82,87,92,89,192,29" />
-   <!-- decorative items -->
-   <row no="6" value="197,33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
-  </tile_picker>
-  <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-  <clip_overrides value="23,64,180" />
- </config>
+  <config no="2" label="1.1" project_directory="./gamedata/Ken1.1" board_count="27" wall_count="224" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
+      <!-- doors -->
+      <row no="2" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
+      <!-- walls -->
+      <row no="3" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
+      <!-- powerups and items -->
+      <row no="4" value="63,123,179,37,107,56,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
+      <!-- consumed items -->
+      <row no="5" value="84,83,81,82,87,92,89,192,29" />
+      <!-- decorative items -->
+      <row no="6" value="197,33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,64,180" />
+  </config>
 
- <config no="3" label="1.0" project_directory="./gamedata/Ken1.0" board_count="5" wall_count="192" lzw_header_type="1">
-   <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-   <tile_picker>
-   <!-- empty tile and start position -->
-   <row no="0" value="0,-1" />
-   <!-- monsters -->
-   <row no="1" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
-   <!-- doors -->
-   <row no="2" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
-   <!-- walls -->
-   <row no="3" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
-   <!-- powerups and items -->
-   <row no="4" value="63,123,179,37,107,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
-   <!-- consumed items -->
-   <row no="5" value="84,83,81,82,87,92,89,192,29" />
-   <!-- decorative items -->
-   <row no="6" value="33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
-  </tile_picker>
-  <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-  <clip_overrides value="23,64,180" />
- </config>
+  <config no="3" label="1.0" project_directory="./gamedata/Ken1.0" board_count="5" wall_count="192" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
+      <!-- doors -->
+      <row no="2" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
+      <!-- walls -->
+      <row no="3" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
+      <!-- powerups and items -->
+      <row no="4" value="63,123,179,37,107,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
+      <!-- consumed items -->
+      <row no="5" value="84,83,81,82,87,92,89,192,29" />
+      <!-- decorative items -->
+      <row no="6" value="33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,64,180" />
+  </config>
 
- <config no="4" label="Walken" project_directory="./gamedata/Walken" board_count="10" wall_count="80" lzw_header_type="0">
-   <tile_picker>
-    <!-- empty tile and start position -->
-    <row no="0" value="0,-1" />
-	<!-- monsters -->
-	<row no="1" value="40,49,73,68,66,38,54" />
-	<!-- doors -->
-	<row no="2" value="21,48" />
-	<!-- walls -->
-	<row no="3" value="22,23,80,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,31" />
-	<!-- powerups and items -->
-	<row no="4" value="63,45,59,46,60,32,39,36" />
-	<!-- decorative items -->
-	<row no="6" value="47,33,35,41,42,43,47,58,62,37" />
-   </tile_picker>
-  <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-  <clip_overrides value="23,47" />
- </config>
+  <config no="4" label="Walken" project_directory="./gamedata/Walken" board_count="10" wall_count="80" lzw_header_type="0" ext_boards="DAT" ext_walls="KZP">
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="40,49,73,68,66,38,54" />
+      <!-- doors -->
+      <row no="2" value="21,48" />
+      <!-- walls -->
+      <row no="3" value="22,23,80,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,31" />
+      <!-- powerups and items -->
+      <row no="4" value="63,45,59,46,60,32,39,36" />
+      <!-- decorative items -->
+      <row no="6" value="47,33,35,41,42,43,47,58,62,37" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,47" />
+  </config>
 
- <config no="5" label="Walken 1992-08-23" project_directory="./gamedata/Walken_08_23_1992" board_count="7" wall_count="64" lzw_header_type="0">
-   <tile_picker>
-    <!-- empty tile and start position -->
-    <row no="0" value="0,-1" />
-	<!-- monsters -->
-	<row no="1" value="34,38,52,37,40" />
-	<!-- doors -->
-	<row no="2" value="21,29,63" />
-	<!-- walls -->
-	<row no="3" value="22,48,51,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28" />
-	<!-- powerups and items -->
-	<row no="4" value="32,36,39,46,49,45" />
-	<!-- decorative items -->
-	<row no="6" value="33,35,41,42,43,47,50,58,59" />
-   </tile_picker>
-  <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-  <clip_overrides value="22,23,24,25,26,27,28,29,51" />
- </config>
+  <config no="5" label="Walken 1992-08-23" project_directory="./gamedata/Walken_08_23_1992" board_count="7" wall_count="64" lzw_header_type="0" ext_boards="DAT" ext_walls="DAT">
+    <tile_picker>
+      <!-- empty tile and start position -->
+      <row no="0" value="0,-1" />
+      <!-- monsters -->
+      <row no="1" value="34,38,52,37,40" />
+      <!-- doors -->
+      <row no="2" value="21,29,63" />
+      <!-- walls -->
+      <row no="3" value="22,48,51,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28" />
+      <!-- powerups and items -->
+      <row no="4" value="32,36,39,46,49,45" />
+      <!-- decorative items -->
+      <row no="6" value="33,35,41,42,43,47,50,58,59" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="22,23,24,25,26,27,28,29,51" />
+  </config>
 
 </kkit_sdl>

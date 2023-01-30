@@ -12,7 +12,7 @@ using byte = unsigned char;
 kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_file_name.c_str()))
-		throw std::exception("Could not find board xml");
+		throw std::runtime_error("Could not find board xml");
 
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
 	auto n_board = n_meta.child(XML_TAG_BOARD);
@@ -46,7 +46,7 @@ kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
 kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_file_name.c_str()))
-		throw std::exception("Could not find wall xml");
+		throw std::runtime_error("Could not find wall xml");
 
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
 	auto n_wall = n_meta.child(XML_TAG_WALL);
@@ -80,7 +80,7 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 	try {
 		pugi::xml_document doc;
 		if (!doc.load_file(p_file_name.c_str()))
-			throw std::exception("Could not find configuration file");
+			throw std::runtime_error("Could not find configuration file");
 
 		pugi::xml_node n_meta = doc.child(XML_TAG_META);
 		int l_config_no = n_meta.attribute(XML_ATTR_ACTIVE_CONFIG_NO).as_int();
@@ -94,6 +94,8 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 			int l_bcount = n_conf.attribute(XML_ATTR_BCOUNT).as_int();
 			int l_wcount = n_conf.attribute(XML_ATTR_WCOUNT).as_int();
 			int l_lzw_type = n_conf.attribute(XML_ATTR_LZW_TYPE).as_int();
+			std::string l_ext_boards{ n_conf.attribute(XML_ATTR_EXT_BOARDS).as_string() };
+			std::string l_ext_walls{ n_conf.attribute(XML_ATTR_EXT_WALLS).as_string() };
 
 			std::vector l_clip_overrides_v = klib::util::string_split<int>(n_conf.child(XML_TAG_CLIP_OVERRIDES).attribute(XML_ATTR_VALUE).as_string(), ',');
 			std::vector<int> l_tile_picker;
@@ -122,13 +124,14 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 
 
 			return kkit::Project_config(l_label, l_proj_dir, l_bcount, l_wcount, l_lzw_type,
+				l_ext_boards, l_ext_walls,
 				l_clip_overrides,
 				l_tile_picker,
 				l_floor_rgb_t);
 
 		}
 
-		throw std::exception("Invalid value for default_config_no in the configuration xml");
+		throw std::runtime_error("Invalid value for default_config_no in the configuration xml");
 	}
 	catch (const std::exception) {
 		return kkit::Project_config();
@@ -190,7 +193,7 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 	}
 
 	if (!doc.save_file(l_full_file_path.c_str()))
-		throw std::exception("Could not save XML");
+		throw std::runtime_error("Could not save XML");
 }
 
 void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version) {
@@ -243,6 +246,6 @@ void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_
 	}
 
 	if (!doc.save_file(l_full_file_path.c_str()))
-		throw std::exception("Could not save XML");
+		throw std::runtime_error("Could not save XML");
 
 }

@@ -5,7 +5,7 @@
 #include "./../klib/gfx.h"
 #include "./../klib/klib_util.h"
 
-kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
+kkit::Gfx_window::Gfx_window(const Project_config& p_config) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 	// pulse color timer
 	timers.push_back(klib::Timer(256, 5));
 
@@ -19,8 +19,11 @@ kkit::Gfx_window::Gfx_window(void) : tile_row{ 0 }, tile_x{ 0 }, tile_y{ 0 } {
 	buttons.push_back(klib::Button("Exp XML", GW_BMP_X, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
 	buttons.push_back(klib::Button("Imp XML", GW_AB_X + GW_AB_W - GW_BMP_W, GW_BMP_Y + GW_BMP_H + GW_AB_SPACING, GW_BMP_W));
 
-	buttons.push_back(klib::Button("Save KZP", GW_SAV_X, GW_SAV_Y, GW_SAV_W, 28, klib::gc::COL_BLACK, klib::gc::COL_GREEN));
-	buttons.push_back(klib::Button("Save DAT", GW_SAV_X, GW_SAV_Y + GW_SAV_H + GW_AB_SPACING, GW_SAV_W));
+	bool l_pref_kzp{ p_config.get_ext_walls() == Data_ext::KZP };
+	buttons.push_back(klib::Button("Save KZP", GW_SAV_X, GW_SAV_Y, GW_SAV_W, 28, klib::gc::COL_BLACK,
+		l_pref_kzp ? klib::gc::COL_GREEN : klib::gc::COL_GRAY));
+	buttons.push_back(klib::Button("Save DAT", GW_SAV_X, GW_SAV_Y + GW_SAV_H + GW_AB_SPACING, GW_SAV_W, 28, klib::gc::COL_BLACK,
+		!l_pref_kzp ? klib::gc::COL_GREEN : klib::gc::COL_GRAY));
 
 	buttons.push_back(klib::Button("Save Tilemap BMP", GW_SAV2_X, GW_SAV2_Y, GW_SAV2_W));
 	buttons.push_back(klib::Button("Save Palette BMP", GW_SAV2_X, GW_SAV2_Y + GW_SAV2_H + GW_AB_SPACING, GW_SAV2_W));

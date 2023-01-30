@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include "Project.h"
+#include "Project_config.h"
 #include "Project_gfx.h"
 #include "../klib/gfx.h"
 #include "constants.h"
@@ -159,7 +160,7 @@ namespace kkit {
 		void board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 
 	public:
-		Board_window(SDL_Renderer* p_rnd, bool p_is_klab_v2);
+		Board_window(SDL_Renderer* p_rnd, const Project_config& p_config);
 		void move(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_delta_ms, kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 		void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 	};
