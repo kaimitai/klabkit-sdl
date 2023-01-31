@@ -195,12 +195,24 @@ kkit::Map_tile kkit::Board_ui::get_selected_tile(const kkit::Project& p_project,
 }
 
 void kkit::Board_ui::set_cam_x(int p_x, int p_w) {
-	m_cam_x = std::min(get_cam_x_max(p_w), p_x);
+	int l_max_cam{ get_cam_x_max(p_w) };
+
+	if (p_x >= m_cam_x && m_cam_x >= l_max_cam)
+		return;
+	else
+		m_cam_x = p_x;
+
 	m_cam_x = std::max(0, m_cam_x);
 }
 
 void kkit::Board_ui::set_cam_y(int p_y, int p_h) {
-	m_cam_y = std::min(get_cam_y_max(p_h), p_y);
+	int l_max_cam{ get_cam_y_max(p_h) };
+
+	if (p_y >= m_cam_y && m_cam_y >= l_max_cam)
+		return;
+	else
+		m_cam_y = p_y;
+
 	m_cam_y = std::max(0, m_cam_y);
 }
 
