@@ -1,5 +1,8 @@
 #include <stdexcept>
 #include <string>
+#include "./imgui/imgui.h"
+#include "./imgui/imgui_impl_sdl.h"
+#include "./imgui/imgui_impl_sdlrenderer.h"
 #include "klabkit/constants.h"
 #include "klabkit/Project.h"
 #include "klabkit/Project_gfx.h"
@@ -9,6 +12,10 @@
 #include "klabkit/xml_handler.h"
 #include "klib/User_input.h"
 #include "klib/file.h"
+
+#if !SDL_VERSION_ATLEAST(2,0,17)
+#error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
+#endif
 
 constexpr char ERROR_LOG_FILE[]{ "kkit-sdl-err.log" };
 
@@ -50,10 +57,25 @@ int main(int argc, char* args[]) try {
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
 			}
 
+			// Setup Dear ImGui context
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+
+			// Setup Dear ImGui style
+			ImGui::StyleColorsDark();
+			//ImGui::StyleColorsLight();
+
 			// load resources
 			kkit::Project project(kkit::xml::read_config_xml(kkit::c::CONF_FILE_NAME));
 			kkit::gfx::set_application_icon(l_window, project);
 			kkit::Project_gfx p_gfx(l_rnd, project);
+
+			// Setup Platform/Renderer backends
+			ImGui_ImplSDL2_InitForSDLRenderer(l_window, l_rnd);
+			ImGui_ImplSDLRenderer_Init(l_rnd);
+			std::string l_ini_filename{ "kkit-sdl-windows.ini" };
+			ImGui::GetIO().IniFilename = l_ini_filename.c_str();
+			ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
 
 			// main window object to handle all logic and drawing
 			kkit::Main_window main_window(l_rnd, project.get_config());
