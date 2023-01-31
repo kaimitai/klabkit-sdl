@@ -1,6 +1,6 @@
 # KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit
 
-Welcome to the KKIT/SDL code repository and release page. The current version of the editor is 0.1c. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the code from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/klabkit-sdl/releases/). \
+Welcome to the KKIT/SDL code repository and release page. The current version of the editor is 0.2. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the code from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/klabkit-sdl/releases/). \
 Make sure to read the included documentation (readme.html in the docs folder) for a detailed overview.
 <br></br>
 ### Editor Capabilities
@@ -22,17 +22,27 @@ In the Gfx screen, the tile metadata can be viewed and edited. The bitmaps thems
 <br></br>
 ### Command-line interface
 We also include a command-line tool, KKIT/CLI, which can decompress and compress the rest of the game data, like music and sounds. This tool also supports all versions.
-<br></br>
-### Upcoming changes in the next release
-* Textured Minimap! The minimap in the Boards-screen will show a live texture of what the in-game map looks like. (replacing the current all-black square)
-* Adding gamefiles and configuration for the most recently released game version "Walken 08 23 1992" (configuration #5 in klabkit-sdl-config.xml)
-* The Gfx-screen will have new buttons to save the entire tilemap as a single BMP file, and for dumping the palette as a 16x16 image.
-* Saving a board as BMP will include the player start position, a configurable floor color, and will indicate all noclip and destructible tiles - if the corresponding flash toggles are turned on in the Boards-screen.
-* More keyboard shortcuts: Ctrl+A to select all in the Boards-screen, arrow keys for navigating the Gfx screen.
-* Fixed a bug where the toast notification would render as a black rectangle when resizing the window.
-* The buttons "Save KZP" and "Save DAT" will be color coded according to the loaded game version
-* Adding missing documentation: Shift+Plus/Minus in the Boards-screen will go to the next/previous board.
+<br><br>
+### Version History
+2023-01-31: v0.2
+* Added support (datafiles and configuration) for recently released game version "Walken 08 23 1992"; configuration #5 in kkit-sdl-config.xml
+* Added textured minimap to the Board screen, which will give a live view of the in-game minimap
+* Added keyboard shortcut Ctrl+A to select the whole board in the board screen
+* Added support for exporting all tiles as a tilemap bmp, and saving the palette as a bmp, in the Gfx screen
+* Saving a board as BMP will include the player start position, a configurable floor color, and will indicate all noclip and destructible tiles - if the corresponding flash toggles are turned on in the Boards-screen
+* The buttons "Save KZP" and "Save DAT" will be color coded according to the loaded game version, and each game configuration got a "preferred extension" attribute for the files BOARDS and WALLS
+* Fixed a bug where the toast notification would render as a black rectangle when resizing the window
+* Adding missing documentation: Shift+Plus/Minus in the Boards-screen will go to the next/previous board
 
-<br></br>
+2022-05-15: v0.1c
+* Changed the application name to KKIT/SDL: Unofficial Ken's Labyrinth Editor's Toolkit (to avoid any confusion with the [original Developer's Toolkit]("http://advsys.net/ken/klab.htm#klabkit"))
+* Updated documentation; clarified how to switch between lab3d-versions
+* Added shortcut shift+H to set player start position at selected board tile (to avoid having to use the tile picker)
+
+2022-05-10: v0.1b
+* Initial Release, v0.1b
+
+<hr>
+
 "Ken's Labyrinth" Copyright (c) 1992-1993 Ken Silverman \
 Ken Silverman's official web site: "http://www.advsys.net/ken"
