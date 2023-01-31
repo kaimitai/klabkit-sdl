@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2b-snapshot) - Documentation</title>
+    <title>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2) - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -62,7 +62,7 @@
 
                 <hr>
 
-                <header>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2b-snapshot)</header>
+                <header>KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit (version 0.2)</header>
 
                 <p>Thank you for checking out the <a href="https://github.com/kaimitai/klabkit-sdl/">KKIT/SDL editor</a>. With this tool you will be able to create and alter levels for Ken's Labyrinth, as well as - with the help of an external bmp file editor - modify the majority of the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
@@ -119,11 +119,11 @@
                 <img src="./images/03_config_xml.png" alt="Board Editor screen" width="1024" />
 
                 <p>
-                    The screenshot above shows how to switch between configurations. The XML root node has an attribute "active_config_no", which should be set to a value matching one of the concrete configurations in the XML. In this example it is 0, so the config-block where attribute "no" equals 0 will be loaded on program start. This configuration block has the attribute "project_folder" set to "./gamedata/Ken2.1", meaning this is the folder it will load files from, and save files to.
+                    The screenshot above shows how to switch between configurations. The XML root node has an attribute "active_config_no", which should be set to a value matching one of the concrete configurations in the XML. In this example it is 0, so the config-block where attribute "no" equals 0 will be loaded on program start. This configuration block has the attribute "project_folder" set to "./gamedata/Ken2.1", meaning this is the folder it will load files from, and save files to. The attributes "ext_boards" and "ext_walls" tell the application which file extensions are used by the game version in question, for the files BOARDS.DAT/KZP and WALLS.DAT/KZP.
                 </p>
 
                 <p>
-                    The editor comes with default configuration blocks for all official versions of Ken's Labyrinth. Using the default configuration XML, other values for active_config_no in the root node can be 1, 2, 3 or 4 - which will load v2.0, v1.1, v1.0 or Walken, respectively -  when the program starts.
+                    The editor comes with default configuration blocks for all official versions of Ken's Labyrinth. Using the default configuration XML, other values for active_config_no in the root node can be 1, 2, 3, 4 or 5 - which will load v2.0, v1.1, v1.0, Walken and Walken_08_23_1992, respectively -  when the program starts.
                 </p>
 
                 <p>
@@ -179,11 +179,11 @@
 
                 <p>The Export XML button will save the current board as XML, (hold Shift to save all boards) and the Import XML button will load the current board from XML. (hold shift to load all XMLs at once) This is one way to manipulate and share boards individually, and XML is better than binaries for version control among other things.</p>
 
-                <p>The "Save KZP" button will write your current levels back to BOARDS.KZP. (if editing a legacy version earlier than v2.0, it will save to BOARDS.DAT instead)</p>
+                <p>The "Save KZP" button will write your current levels back to BOARDS.KZP. (if editing a legacy version earlier than v2.0, it will save to BOARDS.DAT instead) Button is green if KZP is the format used by this game version, otherwise gray.</p>
 
-                <p>The "Save DAT" button will write your current levels back to BOARDS.DAT, which is an uncompressed version of the KZP. This is required for v1.x levels, but not much use for v2.x.</p>
+                <p>The "Save DAT" button will write your current levels back to BOARDS.DAT, which is an uncompressed version of the KZP. This is required for v1.x levels, but not much use for v2.x. Button is green if DAT is the format used by this game version, otherwise gray.</p>
 
-                <p>The "Save BMP" button will save the entire board as a 4096x4096x256 color bmp, just for fun ;)</p>
+                <p>The "Save BMP" button will save the entire board as a 4096x4096x256 color bmp, as well as each minimap which will be saved to a 64x64x256 color bmp. If indicators for clip and destructible are turned on in the editor, they will be drawn on the output BMPs as well.</p>
 
                 <p>
                     <b>Mouse functions for board grid:</b>
@@ -286,8 +286,24 @@
                     <li>Imp XML: Load tile from XML (hold shift to load all XMLs)</li>
                     <li>Save KZP: Save tiles to WALLS.KZP</li>
                     <li>Save DAT: Save tiles to WALLS.DAT, an uncompressed version of the KZP. (not necessarily useful)</li>
+                    <li>Save Tilemap BMP: Save all tiles to "tilemap.bmp"</li>
+                    <li>Save Palette BMP: Save the 256-color palette as a 16x16 image file "palette.bmp"</li>
                 </ul>
 
+                <p>
+                    <b>Mouse functions for Tiles-grid:</b>
+                    <br>Mousehweel up and down will scroll the tiles view up and down
+                    <br>Ctrl + Mousehweel up and down will scroll the tiles view 5 rows at a time
+                </p>
+
+                <p>
+                    <b>Keyboard shortcuts for Gfx-screen:</b>
+                    <br>Ctrl+S: Save WALLS.KZP, hold Shift to save DAT instead
+                    <br>Arrow Keys Up/Down: Scroll the tiles view up and down. Hold Ctrl to scroll 4 rows at a time
+                    <br>PgUp/PgDown: Scroll the tiles view one page up or down
+                    <br>Home/End: Go to the beginning or end of the tiles view
+
+                </p>
 
                 <p>The exported BMPs will be 256-color images with the palette used by the game. When altering graphics, try to use a graphics editor that does not change the palette of the image, as the colors cannot be changed anyway. When a BMP is imported, the editor does a nearest-color scheme to translate the BMP palette into the game palette. (Microsoft Paint, for example, in my experience, is not good at preserving the palette, and does not yield good results)</p>
 
@@ -421,16 +437,22 @@
                 <header>Changelog</header>
 
                 <p>
-                    Changes since v0.1c
+                    2023-01-31: Release v0.2
                 </p>
 
                 <ul>
-                    <li>Board screen: Added keyboard shortcut Ctrl+A to select the whole board</li>
-                    <li>Board screen: Added textured minimap, which will give a live view of the in-game minimap</li>
+                    <li>Added support (datafiles and configuration) for recently released game version "Walken 08 23 1992"; configuration #5 in kkit-sdl-config.xml</li>
+                    <li>Added textured minimap to the Board screen, which will give a live view of the in-game minimap</li>
+                    <li>Added keyboard shortcut Ctrl+A to select the whole board in the board screen</li>
+                    <li>Added support for exporting all tiles as a tilemap bmp, and saving the palette as a bmp, in the Gfx screen</li>
+                    <li>Saving a board as BMP will include the player start position, a configurable floor color, and will indicate all noclip and destructible tiles - if the corresponding flash toggles are turned on in the Boards-screen</li>
+                    <li>The buttons "Save KZP" and "Save DAT" will be color coded according to the loaded game version, and each game configuration got a "preferred extension" attribute for the files BOARDS and WALLS</li>
+                    <li>Fixed a bug where the toast notification would render as a black rectangle when resizing the window</li>
+                    <li>Adding missing documentation: Shift+Plus/Minus in the Boards-screen will go to the next/previous board</li>
                 </ul>
 
                 <p>
-                    Changes since v0.1b
+                    2022-05-15: Release v0.1c
                 </p>
 
                 <ul>
@@ -438,6 +460,10 @@
                     <li>Updated documentation; clarified how to switch between lab3d-versions (will be changed to use a launcher in a later version)</li>
                     <li>Added shortcut shift+H to set player start position at selected board tile (to avoid having to use the tile picker)</li>
                 </ul>
+
+                <p>2022-05-10: Release v0.1b</p>
+
+                <p>2022-05-06: Release version alpha 1 (pre-release version for testing)</p>
 
             </section>
 
@@ -455,7 +481,7 @@
 
                 <p>
                     Program written in C++20, using the following external libraries:
-                    <br><a href="https://www.libsdl.org/">SDL2 (2.0.16)</a>
+                    <br><a href="https://www.libsdl.org/">SDL2 (2.24.0)</a>
                     <br><a href="https://pugixml.org/">pugixml</a>
                 </p>
 
@@ -471,9 +497,9 @@
                 </p>
 
                 <ul>
+                    <li>Introduce Dear ImGui and make the windows resizable</li>
                     <li>Show more informational and error messages in the application</li>
                     <li>Add a help/quickstart screen in the application</li>
-                    <li>Ability to see the board map tile (the one that is autogenerated as a map in-game) in the editor</li>
                     <li>Add support for editing highscore and savegame files</li>
                     <li>Clean up the code, and reduce wasted cycles :)</li>
                     <li>Do something for KSM-file editing. We know how the format works, but creating a user-friendly KSM editor with audio capabilites would be a big undertaking.</li>

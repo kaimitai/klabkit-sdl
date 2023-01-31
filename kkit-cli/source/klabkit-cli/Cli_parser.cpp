@@ -1,4 +1,4 @@
-#include <exception>
+#include <stdexcept>
 #include <map>
 #include "Cli_parser.h"
 
@@ -103,7 +103,7 @@ std::string kkit_cli::Cli_parser::get_command(const std::string& p_arg) const {
 }
 
 void kkit_cli::Cli_parser::throw_exception(const std::string& p_err_msg) const {
-	throw std::exception(p_err_msg.c_str());
+	throw std::runtime_error(p_err_msg);
 }
 
 bool kkit_cli::Cli_parser::is_compress(void) const {

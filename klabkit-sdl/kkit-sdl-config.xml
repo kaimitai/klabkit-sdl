@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
-<kkit_sdl app_version="0.1c" file_type="config" active_config_no="0">
+<kkit_sdl app_version="0.2" file_type="config" active_config_no="0">
 
   <config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
     <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
