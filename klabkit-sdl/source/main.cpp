@@ -91,6 +91,18 @@ int main(int argc, char* args[]) try {
 				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
 				+ ")");
 
+			project.add_message("Build Date: " + std::string(__DATE__) + " " +
+				std::string(__TIME__) + " CET");
+
+			project.add_message("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
+				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
+				") and " +
+				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
+				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
+				+ ")");
+
+			project.add_message("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
+
 			while (!l_exit) {
 
 				uint32_t tick_time = SDL_GetTicks();	// current time

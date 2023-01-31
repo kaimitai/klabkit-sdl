@@ -23,6 +23,7 @@ namespace kkit {
 		// internal variables for selected tile position
 		int m_sel_tile_x{ 0 }, m_sel_tile_y{ 0 };
 		int m_sel_tile_2_x{ -1 }, m_sel_tile_2_y{ 0 };
+		std::vector<std::vector<kkit::Map_tile>> m_clipboard;
 
 		// gameboard dragging variables
 		bool m_mouse_drag_active;
@@ -46,15 +47,24 @@ namespace kkit {
 		// camera routines
 		int get_cam_x_max(int p_w) const;
 		int get_cam_y_max(int p_h) const;
-
 		void add_cam_x(int p_dx, int p_h);
 		void add_cam_y(int p_dy, int p_w);
 		void add_cam_zoom(float p_dz);
-
 		void set_cam_x(int p_x, int p_w);
 		void set_cam_y(int p_y, int p_h);
-
 		void zoom_camera(int p_sx, int p_sy, float p_dz, int p_w, int p_h);
+
+		// selection operations, copy, paste, cut, flip, rotate etc
+		bool is_empty_selection(const kkit::Project& p_project) const;
+		std::tuple<int, int, int, int> get_selection_rectangle(void) const;
+		void copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary = false);
+		void cut_selection(kkit::Project& p_project);
+		void paste_from_clipboard(kkit::Project& p_project);
+		bool selection_fits(void) const;
+		void show_selection_rectangle(void);
+		void clear_selection(kkit::Project& p_project);
+		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
+		void clear_secondary_selection(void);
 
 	public:
 		Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config);

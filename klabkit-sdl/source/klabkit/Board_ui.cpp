@@ -55,6 +55,14 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 
 	ImGui::Begin("Level");
 	ImGui::SliderInt("No", &m_board_ind, 0, p_project.get_board_count() - 1);
+
+	ImGui::Separator();
+	ImGui::Text("Output Messages");
+	ImGui::Separator();
+
+	for (const auto& l_msg : p_project.get_messages())
+		ImGui::Text(l_msg.first.c_str());
+
 	ImGui::End();
 
 	ImGui::Render();
@@ -138,55 +146,67 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	for (auto& l_timer : m_timers)
 		l_timer.move(p_delta_ms);
 
-	if (ImGui::GetIO().WantCaptureMouse)
-		return;
+	if (!ImGui::GetIO().WantCaptureMouse) {
 
-	if (!l_ctrl || !p_input.mouse_held())
-		m_mouse_drag_active = false;
+		if (!l_ctrl || !p_input.mouse_held())
+			m_mouse_drag_active = false;
 
-	if (l_ctrl && p_input.mouse_held()) {
-		if (m_mouse_drag_active) {
-			add_cam_x(m_mouse_drag_pos.first - l_mx, p_w);
-			add_cam_y(m_mouse_drag_pos.second - l_my, p_h);
-		}
-		else {
-			m_mouse_drag_active = true;
-		}
-		m_mouse_drag_pos = std::make_pair(l_mx, l_my);
-	}
-	else if (p_input.mouse_held()) {
-		auto l_tile = get_tile_pos_from_mouse_coords(l_mx, l_my);
-		if (is_valid_tile_pos(l_tile)) {
-			if (l_shift) {
-				m_sel_tile_2_x = l_tile.first;
-				m_sel_tile_2_y = l_tile.second;
+		if (l_ctrl && p_input.mouse_held()) {
+			if (m_mouse_drag_active) {
+				add_cam_x(m_mouse_drag_pos.first - l_mx, p_w);
+				add_cam_y(m_mouse_drag_pos.second - l_my, p_h);
 			}
 			else {
-				m_sel_tile_x = l_tile.first;
-				m_sel_tile_y = l_tile.second;
-				m_sel_tile_2_x = -1;
+				m_mouse_drag_active = true;
+			}
+			m_mouse_drag_pos = std::make_pair(l_mx, l_my);
+		}
+		else if (p_input.mouse_held()) {
+			auto l_tile = get_tile_pos_from_mouse_coords(l_mx, l_my);
+			if (is_valid_tile_pos(l_tile)) {
+				if (l_shift) {
+					m_sel_tile_2_x = l_tile.first;
+					m_sel_tile_2_y = l_tile.second;
+				}
+				else {
+					m_sel_tile_x = l_tile.first;
+					m_sel_tile_y = l_tile.second;
+					m_sel_tile_2_x = -1;
+				}
 			}
 		}
-	}
-	else if (p_input.mw_down()) {
-		if (l_ctrl) {
-			if (m_cam_zoom < ZOOM_MAX)
-				zoom_camera(l_mx, l_my, 0.1f, p_w, p_h);
+		else if (p_input.mw_down()) {
+			if (l_ctrl) {
+				if (m_cam_zoom < ZOOM_MAX)
+					zoom_camera(l_mx, l_my, 0.1f, p_w, p_h);
+			}
+			else if (l_shift)
+				add_cam_x(-64, p_w);
+			else
+				add_cam_y(64, p_h);
 		}
-		else if (l_shift)
-			add_cam_x(-64, p_w);
-		else
-			add_cam_y(64, p_h);
-	}
-	else if (p_input.mw_up()) {
-		if (l_ctrl) {
-			if (m_cam_zoom > ZOOM_MIN)
-				zoom_camera(l_mx, l_my, -0.1f, p_w, p_h);
+		else if (p_input.mw_up()) {
+			if (l_ctrl) {
+				if (m_cam_zoom > ZOOM_MIN)
+					zoom_camera(l_mx, l_my, -0.1f, p_w, p_h);
+			}
+			else if (l_shift)
+				add_cam_x(64, p_w);
+			else
+				add_cam_y(-64, p_h);
 		}
-		else if (l_shift)
-			add_cam_x(64, p_w);
-		else
-			add_cam_y(-64, p_h);
+
+	}
+
+	if (!ImGui::GetIO().WantCaptureKeyboard) {
+		if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
+			copy_to_clipboard(p_project);
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
+			paste_from_clipboard(p_project);
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
+			show_selection_rectangle();
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+			cut_selection(p_project);
 	}
 }
 
@@ -279,4 +299,119 @@ void kkit::Board_ui::zoom_camera(int p_sx, int p_sy, float p_dz, int p_w, int p_
 	//m_cam_y = l_tg.second - l_ty;
 	set_cam_x(static_cast<int>(l_tg.first - l_tx), p_w);
 	set_cam_y(static_cast<int>(l_tg.second - l_ty), p_h);
+}
+
+/***********************
+* Selection operations *
+************************/
+
+bool kkit::Board_ui::is_empty_selection(const kkit::Project& p_project) const {
+	auto l_rect = this->get_selection_rectangle();
+	const auto& l_brd = p_project.get_board(m_board_ind);
+
+	int l_x = std::get<0>(l_rect);
+	int l_y = std::get<1>(l_rect);
+	int l_w = std::get<2>(l_rect);
+	int l_h = std::get<3>(l_rect);
+
+	for (int x{ l_x }; x < l_x + l_w; ++x)
+		for (int y{ l_y }; y < l_y + l_h; ++y)
+			if (l_brd.get_tile_no(x, y) != -1)
+				return false;
+
+	return true;
+}
+
+std::tuple<int, int, int, int> kkit::Board_ui::get_selection_rectangle(void) const {
+	// we only have one tile selected
+	if (m_sel_tile_2_x < 0)
+		return std::make_tuple(m_sel_tile_x, m_sel_tile_y, 1, 1);
+	// we have a rectangular selection
+	else {
+		int l_x = std::min(m_sel_tile_x, m_sel_tile_2_x);
+		int l_y = std::min(m_sel_tile_y, m_sel_tile_2_y);
+		int l_w = abs(m_sel_tile_x - m_sel_tile_2_x) + 1;
+		int l_h = abs(m_sel_tile_y - m_sel_tile_2_y) + 1;
+		return std::make_tuple(l_x, l_y, l_w, l_h);
+	}
+}
+
+void kkit::Board_ui::copy_to_clipboard(const kkit::Project& p_project, bool p_clear_secondary) {
+	auto l_rect = this->get_selection_rectangle();
+
+	this->m_clipboard = p_project.get_board(m_board_ind).get_rectangle(std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+	if (p_clear_secondary)
+		this->clear_secondary_selection();
+}
+
+void kkit::Board_ui::cut_selection(kkit::Project& p_project) {
+	if (!this->is_empty_selection(p_project)) {
+		this->copy_to_clipboard(p_project, false);
+		this->clear_selection(p_project);
+		this->clear_secondary_selection();
+	}
+}
+
+void kkit::Board_ui::paste_from_clipboard(kkit::Project& p_project) {
+	if (this->selection_fits()) {
+		for (int j{ 0 }; j < m_clipboard.size() && (m_sel_tile_x + j < 64); ++j)
+			for (int i{ 0 }; i < m_clipboard[j].size() && (m_sel_tile_y + i < 64); ++i) {
+				p_project.set_tile(m_board_ind, m_sel_tile_x + j, m_sel_tile_y + i, m_clipboard[j][i]);
+			}
+	}
+}
+
+bool kkit::Board_ui::selection_fits(void) const {
+	return (m_sel_tile_x + m_clipboard.size() <= 64) && (m_clipboard.size() == 0 || (m_sel_tile_y + m_clipboard[0].size() <= 64));
+}
+
+void kkit::Board_ui::show_selection_rectangle(void) {
+	if (this->selection_fits() && m_clipboard.size() > 0) {
+		m_sel_tile_2_x = m_sel_tile_x + static_cast<int>(m_clipboard.size()) - 1;
+		m_sel_tile_2_y = m_sel_tile_y + static_cast<int>(m_clipboard[0].size()) - 1;
+	}
+}
+
+void kkit::Board_ui::clear_selection(kkit::Project& p_project) {
+	auto l_rect = this->get_selection_rectangle();
+	for (int i{ std::get<0>(l_rect) }; i < std::get<0>(l_rect) + std::get<2>(l_rect); ++i)
+		for (int j{ std::get<1>(l_rect) }; j < std::get<1>(l_rect) + std::get<3>(l_rect); ++j)
+			p_project.clear_tile(m_board_ind, i, j);
+}
+
+void kkit::Board_ui::clear_secondary_selection(void) {
+	this->m_sel_tile_2_x = -1;
+}
+
+void kkit::Board_ui::rotate_selection(const kkit::Project& p_project, bool p_clockwise) {
+	if (this->m_clipboard.empty())
+		return;
+
+	std::vector<std::vector<kkit::Map_tile>> result;
+
+	if (p_clockwise) {
+		for (int j{ static_cast<int>(m_clipboard[0].size()) - 1 }; j >= 0; --j) {
+			std::vector<kkit::Map_tile> l_row;
+			for (int i{ 0 }; i < m_clipboard.size(); ++i) {
+				l_row.push_back(m_clipboard[i][j]);
+			}
+			result.push_back(l_row);
+		}
+	}
+	else {
+		for (int j{ 0 }; j < static_cast<int>(m_clipboard[0].size()); ++j) {
+			std::vector<kkit::Map_tile> l_row;
+			for (int i{ 0 }; i < m_clipboard.size(); ++i) {
+				l_row.push_back(m_clipboard[static_cast<int>(m_clipboard.size()) - i - 1][j]);
+			}
+			result.push_back(l_row);
+		}
+	}
+
+	for (auto& l_col : result)
+		for (auto& l_tile : l_col)
+			if (l_tile.get_tile_no() >= 0 && p_project.is_directional(l_tile.get_tile_no()))
+				l_tile.toggle_direction();
+
+	m_clipboard = result;
 }
