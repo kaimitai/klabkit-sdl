@@ -13,30 +13,19 @@
 #include "klib/User_input.h"
 #include "klib/file.h"
 
+#include "./klabkit/Board_ui.h"
+
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
 constexpr char ERROR_LOG_FILE[]{ "kkit-sdl-err.log" };
 
-float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
-	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
-	float l_scale_y = p_h / static_cast<float>(kkit::c::APP_H);
-
-	float result = std::max(1.0f, std::min(l_scale_x, l_scale_y));
-
-	SDL_RenderSetScale(p_rnd, result, result);
-
-	return result;
-}
-
 int main(int argc, char* args[]) try {
 
 	SDL_Window* l_window{ nullptr };
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
-
-	float l_scale{ 1.0f };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string("SDL could not initialize! SDL_Error: " + std::string(SDL_GetError())).c_str());
@@ -78,7 +67,8 @@ int main(int argc, char* args[]) try {
 			ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
 
 			// main window object to handle all logic and drawing
-			kkit::Main_window main_window(l_rnd, project.get_config());
+			//kkit::Main_window main_window(l_rnd, project.get_config());
+			kkit::Board_ui board_window(l_rnd, project.get_config());
 
 			// input handler
 			klib::User_input input;
@@ -90,6 +80,8 @@ int main(int argc, char* args[]) try {
 
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
+
+			int l_w{ kkit::c::APP_W }, l_h{ kkit::c::APP_H };
 
 			p_gfx.add_toast_ok("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
 			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
@@ -110,25 +102,24 @@ int main(int argc, char* args[]) try {
 				mw_used = false;
 				SDL_PumpEvents();
 
-				if (SDL_PollEvent(&e) != 0)
+				if (SDL_PollEvent(&e) != 0) {
+					ImGui_ImplSDL2_ProcessEvent(&e);
+
 					if (e.type == SDL_QUIT)
 						l_exit = true;
 					else if (e.type == SDL_MOUSEWHEEL) {
 						mw_used = true;
 						mouse_wheel_y = e.wheel.y;
 					}
-					else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
-						l_scale = resize_window(l_rnd, e.window.data1, e.window.data2, l_scale);
-						SDL_SetWindowSize(l_window,
-							static_cast<int>(l_scale * kkit::c::APP_W),
-							static_cast<int>(l_scale * kkit::c::APP_H));
-					}
+				}
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
+					SDL_GetWindowSize(l_window, &l_w, &l_h);
 
-					input.move(realDelta, mw_used ? mouse_wheel_y : 0, l_scale, l_scale);
-					main_window.move(l_rnd, input, realDelta, project, p_gfx);
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
+					board_window.move(l_rnd, input, realDelta, project, p_gfx, l_w, l_h);
+					//main_window.move(l_rnd, input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
 				}
@@ -137,7 +128,8 @@ int main(int argc, char* args[]) try {
 					//mainwindow.draw(input, &texture_manager);
 					last_draw_time = SDL_GetTicks();
 
-					main_window.draw(l_rnd, input, project, p_gfx);
+					board_window.draw(l_rnd, input, project, p_gfx, l_w, l_h);
+					//main_window.draw(l_rnd, input, project, p_gfx);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);

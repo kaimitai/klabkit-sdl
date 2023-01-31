@@ -28,6 +28,7 @@
     <ClInclude Include="source\imgui\imstb_textedit.h" />
     <ClInclude Include="source\imgui\imstb_truetype.h" />
     <ClInclude Include="source\klabkit\About_window.h" />
+    <ClInclude Include="source\klabkit\Board_ui.h" />
     <ClInclude Include="source\klabkit\Board_window.h" />
     <ClInclude Include="source\klabkit\compression.h" />
     <ClInclude Include="source\klabkit\constants.h" />
@@ -64,6 +65,7 @@
     <ClCompile Include="source\imgui\imgui_tables.cpp" />
     <ClCompile Include="source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\klabkit\About_window.cpp" />
+    <ClCompile Include="source\klabkit\Board_ui.cpp" />
     <ClCompile Include="source\klabkit\Board_window.cpp" />
     <ClCompile Include="source\klabkit\compression.cpp" />
     <ClCompile Include="source\klabkit\constants.cpp" />

@@ -144,6 +144,9 @@
     <ClInclude Include="source\imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Board_ui.h">
+      <Filter>Header Files\klabkit\windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -241,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="source\imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Board_ui.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
