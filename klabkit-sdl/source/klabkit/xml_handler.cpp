@@ -102,7 +102,6 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 
 			std::vector l_floor_rgb = klib::util::string_split<byte>(n_conf.attribute(XML_ATTR_FLOOR_RGB).as_string(), ',');
 
-
 			std::tuple<byte, byte, byte> l_floor_rgb_t = (l_floor_rgb.empty() ?
 				kkit::c::FLOOR_COL_RGB :
 				std::make_tuple(l_floor_rgb.at(0), l_floor_rgb.at(1), l_floor_rgb.at(2)));
