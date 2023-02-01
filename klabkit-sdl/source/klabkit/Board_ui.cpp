@@ -19,7 +19,8 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_minimap_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::MAP_W, c::MAP_H) },
 	m_board_ind{ 0 }, m_cam_x{ 0 }, m_cam_y{ 0 }, m_cam_zoom{ 1.0f },
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
-	m_toggles{ std::vector<bool>(4, false) }
+	m_toggles{ std::vector<bool>(4, false) },
+	m_sel_tp_tile_no{ -1 }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));
@@ -71,6 +72,15 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 	draw_ui(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 }
 
+SDL_Texture* kkit::Board_ui::get_tp_tile_texture(const kkit::Project_gfx& p_gfx, int p_index) const {
+	if (p_index == -2)
+		return  p_gfx.get_texture(c::INDEX_APP_TEXTURES, 2);
+	else if (p_index >= 0)
+		return p_gfx.get_texture(c::INDEX_WALL_TEXTURES, p_index);
+	else
+		return nullptr;
+}
+
 void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 	const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
 
@@ -94,7 +104,7 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 			else
 				l_flash |= m_toggles[2] && !board.is_inside(i, j);
 
-			l_flash |= m_toggles[3] && (l_tile_no == l_sel_board_tile_no);
+			l_flash |= m_toggles[3] && (l_tile_no == m_sel_tp_tile_no);
 
 			if (l_tile_no >= 0)
 				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
@@ -195,7 +205,27 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 			else
 				add_cam_y(-64, p_h);
 		}
+		// right click on board grid: paint (set board grid tile to selected tile picker tile)
+		else if (p_input.mouse_held(false)) {
+			auto l_tcoords = get_tile_pos_from_mouse_coords(l_mx, l_my);
+			if (is_valid_tile_pos(l_tcoords)) {
 
+				if (l_ctrl) {
+					m_sel_tp_tile_no = p_project.get_board(m_board_ind).get_tile_no(l_tcoords.first, l_tcoords.second);
+				}
+				else {
+
+					int t_tile_no = p_project.get_board(m_board_ind).get_tile_no(l_tcoords.first, l_tcoords.second);
+
+					if (m_sel_tp_tile_no == -2)
+						p_project.set_player_start_position(m_board_ind, l_tcoords.first, l_tcoords.second);
+					else if (m_sel_tp_tile_no != t_tile_no) {
+						p_project.set_tile(m_board_ind, l_tcoords.first, l_tcoords.second, this->get_selected_tile(p_project, m_sel_tp_tile_no));
+						this->board_changed(p_rnd, p_project, p_gfx);
+					}
+				}
+			}
+		}
 	}
 
 	if (!ImGui::GetIO().WantCaptureKeyboard) {
@@ -574,7 +604,7 @@ int kkit::Board_ui::count_tiles(const kkit::Project& p_project, int p_tile_no, b
 
 void kkit::Board_ui::next_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap) {
 	const auto& l_brd{ p_project.get_board(m_board_ind) };
-	int l_tile_no = get_selected_board_tile_no(p_project); // p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
+	int l_tile_no = p_tp_tile ? m_sel_tp_tile_no : get_selected_board_tile_no(p_project);
 	bool l_first{ true };
 
 	for (int x{ p_wrap ? 0 : m_sel_tile_x }; x < c::MAP_W; ++x) {
@@ -599,7 +629,7 @@ void kkit::Board_ui::next_tile(const kkit::Project& p_project, bool p_tp_tile, i
 // pretty much a lazy copy/past of next_tile
 void kkit::Board_ui::prev_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap) {
 	const auto& l_brd{ p_project.get_board(m_board_ind) };
-	int l_tile_no = get_selected_board_tile_no(p_project); // p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
+	int l_tile_no = p_tp_tile ? m_sel_tp_tile_no : get_selected_board_tile_no(p_project);
 	bool l_first{ true };
 
 	for (int x{ p_wrap ? c::MAP_W - 1 : m_sel_tile_x }; x >= 0; --x) {
@@ -619,6 +649,24 @@ void kkit::Board_ui::prev_tile(const kkit::Project& p_project, bool p_tp_tile, i
 		this->prev_tile(p_project, p_tp_tile, p_w, p_h, true);
 
 	// no tile found, but wrap was already turned on, return with no changes
+}
+
+std::string kkit::Board_ui::get_tp_tile_description(int p_index) {
+	if (p_index == -2)
+		return "Start Position";
+	else if (p_index == -1)
+		return "Empty Tile";
+	else
+		return "Tile #" + std::to_string(p_index + 1);
+}
+
+std::string kkit::Board_ui::get_wall_metadata_string(kkit::Wall_type p_type) {
+	if (p_type == kkit::Wall_type::Cube)
+		return "Cube";
+	else if (p_type == kkit::Wall_type::Direction)
+		return "Directional";
+	else
+		return "Plane";
 }
 
 void kkit::Board_ui::board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx) {

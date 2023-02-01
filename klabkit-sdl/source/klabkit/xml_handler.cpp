@@ -2,8 +2,10 @@
 #include "xml_handler.h"
 #include "Map_tile.h"
 #include "../klib/klib_util.h"
+#include <map>
 #include <filesystem>
 #include <set>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -106,11 +108,28 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 				kkit::c::FLOOR_COL_RGB :
 				std::make_tuple(l_floor_rgb.at(0), l_floor_rgb.at(1), l_floor_rgb.at(2)));
 
+			std::vector<std::pair<std::string, std::vector<int>>> l_tile_picker2;
+
 			if (auto n_tp_node = n_conf.child(XML_TAG_TILE_PICKER)) {
 				for (auto n_tpr_node = n_tp_node.child(XML_TAG_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_ROW)) {
 					std::vector<int> l_tp_row = klib::util::string_split<int>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
-					for (int n : l_tp_row)
+					std::string l_descr = n_tpr_node.attribute("description").as_string();
+					bool l_first{ true };
+					std::vector<int> l_tile_nos;
+					for (int n : l_tp_row) {
 						l_tile_picker.push_back(n - 1);
+						l_tile_nos.push_back(n - 1);
+						if (l_tile_nos.size() == 8) {
+							l_tile_picker2.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
+							l_first = false;
+							l_tile_nos.clear();
+						}
+					}
+
+					if (!l_tile_nos.empty()) {
+						l_tile_picker2.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
+					}
+
 					// add padding to the tile picker after each row
 					while (l_tile_picker.size() % 14 != 0)
 						l_tile_picker.push_back(-3);
@@ -126,6 +145,7 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 				l_ext_boards, l_ext_walls,
 				l_clip_overrides,
 				l_tile_picker,
+				l_tile_picker2,
 				l_floor_rgb_t);
 
 		}

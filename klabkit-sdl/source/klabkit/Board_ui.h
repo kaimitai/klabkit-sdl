@@ -22,6 +22,7 @@ namespace kkit {
 		float m_cam_zoom;
 
 		// internal variables for selected tile position
+		int m_sel_tp_tile_no;
 		int m_sel_tile_x{ 0 }, m_sel_tile_y{ 0 };
 		int m_sel_tile_2_x{ -1 }, m_sel_tile_2_y{ 0 };
 		std::vector<std::vector<kkit::Map_tile>> m_clipboard;
@@ -46,6 +47,7 @@ namespace kkit {
 		void center_offset(std::pair<int, int> p_coords, int p_w, int p_h);
 
 		// drawing routines
+		SDL_Texture* get_tp_tile_texture(const kkit::Project_gfx& p_gfx, int p_index) const;
 		void generate_board_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 		void draw_ui(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
@@ -58,6 +60,8 @@ namespace kkit {
 			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
+			kkit::Project_gfx& p_gfx);
+		void draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_project,
 			kkit::Project_gfx& p_gfx);
 
 		// file UI
@@ -92,6 +96,9 @@ namespace kkit {
 		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;
 		void next_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
 		void prev_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
+		static std::string get_tp_tile_description(int p_index);
+		static std::string get_wall_metadata_string(kkit::Wall_type p_type);
+
 		// call when board data is altered
 		void board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 

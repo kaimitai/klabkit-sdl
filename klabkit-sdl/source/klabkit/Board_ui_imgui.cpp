@@ -22,6 +22,7 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 	draw_ui_main(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_minimap(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_selected_board_tile(p_rnd, p_input, p_project, p_gfx);
+	draw_ui_tile_picker(p_rnd, p_project, p_gfx);
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -106,8 +107,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	}
 	ImGui::SameLine();
 	if (imgui::button("Count Tiles")) {
-		//int l_tile_no = (l_ctrl_held ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project));
-		int l_tile_no{ get_selected_board_tile_no(p_project) };
+		int l_tile_no{ l_ctrl ? m_sel_tp_tile_no : get_selected_board_tile_no(p_project) };
 		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift);
 
 		std::string l_msg{ "Count selected " };
@@ -199,14 +199,14 @@ void kkit::Board_ui::draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 	bool l_inside = p_project.get_board(m_board_ind).is_inside(m_sel_tile_x, m_sel_tile_y);
 	bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
 
-	std::string l_label{ "Selected Board Tile (" + std::to_string(m_sel_tile_x) +
+	std::string l_label{ "Board Tile (" + std::to_string(m_sel_tile_x) +
 		"," + std::to_string(m_sel_tile_y) + ")###sbt" };
 	ImGui::Begin(l_label.c_str());
 
 	// draw tile
 	if (l_sel_tile_no >= 0) {
 		ImGui::Image(p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_sel_tile_no), ImVec2(128, 128));
-		std::string l_sel_text{ "Selected Tile: #" + std::to_string(l_sel_tile_no + 1) };
+		std::string l_sel_text{ "Tile #" + std::to_string(l_sel_tile_no + 1) };
 		ImGui::Text(l_sel_text.c_str());
 	}
 	else
@@ -231,6 +231,57 @@ void kkit::Board_ui::draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 		if (imgui::button(l_dir_descr.c_str(), c::COLOR_STYLE_ORANGE))
 			p_project.toggle_mt_direction(m_board_ind, m_sel_tile_x, m_sel_tile_y);
 	}
+
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_project,
+	kkit::Project_gfx& p_gfx) {
+	auto& lr_tp = p_project.get_config().get_tile_picker();
+
+	ImGui::Begin("Tile Picker");
+
+	ImGui::Image(get_tp_tile_texture(p_gfx, m_sel_tp_tile_no), { c::WALL_IMG_W, c::WALL_IMG_H });
+	ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
+
+	if (m_sel_tp_tile_no >= -1) {
+		imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
+		ImGui::SameLine();
+		imgui::button("Noclip", p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
+		ImGui::SameLine();
+		imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE);
+	}
+
+	ImGui::Separator();
+
+	ImGui::BeginChild("tp_footer");
+
+	for (const auto& kv : lr_tp) {
+		if (!kv.first.empty())
+			ImGui::Text(kv.first.c_str());
+		for (int n : kv.second) {
+			bool l_is_selected{ m_sel_tp_tile_no == n };
+
+			SDL_Texture* l_texture{ get_tp_tile_texture(p_gfx, n) };
+
+			if (l_is_selected)
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+			ImGui::PushID(n);
+
+			if (ImGui::ImageButton(l_texture, { 32, 32 })) {
+				m_sel_tp_tile_no = n;
+			}
+
+			ImGui::PopID();
+			if (l_is_selected)
+				ImGui::PopStyleColor();
+
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+	}
+
+	ImGui::EndChild();
 
 	ImGui::End();
 }
