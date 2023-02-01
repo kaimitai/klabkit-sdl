@@ -72,9 +72,6 @@
     <ClInclude Include="source\klib\User_input.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
-    <ClInclude Include="source\klabkit\Board_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
-    </ClInclude>
     <ClInclude Include="source\klib\klib_util.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
@@ -84,26 +81,8 @@
     <ClInclude Include="source\klabkit\Project_gfx.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
-    <ClInclude Include="source\klib\Font.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
     <ClInclude Include="source\klib\Timer.h">
       <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Button.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Toast_notification.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Toast_notification_handler.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klabkit\Main_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klabkit\Gfx_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
     </ClInclude>
     <ClInclude Include="source\pugixml\pugiconfig.hpp">
       <Filter>Header Files\pugixml</Filter>
@@ -116,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="source\klabkit\Project_config.h">
       <Filter>Header Files\klabkit</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klabkit\About_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
     </ClInclude>
     <ClInclude Include="source\imgui\imconfig.h">
       <Filter>Header Files\imgui</Filter>
@@ -182,9 +158,6 @@
     <ClCompile Include="source\klib\User_input.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
-    <ClCompile Include="source\klabkit\Board_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
-    </ClCompile>
     <ClCompile Include="source\klib\klib_util.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
@@ -194,29 +167,11 @@
     <ClCompile Include="source\klabkit\Project_gfx.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
-    <ClCompile Include="source\klib\Font.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
     <ClCompile Include="source\klib\Timer.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
     <ClCompile Include="source\klabkit\constants.cpp">
       <Filter>Source Files\klabkit</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Button.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Toast_notification.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Toast_notification_handler.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klabkit\Main_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klabkit\Gfx_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
     <ClCompile Include="source\pugixml\pugixml.cpp">
       <Filter>Source Files\pugixml</Filter>
@@ -226,9 +181,6 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Project_config.cpp">
       <Filter>Source Files\klabkit</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klabkit\About_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
     <ClCompile Include="source\imgui\imgui.cpp">
       <Filter>Source Files\imgui</Filter>

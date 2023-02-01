@@ -220,17 +220,3 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 
 	return(result);
 }
-
-void klib::gfx::draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_msg, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col, SDL_Color p_bg_col, SDL_Color p_outline_col) {
-	draw_rect(p_rnd, p_x, p_y, p_w, p_h, p_outline_col, 1);
-	draw_rect(p_rnd, p_x + 1, p_y + 1, p_w - 2, p_h - 2, p_bg_col, 0);
-
-	int l_offset_x = (p_w - static_cast<int>(p_msg.size()) * p_font.w()) / 2;
-	int l_offset_y = (p_h - p_font.h()) / 2;
-	p_font.write_text(p_rnd, p_msg, p_x + l_offset_x, p_y + l_offset_y, p_text_col);
-}
-
-void klib::gfx::draw_window(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_title, int p_x, int p_y, int p_w, int p_h, int p_header_h, SDL_Color p_text_col, SDL_Color p_bg_col) {
-	draw_label(p_rnd, p_font, p_title, p_x, p_y, p_w, p_header_h, p_text_col, p_bg_col);
-	draw_rect(p_rnd, p_x, p_y + p_header_h - 1, p_w, p_h - p_header_h - 1, p_text_col, 1);
-}

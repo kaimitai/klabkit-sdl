@@ -324,10 +324,8 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 			board_changed(p_rnd, p_project, p_gfx);
 		}
 		// R: rotate clipboard counter-clockwise, if shift held: rotate clockwise
-		else if (p_input.is_pressed(SDL_SCANCODE_R)) {
+		else if (p_input.is_pressed(SDL_SCANCODE_R))
 			this->rotate_selection(p_project, l_shift);
-			p_gfx.add_toast_ok("Clipboard rotated " + std::string(l_shift ? "clockwise" : "counter-clockwise"));
-		}
 	}
 }
 

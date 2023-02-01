@@ -8,7 +8,6 @@
 #include "klabkit/Project_gfx.h"
 #include "klabkit/Project_config.h"
 #include "klabkit/kkit_gfx.h"
-#include "klabkit/Main_window.h"
 #include "klabkit/xml_handler.h"
 #include "klib/User_input.h"
 #include "klib/file.h"
@@ -82,14 +81,6 @@ int main(int argc, char* args[]) try {
 			uint32_t deltaDraw = 17;
 
 			int l_w{ kkit::c::APP_W }, l_h{ kkit::c::APP_H };
-
-			p_gfx.add_toast_ok("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
-			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
-				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
-				") and " +
-				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
-				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
-				+ ")");
 
 			project.add_message("Build Date: " + std::string(__DATE__) + " " +
 				std::string(__TIME__) + " CET");
