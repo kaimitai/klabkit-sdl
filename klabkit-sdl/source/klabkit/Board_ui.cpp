@@ -20,7 +20,8 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_board_ind{ 0 }, m_cam_x{ 0 }, m_cam_y{ 0 }, m_cam_zoom{ 1.0f },
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
 	m_toggles{ std::vector<bool>(4, false) },
-	m_sel_tp_tile_no{ -1 }
+	m_sel_tp_tile_no{ -1 },
+	m_show_meta_editor{ false }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));
@@ -584,6 +585,21 @@ void kkit::Board_ui::save_boards_kzp(kkit::Project& p_project, bool p_compress) 
 			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
 	else
 		p_project.add_message(std::to_string(l_board_count) + " boards saved to DAT (" +
+			std::to_string(l_bytes) + " bytes)");
+}
+
+void kkit::Board_ui::save_walls_kzp(kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
+	int l_bytes = p_project.save_walls_kzp(p_compress);
+	int l_wall_count(p_project.get_wall_image_count());
+	int l_original_bytes = l_wall_count * c::WALL_IMG_W * c::WALL_IMG_H;
+
+	bool l_pref_kzp{ p_project.get_config().get_ext_walls() == Data_ext::KZP };
+
+	if (p_compress && l_pref_kzp)
+		p_project.add_message(std::to_string(l_wall_count) + " wall tiles saved to KZP (" +
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+	else
+		p_project.add_message(std::to_string(l_wall_count) + " wall tiles saved to DAT (" +
 			std::to_string(l_bytes) + " bytes)");
 }
 

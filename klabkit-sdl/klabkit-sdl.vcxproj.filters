@@ -260,5 +260,8 @@
     <ClCompile Include="source\klabkit\Board_ui_imgui.cpp">
       <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
+    <ClCompile Include="source\klabkit\Board_ui_gfx.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

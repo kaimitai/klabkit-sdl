@@ -68,6 +68,7 @@
     <ClCompile Include="source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\klabkit\About_window.cpp" />
     <ClCompile Include="source\klabkit\Board_ui.cpp" />
+    <ClCompile Include="source\klabkit\Board_ui_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board_ui_imgui.cpp" />
     <ClCompile Include="source\klabkit\Board_window.cpp" />
     <ClCompile Include="source\klabkit\compression.cpp" />

@@ -23,6 +23,8 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 	draw_ui_minimap(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_selected_board_tile(p_rnd, p_input, p_project, p_gfx);
 	draw_ui_tile_picker(p_rnd, p_project, p_gfx);
+	if (m_show_meta_editor)
+		draw_ui_gfx_editor(p_rnd, p_input, p_project, p_gfx);
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -137,6 +139,9 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::NewLine();
 
 	ImGui::Separator();
+	ImGui::Text("Graphics Metadata Editor");
+	ImGui::Checkbox("Enable", &m_show_meta_editor);
+	ImGui::Separator();
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
 
@@ -245,9 +250,9 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 	ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
 
 	if (m_sel_tp_tile_no >= -1) {
-		imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
-		ImGui::SameLine();
 		imgui::button("Noclip", p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
+		ImGui::SameLine();
+		imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
 		ImGui::SameLine();
 		imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE);
 	}
@@ -283,5 +288,114 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 
 	ImGui::EndChild();
 
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
+	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	bool l_shift{ p_input.is_shift_pressed() };
+
+	ImGui::Begin("Graphics Metadata Editor");
+
+	if (m_sel_tp_tile_no >= 0) {
+
+		ImGui::Image(get_tp_tile_texture(p_gfx, m_sel_tp_tile_no), { 2 * c::WALL_IMG_W,2 * c::WALL_IMG_H });
+		ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
+
+		if (imgui::button("Noclip", p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+			p_project.toggle_wt_inside(m_sel_tp_tile_no);
+		ImGui::SameLine();
+		if (imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+			p_project.toggle_wt_blast(m_sel_tp_tile_no);
+		ImGui::SameLine();
+		if (imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE))
+			p_project.toggle_wt_type(m_sel_tp_tile_no);
+
+		ImGui::Separator();
+
+		ImGui::Text("File Operations");
+
+		if (imgui::button("Export xml")) {
+			int l_exported{ 0 };
+
+			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i) {
+				xml_export_wall(p_project, i);
+				++l_exported;
+			}
+			p_project.add_message(std::to_string(l_exported) + " xml file(s) exported");
+		}
+		ImGui::SameLine();
+		if (imgui::button("Export bmp")) {
+			int l_exported{ 0 };
+			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i)
+				if (this->bmp_export(p_project, i))
+					++l_exported;
+
+			if (l_exported > 0)
+				p_project.add_message(std::to_string(l_exported) + " bmp file(s) exported");
+			else
+				p_project.add_message("No bmp files exported");
+		}
+		ImGui::SameLine();
+		bool l_pref_kzp{ p_project.get_config().get_ext_walls() == kkit::Data_ext::KZP };
+		if (l_pref_kzp) {
+			if (imgui::button("Save KZP", c::COLOR_STYLE_GREEN)) {
+				save_walls_kzp(p_project, p_gfx, true);
+			}
+			ImGui::SameLine();
+		}
+		if (imgui::button("Save DAT", l_pref_kzp ? c::COLOR_STYLE_GRAY : c::COLOR_STYLE_GREEN)) {
+			save_walls_kzp(p_project, p_gfx, false);
+		}
+
+		if (imgui::button("Import xml")) {
+			int l_imported{ 0 };
+			int l_total_cnt = p_project.get_wall_image_count();
+
+			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? l_total_cnt : m_sel_tp_tile_no + 1); ++i)
+				if (this->xml_import_wall(p_rnd, p_project, p_gfx, i))
+					++l_imported;
+
+			if (l_imported > 0)
+				p_project.add_message(std::to_string(l_imported) + " xml file(s) imported");
+			else
+				p_project.add_message("No xml file(s) found");
+		}
+		ImGui::SameLine();
+		if (imgui::button("Import bmp")) {
+			int l_imported{ 0 };
+			int l_total_cnt = p_project.get_wall_image_count();
+
+			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? l_total_cnt : m_sel_tp_tile_no + 1); ++i)
+				if (this->bmp_import(p_rnd, p_project, p_gfx, i))
+					++l_imported;
+
+			if (l_imported > 0)
+				p_project.add_message(std::to_string(l_imported) + " bmp file(s) imported");
+			else
+				p_project.add_message("No bmp file(s) found");
+		}
+
+		ImGui::Separator();
+
+		if (imgui::button("Save Tilemap bmp")) {
+			kkit::gfx::tilemap_to_bmp(p_project);
+			p_project.add_message("Tilemap bmp saved");
+		}
+		ImGui::SameLine();
+		if (imgui::button("Save Palette bmp")) {
+			kkit::gfx::palette_to_bmp(p_project);
+			p_project.add_message("Palette bmp saved");
+		}
+
+	}
+	else {
+		ImGui::Text("Select a tile from the Tile Picker");
+	}
+
+	ImGui::Separator();
+	if (imgui::button("Close", c::COLOR_STYLE_NORMAL)) {
+		m_show_meta_editor = false;
+	}
 	ImGui::End();
 }
