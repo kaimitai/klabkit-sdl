@@ -26,8 +26,10 @@ bool kkit::imgui::button(const std::string& p_label, const std::size_t p_style_n
 
 	static std::vector<std::vector<ImVec4>> ls_color_styles{
 		{c::COLI_BLUE_DARK, c::COLI_BLUE, c::COLI_BLUE_ACTIVE, c::COLI_WHITE},
-		{c::COLI_GOLD, c::COLI_ORANGE, c::COLI_YELLOW, c::COLI_WHITE},
-		{c::COLI_PINK_VR, c::COLI_PINK_DEEP, c::COLI_PINK, c::COLI_BLACK}
+		{c::COLI_GOLD, c::COLI_ORANGE, c::COLI_YELLOW, c::COLI_BLACK},
+		{c::COLI_PINK_VR, c::COLI_PINK_DEEP, c::COLI_PINK, c::COLI_BLACK},
+		{c::COLI_GRAY_DARK, c::COLI_GRAY, c::COLI_WHITE, c::COLI_BLACK},
+		{c::COLI_GREEN_DARK, c::COLI_GREEN, c::COLI_GREEN_PALE, c::COLI_BLACK}
 	};
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ls_color_styles.at(p_style_no).at(0));

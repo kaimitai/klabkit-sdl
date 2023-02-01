@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 #include <optional>
-//#include "./../skc_constants/Constants_color.h"
+#include "./constants_color.h"
 #include "./../imgui/imgui.h"
 #include "./../imgui/imgui_impl_sdl.h"
 #include "./../imgui/imgui_impl_sdlrenderer.h"
@@ -30,7 +30,7 @@ namespace kkit {
 		void tooltip_text(const std::string& p_text);
 		void window(const std::string& p_title, int p_x, int p_y, int p_w, int p_h);
 		bool button(const std::string& p_label,
-			const std::size_t p_style_no = 0,
+			const std::size_t p_style_no = c::COLOR_STYLE_NORMAL,
 			const std::string& p_tooltip = std::string());
 
 	}

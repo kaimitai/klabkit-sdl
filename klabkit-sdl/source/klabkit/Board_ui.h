@@ -41,16 +41,21 @@ namespace kkit {
 		std::pair<int, int> get_screen_coords_from_map_pos(int p_mx, int p_my) const;
 		std::pair<int, int> get_tile_pos_from_mouse_coords(int p_mx, int p_my) const;
 		static bool is_valid_tile_pos(const std::pair<int, int>& p_pos);
+		void center_offset(int p_w, int p_h);
+		void center_offset(std::pair<int, int> p_coords, int p_w, int p_h);
 
 		// drawing routines
 		void generate_board_texture(SDL_Renderer* p_rnd, const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const;
 		void draw_ui(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
-			kkit::Project_gfx& p_gfx);
+			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_main(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
-			kkit::Project_gfx& p_gfx);
+			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_minimap(SDL_Renderer* p_rnd,
+			const klib::User_input& p_input, kkit::Project& p_project,
+			kkit::Project_gfx& p_gfx);
+		void draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
 			kkit::Project_gfx& p_gfx);
 
@@ -80,6 +85,12 @@ namespace kkit {
 		void clear_selection(kkit::Project& p_project);
 		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
 		void clear_secondary_selection(void);
+		int get_selected_board_tile_no(const kkit::Project& p_project) const;
+
+		// logic
+		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;
+		void next_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
+		void prev_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
 
 	public:
 		Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config);

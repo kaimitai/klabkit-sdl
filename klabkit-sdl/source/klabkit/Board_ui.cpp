@@ -55,12 +55,13 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 		m_texture, 0, 0, l_ts_w, l_ts_h,
 		m_cam_x, m_cam_y, l_rest_w, l_rest_h);
 
-	draw_ui(p_rnd, p_input, p_project, p_gfx);
+	draw_ui(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 }
 
 void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 	const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
 
+	int l_sel_board_tile_no{ get_selected_board_tile_no(p_project) };
 	const auto& board = p_project.get_board(this->m_board_ind);
 	float l_shrink_factor = 0.25f + static_cast<float>(m_timers[0].get_frame()) / 100.0f;
 
@@ -80,7 +81,7 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 			else
 				l_flash |= m_toggles[2] && !board.is_inside(i, j);
 
-			//l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no(p_project));
+			l_flash |= m_toggles[3] && (l_tile_no == l_sel_board_tile_no);
 
 			if (l_tile_no >= 0)
 				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
@@ -193,6 +194,12 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 			show_selection_rectangle();
 		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
 			cut_selection(p_project);
+		// ctrl+H: center on player start position
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H))
+			this->center_offset(p_project.get_player_start_pos(m_board_ind), p_w, p_h);
+		// shift+H: set selected board tile to player start position
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_H))
+			p_project.set_player_start_position(m_board_ind, m_sel_tile_x, m_sel_tile_y);
 	}
 }
 
@@ -268,6 +275,20 @@ std::pair<int, int> kkit::Board_ui::get_screen_coords_from_map_pos(int p_bx, int
 bool kkit::Board_ui::is_valid_tile_pos(const std::pair<int, int>& p_pos) {
 	return p_pos.first >= 0 && p_pos.second >= 0 &&
 		p_pos.first < 64 && p_pos.second < 64;
+}
+
+void kkit::Board_ui::center_offset(int p_w, int p_h) {
+	int l_bpw = static_cast<int>(p_w * m_cam_zoom);
+	int l_bph = static_cast<int>(p_h * m_cam_zoom);
+
+	set_cam_x(m_cam_x - l_bpw / 2, p_w);
+	set_cam_y(m_cam_y - l_bph / 2, p_h);
+}
+
+void kkit::Board_ui::center_offset(std::pair<int, int> p_coords, int p_w, int p_h) {
+	m_cam_x = c::WALL_IMG_W * p_coords.first;
+	m_cam_y = c::WALL_IMG_W * p_coords.second;
+	this->center_offset(p_w, p_h);
 }
 
 // window position (p_sx, p_sy) should point to the same pixel on the board grid
@@ -402,6 +423,10 @@ void kkit::Board_ui::rotate_selection(const kkit::Project& p_project, bool p_clo
 	m_clipboard = result;
 }
 
+int kkit::Board_ui::get_selected_board_tile_no(const kkit::Project& p_project) const {
+	return p_project.get_board(m_board_ind).get_tile_no(m_sel_tile_x, m_sel_tile_y);
+}
+
 // save/load
 bool kkit::Board_ui::xml_import(kkit::Project& p_project, int p_board_no) const {
 	auto l_in_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no);
@@ -432,4 +457,68 @@ void kkit::Board_ui::save_boards_kzp(kkit::Project& p_project, bool p_compress) 
 	else
 		p_project.add_message(std::to_string(l_board_count) + " boards saved to DAT (" +
 			std::to_string(l_bytes) + " bytes)");
+}
+
+// logic
+int kkit::Board_ui::count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards) const {
+	int result{ 0 };
+
+	for (int i{ p_all_boards ? 0 : m_board_ind }; i < (p_all_boards ? p_project.get_board_count() : m_board_ind + 1); ++i) {
+		const auto& l_brd = p_project.get_board(i);
+		for (int x{ 0 }; x < c::MAP_W; ++x)
+			for (int y{ 0 }; y < c::MAP_H; ++y)
+				if (l_brd.get_tile_no(x, y) == p_tile_no)
+					++result;
+	}
+
+	return result;
+}
+
+void kkit::Board_ui::next_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap) {
+	const auto& l_brd{ p_project.get_board(m_board_ind) };
+	int l_tile_no = get_selected_board_tile_no(p_project); // p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
+	bool l_first{ true };
+
+	for (int x{ p_wrap ? 0 : m_sel_tile_x }; x < c::MAP_W; ++x) {
+		for (int y{ l_first && !p_wrap ? m_sel_tile_y + 1 : 0 }; y < c::MAP_H; ++y)
+			if (l_brd.get_tile_no(x, y) == l_tile_no) {
+				m_sel_tile_x = x;
+				m_sel_tile_y = y;
+				this->clear_secondary_selection();
+				this->center_offset(std::make_pair(m_sel_tile_x, m_sel_tile_y), p_w, p_h);
+				return;
+			}
+		l_first = false;
+	}
+
+	// no tile found, wrap around
+	if (!p_wrap)
+		this->next_tile(p_project, p_tp_tile, p_w, p_h, true);
+
+	// no tile found, but wrap was already turned on, return with no changes
+}
+
+// pretty much a lazy copy/past of next_tile
+void kkit::Board_ui::prev_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap) {
+	const auto& l_brd{ p_project.get_board(m_board_ind) };
+	int l_tile_no = get_selected_board_tile_no(p_project); // p_tp_tile ? this->get_selected_tile_no(p_project) : this->get_selected_board_tile_no(p_project);
+	bool l_first{ true };
+
+	for (int x{ p_wrap ? c::MAP_W - 1 : m_sel_tile_x }; x >= 0; --x) {
+		for (int y{ l_first && !p_wrap ? m_sel_tile_y - 1 : c::MAP_H - 1 }; y >= 0; --y)
+			if (l_brd.get_tile_no(x, y) == l_tile_no) {
+				m_sel_tile_x = x;
+				m_sel_tile_y = y;
+				this->clear_secondary_selection();
+				this->center_offset(std::make_pair(m_sel_tile_x, m_sel_tile_y), p_w, p_h);
+				return;
+			}
+		l_first = false;
+	}
+
+	// no tile found, wrap around
+	if (!p_wrap)
+		this->prev_tile(p_project, p_tp_tile, p_w, p_h, true);
+
+	// no tile found, but wrap was already turned on, return with no changes
 }
