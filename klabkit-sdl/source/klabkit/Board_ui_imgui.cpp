@@ -20,7 +20,7 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 	ImGui::NewFrame();
 
 	draw_ui_main(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
-	draw_ui_minimap(p_rnd, p_input, p_project, p_gfx);
+	draw_ui_minimap(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_selected_board_tile(p_rnd, p_input, p_project, p_gfx);
 
 	ImGui::Render();
@@ -148,7 +148,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 
 void kkit::Board_ui::draw_ui_minimap(SDL_Renderer* p_rnd,
 	const klib::User_input& p_input, kkit::Project& p_project,
-	kkit::Project_gfx& p_gfx) {
+	kkit::Project_gfx& p_gfx, int p_w, int p_h) {
 	ImGui::Begin("Minimap");
 
 	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
@@ -163,8 +163,28 @@ void kkit::Board_ui::draw_ui_minimap(SDL_Renderer* p_rnd,
 	float l_scale_h = l_ih / l_oh;
 	float scale = std::min(l_scale_w, l_scale_h);
 
-	ImGui::Image(p_gfx.get_texture(c::INDEX_MM_TEXTURES, m_board_ind),
+	ImGui::Image(m_minimap_texture, //p_gfx.get_texture(c::INDEX_MM_TEXTURES, m_board_ind),
 		ImVec2(l_ow * scale, l_oh * scale));
+
+	if (p_input.mouse_held() && ImGui::IsItemHovered()) {
+		ImGuiIO& io = ImGui::GetIO();
+
+		int lx = static_cast<int>(ImGui::GetItemRectMin().x);
+		int ly = static_cast<int>(ImGui::GetItemRectMin().y);
+		int lw = static_cast<int>(ImGui::GetItemRectMax().x - ImGui::GetItemRectMin().x);
+		int lh = static_cast<int>(ImGui::GetItemRectMax().y - ImGui::GetItemRectMin().y);
+
+		int tx = c::MAP_W * (static_cast<int>(io.MousePos.x) - lx) / lw;
+		int ty = c::MAP_H * (static_cast<int>(io.MousePos.y) - ly) / lh;
+
+		int supw{ static_cast<int>(m_cam_zoom * p_w) };
+		int suph{ static_cast<int>(m_cam_zoom * p_h) };
+
+		if (is_valid_tile_pos(std::make_pair(tx, ty))) {
+			set_cam_x(c::WALL_IMG_W * tx - supw / 2, p_w);
+			set_cam_y(c::WALL_IMG_H * ty - suph / 2, p_h);
+		}
+	}
 
 	ImGui::End();
 }

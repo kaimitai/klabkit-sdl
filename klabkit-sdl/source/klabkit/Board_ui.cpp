@@ -15,7 +15,8 @@ constexpr float ZOOM_MAX{ 3.0f };
 constexpr float ZOOM_MIN{ 0.125f };
 
 kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
-	m_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096) },
+	m_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::WALL_IMG_W * c::MAP_W, c::WALL_IMG_H * c::MAP_H) },
+	m_minimap_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::MAP_W, c::MAP_H) },
 	m_board_ind{ 0 }, m_cam_x{ 0 }, m_cam_y{ 0 }, m_cam_zoom{ 1.0f },
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
 	m_toggles{ std::vector<bool>(4, false) }
@@ -34,11 +35,23 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 	kkit::Project_gfx& p_gfx, int p_w, int p_h) {
 	generate_board_texture(p_rnd, p_project, p_gfx);
 
-	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
-	SDL_RenderClear(p_rnd);
-
 	int l_s_pixels_w{ static_cast<int>(p_w * m_cam_zoom) };
 	int l_s_pixels_h{ static_cast<int>(p_h * m_cam_zoom) };
+
+	/* minimap stuff */
+	SDL_SetRenderTarget(p_rnd, m_minimap_texture);
+	SDL_Color l_floor_col = p_gfx.get_floor_color();
+	SDL_SetRenderDrawColor(p_rnd, l_floor_col.r, l_floor_col.g, l_floor_col.b, 0);
+	SDL_RenderClear(p_rnd);
+	klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_MM_TEXTURES, m_board_ind), 0, 0);
+
+	klib::gfx::draw_rect(p_rnd, m_cam_x / 64, m_cam_y / 64, l_s_pixels_w / 64, l_s_pixels_h / 64, c::COL_YELLOW, 1);
+	/* minimap stuff end */
+
+	SDL_SetRenderTarget(p_rnd, nullptr);
+
+	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
+	SDL_RenderClear(p_rnd);
 
 	int l_rest_w = std::max(0, 4096 - m_cam_x);
 	int l_rest_h = std::max(0, 4096 - m_cam_y);
@@ -186,20 +199,104 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	}
 
 	if (!ImGui::GetIO().WantCaptureKeyboard) {
-		if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
+		// shift + home: to top of tile picker
+		if (l_shift && p_input.is_pressed(SDL_SCANCODE_HOME)) {
+			//tile_row = 0;
+		}
+		// home: go to first board
+		else if (p_input.is_pressed(SDL_SCANCODE_HOME))
+			m_board_ind = 0;
+		// shift + end: to bottom of tile picker
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_END)) {
+			//tile_row = c_tile_row_max(p_project);
+		}
+		// end: go to last board
+		else if (p_input.is_pressed(SDL_SCANCODE_END))
+			m_board_ind = p_project.get_board_count() - 1;
+		// shift + PgDown: tile picker next page
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_PAGEDOWN)) {
+			//tile_row = klib::util::validate(tile_row + BW_TPC, 0, c_tile_row_max(p_project));
+		}
+		// shift + PgUp: tile picker previous page
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_PAGEUP)) {
+			//tile_row = klib::util::validate(tile_row - BW_TPC, 0, c_tile_row_max(p_project));
+		}
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
 			copy_to_clipboard(p_project);
-		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
 			paste_from_clipboard(p_project);
+			board_changed(p_rnd, p_project, p_gfx);
+		}
+		// ctrl+A: select all
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_A)) {
+			this->m_sel_tile_x = 0;
+			this->m_sel_tile_y = 0;
+			this->m_sel_tile_2_x = c::MAP_W - 1;
+			this->m_sel_tile_2_y = c::MAP_H - 1;
+		}
+		// shift+V: show where clipboard WOULD BE pasted
 		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
 			show_selection_rectangle();
-		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
-			cut_selection(p_project);
+		// delete: set all tiles in selection to 0 (internal -1)
+		else if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
+			this->clear_selection(p_project);
+			this->board_changed(p_rnd, p_project, p_gfx);
+		}
+		// shift+Minus / PgDown: previous board
+		else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEDOWN))
+			m_board_ind = klib::util::validate(m_board_ind - 1, 0, p_project.get_board_count() - 1);
+		// shift+Plus / PgUp: next board
+		else if ((l_shift && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) || p_input.is_pressed(SDL_SCANCODE_PAGEUP))
+			m_board_ind = klib::util::validate(m_board_ind + 1, 0, p_project.get_board_count() - 1);
+		// ctrl+F: find selected board tile
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_F))
+			this->center_offset(std::make_pair(m_sel_tile_x, m_sel_tile_y), p_w, p_h);
+		// ctrl+P: go to previous tile of selected type on board (if shift held, previous tile of tile picker's type)
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_P))
+			this->prev_tile(p_project, l_shift, p_w, p_h);
 		// ctrl+H: center on player start position
 		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_H))
 			this->center_offset(p_project.get_player_start_pos(m_board_ind), p_w, p_h);
 		// shift+H: set selected board tile to player start position
 		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_H))
 			p_project.set_player_start_position(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X)) {
+			cut_selection(p_project);
+			board_changed(p_rnd, p_project, p_gfx);
+		}
+		// esc: clear selection rectangle
+		else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
+			this->clear_secondary_selection();
+		// ctrl+S: save to kzp (if shift held too; save to DAT)
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
+			this->save_boards_kzp(p_project, !l_shift);
+		// ctrl+N: next tile of selected type (if shift held, next tile of tile picker's type - if any)
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_N))
+			this->next_tile(p_project, l_shift, p_w, p_h);
+		// B: toggle selected board tile desctructible property ([B]last)
+		else if (p_input.is_pressed(SDL_SCANCODE_B))
+			p_project.toggle_mt_blast(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+		// C: toggle selected board tile clip property ([C]lip)
+		else if (p_input.is_pressed(SDL_SCANCODE_C))
+			p_project.toggle_mt_inside(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+		// D: toggle selected board tile direction (horizontal/vertical), or if player start: n/e/s/w
+		else if (p_input.is_pressed(SDL_SCANCODE_D))
+			p_project.toggle_mt_direction(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+		// F: flip selection: horizontal flip, shift+F: vertical flip
+		else if (p_input.is_pressed(SDL_SCANCODE_F)) {
+			auto l_rect = this->get_selection_rectangle();
+			if (l_shift)
+				p_project.flip_vertical(m_board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+			else
+				p_project.flip_horizontal(m_board_ind, std::get<0>(l_rect), std::get<1>(l_rect), std::get<2>(l_rect), std::get<3>(l_rect));
+
+			board_changed(p_rnd, p_project, p_gfx);
+		}
+		// R: rotate clipboard counter-clockwise, if shift held: rotate clockwise
+		else if (p_input.is_pressed(SDL_SCANCODE_R)) {
+			this->rotate_selection(p_project, l_shift);
+			p_gfx.add_toast_ok("Clipboard rotated " + std::string(l_shift ? "clockwise" : "counter-clockwise"));
+		}
 	}
 }
 
@@ -390,7 +487,7 @@ void kkit::Board_ui::clear_secondary_selection(void) {
 	this->m_sel_tile_2_x = -1;
 }
 
-void kkit::Board_ui::rotate_selection(const kkit::Project& p_project, bool p_clockwise) {
+void kkit::Board_ui::rotate_selection(kkit::Project& p_project, bool p_clockwise) {
 	if (this->m_clipboard.empty())
 		return;
 
@@ -421,6 +518,7 @@ void kkit::Board_ui::rotate_selection(const kkit::Project& p_project, bool p_clo
 				l_tile.toggle_direction();
 
 	m_clipboard = result;
+	p_project.add_message("Clipboard rotated " + std::string(p_clockwise ? "clockwise" : "counter-clockwise"));
 }
 
 int kkit::Board_ui::get_selected_board_tile_no(const kkit::Project& p_project) const {
@@ -521,4 +619,8 @@ void kkit::Board_ui::prev_tile(const kkit::Project& p_project, bool p_tp_tile, i
 		this->prev_tile(p_project, p_tp_tile, p_w, p_h, true);
 
 	// no tile found, but wrap was already turned on, return with no changes
+}
+
+void kkit::Board_ui::board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	p_gfx.reload_minimap_texture(p_rnd, p_project, m_board_ind);
 }

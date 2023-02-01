@@ -15,6 +15,7 @@ namespace kkit {
 	class Board_ui {
 		// full board texture
 		SDL_Texture* m_texture;
+		SDL_Texture* m_minimap_texture;
 
 		// internal variables for level board position
 		int m_board_ind, m_cam_x, m_cam_y;
@@ -54,7 +55,7 @@ namespace kkit {
 			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_minimap(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
-			kkit::Project_gfx& p_gfx);
+			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
 			kkit::Project_gfx& p_gfx);
@@ -83,7 +84,7 @@ namespace kkit {
 		bool selection_fits(void) const;
 		void show_selection_rectangle(void);
 		void clear_selection(kkit::Project& p_project);
-		void rotate_selection(const kkit::Project& p_project, bool p_clockwise = false);
+		void rotate_selection(kkit::Project& p_project, bool p_clockwise = false);
 		void clear_secondary_selection(void);
 		int get_selected_board_tile_no(const kkit::Project& p_project) const;
 
@@ -91,6 +92,8 @@ namespace kkit {
 		int count_tiles(const kkit::Project& p_project, int p_tile_no, bool p_all_boards = false) const;
 		void next_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
 		void prev_tile(const kkit::Project& p_project, bool p_tp_tile, int p_w, int p_h, bool p_wrap = false);
+		// call when board data is altered
+		void board_changed(SDL_Renderer* p_rnd, const kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 
 	public:
 		Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config);
