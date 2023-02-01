@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <cmath>
-#include "./Board_ui.h"
+#include <filesystem>
 
+#include "./Board_ui.h"
 #include "./../imgui/imgui.h"
 #include "./../imgui/imgui_impl_sdl.h"
 #include "./../imgui/imgui_impl_sdlrenderer.h"
@@ -29,8 +30,8 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 }
 
 void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
-	const klib::User_input& p_input, const kkit::Project& p_project,
-	const kkit::Project_gfx& p_gfx, int p_w, int p_h) {
+	const klib::User_input& p_input, kkit::Project& p_project,
+	kkit::Project_gfx& p_gfx, int p_w, int p_h) {
 	generate_board_texture(p_rnd, p_project, p_gfx);
 
 	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
@@ -54,43 +55,7 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 		m_texture, 0, 0, l_ts_w, l_ts_h,
 		m_cam_x, m_cam_y, l_rest_w, l_rest_h);
 
-	ImGui_ImplSDLRenderer_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame();
-
-	ImGui::Begin("Level");
-	auto l_new_lvl_ind{ imgui::slider("Level", m_board_ind + 1, 1, p_project.get_board_count()) };
-	if (l_new_lvl_ind)
-		m_board_ind = l_new_lvl_ind.value() - 1;
-
-	ImGui::Separator();
-	ImGui::Text("Flash");
-
-	static std::vector<std::string> ls_labels{
-		"Directions", "Destructible", "Clippable", "Selected"
-	};
-
-	for (std::size_t i{ 0 }; i < m_toggles.size(); ++i) {
-		bool l_toggled{ m_toggles[i] };
-
-		if (imgui::button(ls_labels[i], l_toggled ? 1 : 2))
-			m_toggles[i] = !m_toggles[i];
-
-		ImGui::SameLine();
-	}
-	ImGui::NewLine();
-
-	ImGui::Separator();
-	ImGui::Text("Output Messages");
-	ImGui::Separator();
-
-	for (const auto& l_msg : p_project.get_messages())
-		ImGui::Text(l_msg.first.c_str());
-
-	ImGui::End();
-
-	ImGui::Render();
-	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+	draw_ui(p_rnd, p_input, p_project, p_gfx);
 }
 
 void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
@@ -435,4 +400,36 @@ void kkit::Board_ui::rotate_selection(const kkit::Project& p_project, bool p_clo
 				l_tile.toggle_direction();
 
 	m_clipboard = result;
+}
+
+// save/load
+bool kkit::Board_ui::xml_import(kkit::Project& p_project, int p_board_no) const {
+	auto l_in_file = p_project.get_file_full_path(c::FILE_BOARDS, c::FILE_EXT_XML, p_board_no);
+
+	if (!std::filesystem::exists(l_in_file))
+		return false;
+	else {
+		p_project.reload_map_from_xml(p_board_no);
+		return true;
+	}
+}
+
+void kkit::Board_ui::xml_export(kkit::Project& p_project, int p_board_no) const {
+	p_project.save_board_xml(p_board_no);
+}
+
+void kkit::Board_ui::save_boards_kzp(kkit::Project& p_project, bool p_compress) const {
+	bool l_compress = (p_compress && !p_project.is_walken() && !p_project.is_klab_v_1());
+
+	int l_bytes = p_project.save_boards_kzp(l_compress);
+	int l_board_count(p_project.get_board_count());
+	int l_original_bytes = l_board_count * (p_project.is_walken() ? 1 : 2) * c::MAP_W * c::MAP_H;
+
+	// only v2.x boards should be saved as kzp - there is no real point otherwise
+	if (l_compress)
+		p_project.add_message(std::to_string(l_board_count) + " boards saved to KZP (" +
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+	else
+		p_project.add_message(std::to_string(l_board_count) + " boards saved to DAT (" +
+			std::to_string(l_bytes) + " bytes)");
 }
