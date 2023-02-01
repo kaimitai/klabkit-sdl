@@ -5,6 +5,7 @@
 #include "./../imgui/imgui.h"
 #include "./../imgui/imgui_impl_sdl.h"
 #include "./../imgui/imgui_impl_sdlrenderer.h"
+#include "imgui_helper.h"
 #include "./../klib/gfx.h"
 #include "./../klib/klib_util.h"
 #include "./kkit_gfx.h"
@@ -15,12 +16,16 @@ constexpr float ZOOM_MIN{ 0.125f };
 kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 4096, 4096) },
 	m_board_ind{ 0 }, m_cam_x{ 0 }, m_cam_y{ 0 }, m_cam_zoom{ 1.0f },
-	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) }
+	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
+	m_toggles{ std::vector<bool>(4, false) }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));
 	// pulsating color timer
 	m_timers.push_back(klib::Timer(256, 5));
+
+	// directions should be on by default
+	m_toggles[0] = true;
 }
 
 void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
@@ -54,7 +59,26 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 	ImGui::NewFrame();
 
 	ImGui::Begin("Level");
-	ImGui::SliderInt("No", &m_board_ind, 0, p_project.get_board_count() - 1);
+	auto l_new_lvl_ind{ imgui::slider("Level", m_board_ind + 1, 1, p_project.get_board_count()) };
+	if (l_new_lvl_ind)
+		m_board_ind = l_new_lvl_ind.value() - 1;
+
+	ImGui::Separator();
+	ImGui::Text("Flash");
+
+	static std::vector<std::string> ls_labels{
+		"Directions", "Destructible", "Clippable", "Selected"
+	};
+
+	for (std::size_t i{ 0 }; i < m_toggles.size(); ++i) {
+		bool l_toggled{ m_toggles[i] };
+
+		if (imgui::button(ls_labels[i], l_toggled ? 1 : 2))
+			m_toggles[i] = !m_toggles[i];
+
+		ImGui::SameLine();
+	}
+	ImGui::NewLine();
 
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
@@ -73,9 +97,7 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 	const kkit::Project& p_project, const kkit::Project_gfx& p_gfx) const {
 
 	const auto& board = p_project.get_board(this->m_board_ind);
-	//float l_shrink_factor = 0.25f + static_cast<float>(100.0f) / 100.0f;
 	float l_shrink_factor = 0.25f + static_cast<float>(m_timers[0].get_frame()) / 100.0f;
-	static std::vector<bool> toggles(5, true);
 
 	SDL_SetRenderTarget(p_rnd, m_texture);
 	SDL_Color l_floor_col = p_gfx.get_floor_color();
@@ -84,22 +106,21 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 
 	for (int i{ 0 }; i < 64; ++i)
 		for (int j{ 0 }; j < 64; ++j) {
-			//if (!board.is_empty_tile(i, j)) {
 			int l_tile_no = board.get_tile_no(i, j);
 
-			bool l_flash = toggles[1] && board.is_blast(i, j);
+			bool l_flash = m_toggles[1] && board.is_blast(i, j);
 
 			if (l_tile_no >= 0)
-				l_flash |= toggles[2] && board.is_inside(i, j) && (!p_project.is_inside(l_tile_no) || p_project.is_clip_override(l_tile_no));
+				l_flash |= m_toggles[2] && board.is_inside(i, j) && (!p_project.is_inside(l_tile_no) || p_project.is_clip_override(l_tile_no));
 			else
-				l_flash |= toggles[2] && !board.is_inside(i, j);
+				l_flash |= m_toggles[2] && !board.is_inside(i, j);
 
 			//l_flash |= toggles[3] && (l_tile_no == get_selected_tile_no(p_project));
 
 			if (l_tile_no >= 0)
 				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
 
-			if (toggles[0] && p_project.is_directional(l_tile_no))
+			if (m_toggles[0] && p_project.is_directional(l_tile_no))
 				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
 			if (l_flash)
 				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, 6), 64 * i + 32, 64 * j + 32, l_shrink_factor);

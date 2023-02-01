@@ -24,6 +24,7 @@ namespace kkit {
 		int m_sel_tile_x{ 0 }, m_sel_tile_y{ 0 };
 		int m_sel_tile_2_x{ -1 }, m_sel_tile_2_y{ 0 };
 		std::vector<std::vector<kkit::Map_tile>> m_clipboard;
+		std::vector<bool> m_toggles;
 
 		// gameboard dragging variables
 		bool m_mouse_drag_active;

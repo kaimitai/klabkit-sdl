@@ -32,7 +32,9 @@
     <ClInclude Include="source\klabkit\Board_window.h" />
     <ClInclude Include="source\klabkit\compression.h" />
     <ClInclude Include="source\klabkit\constants.h" />
+    <ClInclude Include="source\klabkit\constants_color.h" />
     <ClInclude Include="source\klabkit\Gfx_window.h" />
+    <ClInclude Include="source\klabkit\imgui_helper.h" />
     <ClInclude Include="source\klabkit\kkit_gfx.h" />
     <ClInclude Include="source\klabkit\Board.h" />
     <ClInclude Include="source\klabkit\Main_window.h" />
@@ -70,6 +72,7 @@
     <ClCompile Include="source\klabkit\compression.cpp" />
     <ClCompile Include="source\klabkit\constants.cpp" />
     <ClCompile Include="source\klabkit\Gfx_window.cpp" />
+    <ClCompile Include="source\klabkit\imgui_helper.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
     <ClCompile Include="source\klabkit\Main_window.cpp" />
