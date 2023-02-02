@@ -20,6 +20,12 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 		initialize_maps();
 }
 
+void kkit::Project::add_message(const std::string& p_message, int p_status_code) {
+	m_messages.push_front(std::make_pair(p_message, p_status_code));
+	if (m_messages.size() > 25)
+		m_messages.pop_back();
+}
+
 int kkit::Project::save_boards_kzp(bool p_compress) const {
 	bool l_compress = p_compress && config.get_ext_boards() == Data_ext::KZP;
 
@@ -408,19 +414,8 @@ std::pair<int, int> kkit::Project::get_player_start_pos(int p_board_no) const {
 	return std::make_pair(maps.at(p_board_no).get_player_start_x(), maps.at(p_board_no).get_player_start_y());
 }
 
-const std::vector<int>& kkit::Project::get_tile_picker(void) const {
-	return this->config.tile_picker;
-}
-
 bool kkit::Project::is_clip_override(int p_tile_no) const {
 	return this->config.is_clip_override(p_tile_no);
-}
-
-int kkit::Project::get_tile_picker_index(int p_tile_no) const {
-	for (std::size_t i{ 0 }; i < config.tile_picker.size(); ++i)
-		if (config.tile_picker[i] == p_tile_no)
-			return static_cast<int>(i);
-	return -1;
 }
 
 bool kkit::Project::is_klab_v_1(void) const {
@@ -531,4 +526,8 @@ std::tuple<byte, byte, byte> kkit::Project::get_floor_color(void) const {
 
 const kkit::Project_config& kkit::Project::get_config(void) const {
 	return config;
+}
+
+const std::deque<std::pair<std::string, int>>& kkit::Project::get_messages(void) const {
+	return m_messages;
 }

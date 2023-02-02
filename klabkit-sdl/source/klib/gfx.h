@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <string>
 #include <vector>
-#include "Font.h"
 
 namespace klib {
 
@@ -41,10 +40,7 @@ namespace klib {
 		void put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel);
 		Uint32 get_pixel(SDL_Surface*, int, int);
 		std::vector<SDL_Texture*> split_surface(SDL_Renderer* p_rnd, SDL_Surface* srf, SDL_Color p_trans_col, int p_w, int p_h, bool p_destroy_surface = true);
-
-		// drawing routines
-		void draw_label(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string&, int p_x, int p_y, int p_w, int p_h, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE, SDL_Color p_outline_col = gc::COL_WHITE);
-		void draw_window(SDL_Renderer* p_rnd, const klib::Font& p_font, const std::string& p_title, int p_x, int p_y, int p_w, int p_h, int p_header_h = gc::BUTTON_H, SDL_Color p_text_col = gc::COL_WHITE, SDL_Color p_bg_col = gc::COL_BLUE);
+		SDL_Color pulse_color(SDL_Color a, SDL_Color b, int p_progress);
 	}
 
 }

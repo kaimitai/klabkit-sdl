@@ -2,8 +2,10 @@
 #include "xml_handler.h"
 #include "Map_tile.h"
 #include "../klib/klib_util.h"
+#include <map>
 #include <filesystem>
 #include <set>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -98,7 +100,6 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 			std::string l_ext_walls{ n_conf.attribute(XML_ATTR_EXT_WALLS).as_string() };
 
 			std::vector l_clip_overrides_v = klib::util::string_split<int>(n_conf.child(XML_TAG_CLIP_OVERRIDES).attribute(XML_ATTR_VALUE).as_string(), ',');
-			std::vector<int> l_tile_picker;
 
 			std::vector l_floor_rgb = klib::util::string_split<byte>(n_conf.attribute(XML_ATTR_FLOOR_RGB).as_string(), ',');
 
@@ -106,14 +107,26 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 				kkit::c::FLOOR_COL_RGB :
 				std::make_tuple(l_floor_rgb.at(0), l_floor_rgb.at(1), l_floor_rgb.at(2)));
 
+			std::vector<std::pair<std::string, std::vector<int>>> l_tile_picker;
+
 			if (auto n_tp_node = n_conf.child(XML_TAG_TILE_PICKER)) {
 				for (auto n_tpr_node = n_tp_node.child(XML_TAG_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_ROW)) {
 					std::vector<int> l_tp_row = klib::util::string_split<int>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
-					for (int n : l_tp_row)
-						l_tile_picker.push_back(n - 1);
-					// add padding to the tile picker after each row
-					while (l_tile_picker.size() % 14 != 0)
-						l_tile_picker.push_back(-3);
+					std::string l_descr = n_tpr_node.attribute("description").as_string();
+					bool l_first{ true };
+					std::vector<int> l_tile_nos;
+					for (int n : l_tp_row) {
+						l_tile_nos.push_back(n - 1);
+						if (l_tile_nos.size() == 8) {
+							l_tile_picker.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
+							l_first = false;
+							l_tile_nos.clear();
+						}
+					}
+
+					if (!l_tile_nos.empty()) {
+						l_tile_picker.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
+					}
 				}
 			}
 

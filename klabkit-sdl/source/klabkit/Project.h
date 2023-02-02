@@ -1,8 +1,10 @@
 #ifndef KLABKIT_PROJECT_H
 #define KLABKIT_PROJECT_H
 
+#include <deque>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
 #include "Wall.h"
@@ -17,6 +19,9 @@ namespace kkit {
 		std::vector<Wall> walls;
 		std::vector<Board> maps;
 		std::vector<std::tuple<byte, byte, byte>> palette;
+
+		// user messages
+		std::deque<std::pair<std::string, int>> m_messages;
 
 		// walls loaded from kzp or dat?
 		bool kzp_walls, kzp_boards;
@@ -41,6 +46,7 @@ namespace kkit {
 
 	public:
 		Project(const kkit::Project_config& p_config);
+		void add_message(const std::string& p_message, int p_status_code = 0);
 
 		// logical getters
 		std::vector<byte> get_board_bytes(void) const;
@@ -48,9 +54,7 @@ namespace kkit {
 		kkit::Map_tile gen_map_tile(int p_tile_no) const;
 		std::string get_block_type_as_string(int p_tile_no) const;
 		std::pair<int, int> get_player_start_pos(int p_board_no) const;
-		const std::vector<int>& get_tile_picker(void) const;
 		bool is_clip_override(int p_tile_no) const;
-		int get_tile_picker_index(int p_tile_no) const;
 		bool is_klab_v_1(void) const;
 		bool is_walken(void) const;
 		bool is_walls_kzp(void) const;
@@ -67,6 +71,7 @@ namespace kkit {
 		std::string get_config_label(void) const;
 		std::tuple<byte, byte, byte> get_floor_color(void) const;
 		const Project_config& get_config(void) const;
+		const std::deque<std::pair<std::string, int>>& get_messages(void) const;
 
 		// wall attribute getters
 		bool is_blast(int p_wall_no) const;

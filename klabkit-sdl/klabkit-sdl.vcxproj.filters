@@ -37,6 +37,12 @@
     <Filter Include="Source Files\pugixml">
       <UniqueIdentifier>{e4556171-8d1c-4e49-a1de-4a6ac2ea88a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\imgui">
+      <UniqueIdentifier>{57931dfc-9ec2-4d41-96af-a99fa9f643c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imgui">
+      <UniqueIdentifier>{be95f98e-cdf3-45bc-8e6f-6774479040c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\klib\file.h">
@@ -66,9 +72,6 @@
     <ClInclude Include="source\klib\User_input.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
-    <ClInclude Include="source\klabkit\Board_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
-    </ClInclude>
     <ClInclude Include="source\klib\klib_util.h">
       <Filter>Header Files\klib</Filter>
     </ClInclude>
@@ -78,26 +81,8 @@
     <ClInclude Include="source\klabkit\Project_gfx.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
-    <ClInclude Include="source\klib\Font.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
     <ClInclude Include="source\klib\Timer.h">
       <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Button.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Toast_notification.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klib\Toast_notification_handler.h">
-      <Filter>Header Files\klib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klabkit\Main_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="source\klabkit\Gfx_window.h">
-      <Filter>Header Files\klabkit\windows</Filter>
     </ClInclude>
     <ClInclude Include="source\pugixml\pugiconfig.hpp">
       <Filter>Header Files\pugixml</Filter>
@@ -111,8 +96,38 @@
     <ClInclude Include="source\klabkit\Project_config.h">
       <Filter>Header Files\klabkit</Filter>
     </ClInclude>
-    <ClInclude Include="source\klabkit\About_window.h">
+    <ClInclude Include="source\imgui\imconfig.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imgui.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imgui_impl_sdl.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imgui_impl_sdlrenderer.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imgui_internal.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imstb_rectpack.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imstb_textedit.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\imgui\imstb_truetype.h">
+      <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Board_ui.h">
       <Filter>Header Files\klabkit\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\imgui_helper.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\constants_color.h">
+      <Filter>Source Files\klabkit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +158,6 @@
     <ClCompile Include="source\klib\User_input.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
-    <ClCompile Include="source\klabkit\Board_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
-    </ClCompile>
     <ClCompile Include="source\klib\klib_util.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
@@ -155,29 +167,11 @@
     <ClCompile Include="source\klabkit\Project_gfx.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
-    <ClCompile Include="source\klib\Font.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
     <ClCompile Include="source\klib\Timer.cpp">
       <Filter>Source Files\klib</Filter>
     </ClCompile>
     <ClCompile Include="source\klabkit\constants.cpp">
       <Filter>Source Files\klabkit</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Button.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Toast_notification.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klib\Toast_notification_handler.cpp">
-      <Filter>Source Files\klib</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klabkit\Main_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="source\klabkit\Gfx_window.cpp">
-      <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
     <ClCompile Include="source\pugixml\pugixml.cpp">
       <Filter>Source Files\pugixml</Filter>
@@ -188,7 +182,37 @@
     <ClCompile Include="source\klabkit\Project_config.cpp">
       <Filter>Source Files\klabkit</Filter>
     </ClCompile>
-    <ClCompile Include="source\klabkit\About_window.cpp">
+    <ClCompile Include="source\imgui\imgui.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_demo.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_draw.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_impl_sdl.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_impl_sdlrenderer.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_tables.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Board_ui.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\imgui_helper.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Board_ui_imgui.cpp">
+      <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Board_ui_gfx.cpp">
       <Filter>Source Files\klabkit\windows</Filter>
     </ClCompile>
   </ItemGroup>

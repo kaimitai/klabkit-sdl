@@ -3,7 +3,6 @@
 #include "constants.h"
 
 kkit::Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const kkit::Project& p_project) :
-	font(p_rnd, std::vector<byte>(begin(FONT_BYTES), end(FONT_BYTES)), 16, 22),
 	floor_color{ kkit::gfx::tuple_to_sdl_color(p_project.get_floor_color()) }
 {
 	this->textures[c::INDEX_WALL_TEXTURES] = kkit::gfx::get_project_textures(p_rnd, p_project);
@@ -46,28 +45,4 @@ int kkit::Project_gfx::get_texture_count(int p_type) const {
 
 SDL_Color kkit::Project_gfx::get_floor_color(void) const {
 	return this->floor_color;
-}
-
-const klib::Font& kkit::Project_gfx::get_font(void) const {
-	return this->font;
-}
-
-void kkit::Project_gfx::move(int p_delta_ms) {
-	this->toasts.move(p_delta_ms);
-}
-
-void kkit::Project_gfx::draw(SDL_Renderer* p_rnd) const {
-	this->toasts.draw(p_rnd, this->font);
-}
-
-void kkit::Project_gfx::add_toast_ok(const std::string& p_msg) {
-	toasts.add_toast_ok(p_msg);
-}
-
-void kkit::Project_gfx::add_toast_info(const std::string& p_msg) {
-	toasts.add_toast_info(p_msg);
-}
-
-void kkit::Project_gfx::add_toast_error(const std::string& p_msg) {
-	toasts.add_toast_error(p_msg);
 }

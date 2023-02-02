@@ -1,6 +1,7 @@
 #ifndef KLABKIT_PROJECT_CONFIG_H
 #define KLABKIT_PROJECT_CONFIG_H
 
+#include <map>
 #include <set>
 #include <string>
 #include <tuple>
@@ -34,8 +35,9 @@ namespace kkit {
 		// even if it is not a metadata override
 		std::set<int> clip_overrides;
 		// the tiles in the tile picker, in the boards screen
-		std::vector<int> tile_picker;
+		std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 		std::tuple<byte, byte, byte> floor_color;
+		std::size_t m_tile_picker_width;
 
 		// fill the tile picker with tiles that have not been explicitly set
 		void fill_tile_picker(void);
@@ -50,11 +52,12 @@ namespace kkit {
 			const std::string& p_ext_boards,
 			const std::string& p_ext_walls,
 			const std::set<int>& p_clip_overrides,
-			const std::vector<int>& p_tile_picker,
+			const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
 			const std::tuple<byte, byte, byte>& p_floor_rgb);
 
 		kkit::Data_ext get_ext_boards(void) const;
 		kkit::Data_ext get_ext_walls(void) const;
+		const std::vector<std::pair<std::string, std::vector<int>>>& get_tile_picker(void) const;
 		bool is_clip_override(int p_tile_no) const;
 	};
 

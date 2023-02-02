@@ -19,14 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\klabkit\About_window.h" />
-    <ClInclude Include="source\klabkit\Board_window.h" />
+    <ClInclude Include="source\imgui\imconfig.h" />
+    <ClInclude Include="source\imgui\imgui.h" />
+    <ClInclude Include="source\imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="source\imgui\imgui_impl_sdlrenderer.h" />
+    <ClInclude Include="source\imgui\imgui_internal.h" />
+    <ClInclude Include="source\imgui\imstb_rectpack.h" />
+    <ClInclude Include="source\imgui\imstb_textedit.h" />
+    <ClInclude Include="source\imgui\imstb_truetype.h" />
+    <ClInclude Include="source\klabkit\Board_ui.h" />
     <ClInclude Include="source\klabkit\compression.h" />
     <ClInclude Include="source\klabkit\constants.h" />
-    <ClInclude Include="source\klabkit\Gfx_window.h" />
+    <ClInclude Include="source\klabkit\constants_color.h" />
+    <ClInclude Include="source\klabkit\imgui_helper.h" />
     <ClInclude Include="source\klabkit\kkit_gfx.h" />
     <ClInclude Include="source\klabkit\Board.h" />
-    <ClInclude Include="source\klabkit\Main_window.h" />
     <ClInclude Include="source\klabkit\Map_tile.h" />
     <ClInclude Include="source\klabkit\Project.h">
       <FileType>CppHeader</FileType>
@@ -35,41 +42,40 @@
     <ClInclude Include="source\klabkit\Project_gfx.h" />
     <ClInclude Include="source\klabkit\Wall.h" />
     <ClInclude Include="source\klabkit\xml_handler.h" />
-    <ClInclude Include="source\klib\Button.h" />
     <ClInclude Include="source\klib\file.h" />
-    <ClInclude Include="source\klib\Font.h" />
     <ClInclude Include="source\klib\gfx.h" />
     <ClInclude Include="source\klib\klib_util.h" />
     <ClInclude Include="source\klib\Timer.h" />
-    <ClInclude Include="source\klib\Toast_notification.h" />
-    <ClInclude Include="source\klib\Toast_notification_handler.h" />
     <ClInclude Include="source\klib\User_input.h" />
     <ClInclude Include="source\pugixml\pugiconfig.hpp" />
     <ClInclude Include="source\pugixml\pugixml.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\klabkit\About_window.cpp" />
-    <ClCompile Include="source\klabkit\Board_window.cpp" />
+    <ClCompile Include="source\imgui\imgui.cpp" />
+    <ClCompile Include="source\imgui\imgui_demo.cpp" />
+    <ClCompile Include="source\imgui\imgui_draw.cpp" />
+    <ClCompile Include="source\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="source\imgui\imgui_impl_sdlrenderer.cpp" />
+    <ClCompile Include="source\imgui\imgui_tables.cpp" />
+    <ClCompile Include="source\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="source\klabkit\Board_ui.cpp" />
+    <ClCompile Include="source\klabkit\Board_ui_gfx.cpp" />
+    <ClCompile Include="source\klabkit\Board_ui_imgui.cpp" />
     <ClCompile Include="source\klabkit\compression.cpp" />
     <ClCompile Include="source\klabkit\constants.cpp" />
-    <ClCompile Include="source\klabkit\Gfx_window.cpp" />
+    <ClCompile Include="source\klabkit\imgui_helper.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
-    <ClCompile Include="source\klabkit\Main_window.cpp" />
     <ClCompile Include="source\klabkit\Map_tile.cpp" />
     <ClCompile Include="source\klabkit\Project.cpp" />
     <ClCompile Include="source\klabkit\Project_config.cpp" />
     <ClCompile Include="source\klabkit\Project_gfx.cpp" />
     <ClCompile Include="source\klabkit\Wall.cpp" />
     <ClCompile Include="source\klabkit\xml_handler.cpp" />
-    <ClCompile Include="source\klib\Button.cpp" />
     <ClCompile Include="source\klib\file.cpp" />
-    <ClCompile Include="source\klib\Font.cpp" />
     <ClCompile Include="source\klib\gfx.cpp" />
     <ClCompile Include="source\klib\klib_util.cpp" />
     <ClCompile Include="source\klib\Timer.cpp" />
-    <ClCompile Include="source\klib\Toast_notification.cpp" />
-    <ClCompile Include="source\klib\Toast_notification_handler.cpp" />
     <ClCompile Include="source\klib\User_input.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\pugixml\pugixml.cpp" />

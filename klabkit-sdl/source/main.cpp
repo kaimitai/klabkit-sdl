@@ -1,35 +1,30 @@
 #include <stdexcept>
 #include <string>
+#include "./imgui/imgui.h"
+#include "./imgui/imgui_impl_sdl.h"
+#include "./imgui/imgui_impl_sdlrenderer.h"
 #include "klabkit/constants.h"
 #include "klabkit/Project.h"
 #include "klabkit/Project_gfx.h"
 #include "klabkit/Project_config.h"
 #include "klabkit/kkit_gfx.h"
-#include "klabkit/Main_window.h"
 #include "klabkit/xml_handler.h"
 #include "klib/User_input.h"
 #include "klib/file.h"
 
+#include "./klabkit/Board_ui.h"
+
+#if !SDL_VERSION_ATLEAST(2,0,17)
+#error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
+#endif
+
 constexpr char ERROR_LOG_FILE[]{ "kkit-sdl-err.log" };
-
-float resize_window(SDL_Renderer* p_rnd, int p_w, int p_h, float scale) {
-	float l_scale_x = p_w / static_cast<float>(kkit::c::APP_W);
-	float l_scale_y = p_h / static_cast<float>(kkit::c::APP_H);
-
-	float result = std::max(1.0f, std::min(l_scale_x, l_scale_y));
-
-	SDL_RenderSetScale(p_rnd, result, result);
-
-	return result;
-}
 
 int main(int argc, char* args[]) try {
 
 	SDL_Window* l_window{ nullptr };
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
-
-	float l_scale{ 1.0f };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string("SDL could not initialize! SDL_Error: " + std::string(SDL_GetError())).c_str());
@@ -50,13 +45,29 @@ int main(int argc, char* args[]) try {
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
 			}
 
+			// Setup Dear ImGui context
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+
+			// Setup Dear ImGui style
+			ImGui::StyleColorsDark();
+			//ImGui::StyleColorsLight();
+
 			// load resources
 			kkit::Project project(kkit::xml::read_config_xml(kkit::c::CONF_FILE_NAME));
 			kkit::gfx::set_application_icon(l_window, project);
 			kkit::Project_gfx p_gfx(l_rnd, project);
 
+			// Setup Platform/Renderer backends
+			ImGui_ImplSDL2_InitForSDLRenderer(l_window, l_rnd);
+			ImGui_ImplSDLRenderer_Init(l_rnd);
+			std::string l_ini_filename{ "kkit-sdl-windows.ini" };
+			ImGui::GetIO().IniFilename = l_ini_filename.c_str();
+			ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
+
 			// main window object to handle all logic and drawing
-			kkit::Main_window main_window(l_rnd, project.get_config());
+			//kkit::Main_window main_window(l_rnd, project.get_config());
+			kkit::Board_ui board_window(l_rnd, project.get_config());
 
 			// input handler
 			klib::User_input input;
@@ -69,13 +80,31 @@ int main(int argc, char* args[]) try {
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
 
-			p_gfx.add_toast_ok("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
-			p_gfx.add_toast_ok("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
+			int l_w{ kkit::c::APP_W }, l_h{ kkit::c::APP_H };
+
+			project.add_message("Keyboard button R (+shift): Rotate clipboard");
+			project.add_message("Keyboard button F (+shift): Flip selection");
+			project.add_message("Keyboard buttons B,C,D: Set board tile properties");
+			project.add_message("Ctrl+C/Ctrl+V: Copy/Paste");
+			project.add_message("Ctrl + Right Click: \"Color Picker\"");
+			project.add_message("Right Click: \"Paint\" using tile picker type");
+			project.add_message("Ctrl + Left Click: Drag gameboard grid");
+			project.add_message("Shift + Left Click: Create selection rectangle");
+			project.add_message("Left Click: Select board tile");
+			project.add_message("Read the documentation for efficient usage tips!");
+			project.add_message("using configuration \"" + project.get_config_label() + "\"",
+				kkit::c::MSG_CODE_SUCCESS);
+			project.add_message("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
 				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
 				") and " +
 				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
 				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
-				+ ")");
+				+ ")", kkit::c::MSG_CODE_SUCCESS);
+			project.add_message("Build Date: " + std::string(__DATE__) + " " + std::string(__TIME__) + " CET");
+			project.add_message("Homepage: https://github.com/kaimitai/klabkit-sdl");
+			project.add_message("Written by Kai E. Froeland aka \"kaimitai\"");
+			project.add_message("Welcome to KKIT/SDL!",
+				kkit::c::MSG_CODE_SUCCESS);
 
 			while (!l_exit) {
 
@@ -88,25 +117,24 @@ int main(int argc, char* args[]) try {
 				mw_used = false;
 				SDL_PumpEvents();
 
-				if (SDL_PollEvent(&e) != 0)
+				if (SDL_PollEvent(&e) != 0) {
+					ImGui_ImplSDL2_ProcessEvent(&e);
+
 					if (e.type == SDL_QUIT)
 						l_exit = true;
 					else if (e.type == SDL_MOUSEWHEEL) {
 						mw_used = true;
 						mouse_wheel_y = e.wheel.y;
 					}
-					else if (e.type == SDL_WINDOWEVENT && e.window.event == SDL_WINDOWEVENT_RESIZED) {
-						l_scale = resize_window(l_rnd, e.window.data1, e.window.data2, l_scale);
-						SDL_SetWindowSize(l_window,
-							static_cast<int>(l_scale * kkit::c::APP_W),
-							static_cast<int>(l_scale * kkit::c::APP_H));
-					}
+				}
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
+					SDL_GetWindowSize(l_window, &l_w, &l_h);
 
-					input.move(realDelta, mw_used ? mouse_wheel_y : 0, l_scale, l_scale);
-					main_window.move(l_rnd, input, realDelta, project, p_gfx);
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
+					board_window.move(l_rnd, input, realDelta, project, p_gfx, l_w, l_h);
+					//main_window.move(l_rnd, input, realDelta, project, p_gfx);
 
 					last_logic_time = tick_time;
 				}
@@ -115,7 +143,8 @@ int main(int argc, char* args[]) try {
 					//mainwindow.draw(input, &texture_manager);
 					last_draw_time = SDL_GetTicks();
 
-					main_window.draw(l_rnd, input, project, p_gfx);
+					board_window.draw(l_rnd, input, project, p_gfx, l_w, l_h);
+					//main_window.draw(l_rnd, input, project, p_gfx);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);
