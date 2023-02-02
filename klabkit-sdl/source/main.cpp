@@ -82,17 +82,28 @@ int main(int argc, char* args[]) try {
 
 			int l_w{ kkit::c::APP_W }, l_h{ kkit::c::APP_H };
 
-			project.add_message("Build Date: " + std::string(__DATE__) + " " +
-				std::string(__TIME__) + " CET");
-
+			project.add_message("Keyboard button R (+shift): Rotate clipboard");
+			project.add_message("Keyboard button F (+shift): Flip selection");
+			project.add_message("Keyboard buttons B,C,D: Set board tile properties");
+			project.add_message("Ctrl+C/Ctrl+V: Copy/Paste");
+			project.add_message("Ctrl + Right Click: \"Color Picker\"");
+			project.add_message("Right Click: \"Paint\" using tile picker type");
+			project.add_message("Ctrl + Left Click: Drag gameboard grid");
+			project.add_message("Shift + Left Click: Create selection rectangle");
+			project.add_message("Left Click: Select board tile");
+			project.add_message("Read the documentation for efficient usage tips!");
 			project.add_message("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
 				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
 				") and " +
 				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
 				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
 				+ ")");
-
-			project.add_message("Welcome to KKIT/SDL! Using configuration \"" + project.get_config_label() + "\"");
+			project.add_message("Using configuration \"" + project.get_config_label() + "\"");
+			project.add_message("Build Date: " + std::string(__DATE__) + " " + std::string(__TIME__) + " CET");
+			project.add_message("Homepage: https://github.com/kaimitai/klabkit-sdl");
+			project.add_message("Written by Kai E. Froeland aka \"kaimitai\"");
+			project.add_message("Welcome to KKIT/SDL!",
+				0);
 
 			while (!l_exit) {
 

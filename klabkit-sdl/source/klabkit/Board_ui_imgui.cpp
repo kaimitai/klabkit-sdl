@@ -51,8 +51,11 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 		int l_exported{ 0 };
 
 		for (int i{ l_shift ? 0 : m_board_ind }; i < (l_shift ? p_project.get_board_count() : m_board_ind + 1); ++i) {
-			this->xml_export(p_project, i);
-			++l_exported;
+			try {
+				this->xml_export(p_project, i);
+				++l_exported;
+			}
+			catch (const std::exception&) {}
 		}
 		p_project.add_message(std::to_string(l_exported) + " xml file(s) exported");
 	}
@@ -60,13 +63,23 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 
 	if (l_pref_kzp) {
 		if (imgui::button("Save KZP", c::COLOR_STYLE_GREEN)) {
-			save_boards_kzp(p_project, true);
+			try {
+				save_boards_kzp(p_project, true);
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 		}
 		ImGui::SameLine();
 	}
 
 	if (imgui::button("Save DAT", l_pref_kzp ? c::COLOR_STYLE_NORMAL : c::COLOR_STYLE_GREEN)) {
-		save_boards_kzp(p_project, false);
+		try {
+			save_boards_kzp(p_project, false);
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what());
+		}
 	}
 	ImGui::SameLine();
 
@@ -76,9 +89,14 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 		for (int i{ l_shift ? 0 : m_board_ind };
 			i < (l_shift ? p_project.get_board_count() : m_board_ind + 1);
 			++i) {
-			kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), m_toggles[1], m_toggles[2]);
-			kkit::gfx::project_minimap_to_bmp(p_project, i);
-			++l_exported;
+			try {
+				kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), m_toggles[1], m_toggles[2]);
+				kkit::gfx::project_minimap_to_bmp(p_project, i);
+				++l_exported;
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 		}
 		p_project.add_message(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
 	}
@@ -87,10 +105,15 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 		int l_imported{ 0 };
 
 		for (int i{ l_shift ? 0 : m_board_ind }; i < (l_shift ? p_project.get_board_count() : m_board_ind + 1); ++i)
+			try {
 			if (this->xml_import(p_project, i)) {
 				++l_imported;
 				p_gfx.reload_minimap_texture(p_rnd, p_project, i);
 			}
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what());
+		}
 
 		if (l_imported > 0)
 			p_project.add_message(std::to_string(l_imported) + " xml file(s) imported");
@@ -323,8 +346,13 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 			int l_exported{ 0 };
 
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i) {
-				xml_export_wall(p_project, i);
-				++l_exported;
+				try {
+					xml_export_wall(p_project, i);
+					++l_exported;
+				}
+				catch (const std::exception& ex) {
+					p_project.add_message(ex.what());
+				}
 			}
 			p_project.add_message(std::to_string(l_exported) + " xml file(s) exported");
 		}
@@ -332,8 +360,13 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 		if (imgui::button("Export bmp")) {
 			int l_exported{ 0 };
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i)
+				try {
 				if (this->bmp_export(p_project, i))
 					++l_exported;
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 
 			if (l_exported > 0)
 				p_project.add_message(std::to_string(l_exported) + " bmp file(s) exported");
@@ -344,12 +377,22 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 		bool l_pref_kzp{ p_project.get_config().get_ext_walls() == kkit::Data_ext::KZP };
 		if (l_pref_kzp) {
 			if (imgui::button("Save KZP", c::COLOR_STYLE_GREEN)) {
-				save_walls_kzp(p_project, p_gfx, true);
+				try {
+					save_walls_kzp(p_project, p_gfx, true);
+				}
+				catch (const std::exception& ex) {
+					p_project.add_message(ex.what());
+				}
 			}
 			ImGui::SameLine();
 		}
 		if (imgui::button("Save DAT", l_pref_kzp ? c::COLOR_STYLE_GRAY : c::COLOR_STYLE_GREEN)) {
-			save_walls_kzp(p_project, p_gfx, false);
+			try {
+				save_walls_kzp(p_project, p_gfx, false);
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 		}
 
 		if (imgui::button("Import xml")) {
@@ -357,8 +400,13 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 			int l_total_cnt = p_project.get_wall_image_count();
 
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? l_total_cnt : m_sel_tp_tile_no + 1); ++i)
+				try {
 				if (this->xml_import_wall(p_rnd, p_project, p_gfx, i))
 					++l_imported;
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 
 			if (l_imported > 0)
 				p_project.add_message(std::to_string(l_imported) + " xml file(s) imported");
@@ -371,8 +419,13 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 			int l_total_cnt = p_project.get_wall_image_count();
 
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? l_total_cnt : m_sel_tp_tile_no + 1); ++i)
+				try {
 				if (this->bmp_import(p_rnd, p_project, p_gfx, i))
 					++l_imported;
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 
 			if (l_imported > 0)
 				p_project.add_message(std::to_string(l_imported) + " bmp file(s) imported");
@@ -383,13 +436,23 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 		ImGui::Separator();
 
 		if (imgui::button("Save Tilemap bmp")) {
-			kkit::gfx::tilemap_to_bmp(p_project);
-			p_project.add_message("Tilemap bmp saved");
+			try {
+				kkit::gfx::tilemap_to_bmp(p_project);
+				p_project.add_message("Tilemap bmp saved");
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 		}
 		ImGui::SameLine();
 		if (imgui::button("Save Palette bmp")) {
-			kkit::gfx::palette_to_bmp(p_project);
-			p_project.add_message("Palette bmp saved");
+			try {
+				kkit::gfx::palette_to_bmp(p_project);
+				p_project.add_message("Palette bmp saved");
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what());
+			}
 		}
 
 	}

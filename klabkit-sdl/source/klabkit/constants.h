@@ -99,8 +99,8 @@ namespace kkit {
 
 		constexpr int WIN_MINIMAP_X{ 5 };
 		constexpr int WIN_MINIMAP_Y{ 625 };
-		constexpr int WIN_MINIMAP_W{ 130 };
-		constexpr int WIN_MINIMAP_H{ 130 };
+		constexpr int WIN_MINIMAP_W{ 120 };
+		constexpr int WIN_MINIMAP_H{ 134 };
 
 		constexpr int WIN_TP_X{ 615 };
 		constexpr int WIN_TP_Y{ 250 };
