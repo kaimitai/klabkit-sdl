@@ -54,9 +54,7 @@ namespace kkit {
 		kkit::Map_tile gen_map_tile(int p_tile_no) const;
 		std::string get_block_type_as_string(int p_tile_no) const;
 		std::pair<int, int> get_player_start_pos(int p_board_no) const;
-		const std::vector<int>& get_tile_picker(void) const;
 		bool is_clip_override(int p_tile_no) const;
-		int get_tile_picker_index(int p_tile_no) const;
 		bool is_klab_v_1(void) const;
 		bool is_walken(void) const;
 		bool is_walls_kzp(void) const;

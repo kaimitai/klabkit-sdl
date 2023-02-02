@@ -414,19 +414,8 @@ std::pair<int, int> kkit::Project::get_player_start_pos(int p_board_no) const {
 	return std::make_pair(maps.at(p_board_no).get_player_start_x(), maps.at(p_board_no).get_player_start_y());
 }
 
-const std::vector<int>& kkit::Project::get_tile_picker(void) const {
-	return this->config.tile_picker;
-}
-
 bool kkit::Project::is_clip_override(int p_tile_no) const {
 	return this->config.is_clip_override(p_tile_no);
-}
-
-int kkit::Project::get_tile_picker_index(int p_tile_no) const {
-	for (std::size_t i{ 0 }; i < config.tile_picker.size(); ++i)
-		if (config.tile_picker[i] == p_tile_no)
-			return static_cast<int>(i);
-	return -1;
 }
 
 bool kkit::Project::is_klab_v_1(void) const {

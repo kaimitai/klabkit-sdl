@@ -20,8 +20,8 @@ kkit::Project_config::Project_config(void) :
 kkit::Project_config::Project_config(const std::string& p_label, const std::string& p_folder,
 	int p_bcount, int p_wcount, int p_lzw_ctype,
 	const std::string& p_ext_boards, const std::string& p_ext_walls,
-	const std::set<int>& p_clip_overrides, const std::vector<int>& p_tile_picker,
-	const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker2,
+	const std::set<int>& p_clip_overrides,
+	const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
 	const std::tuple<byte, byte, byte>& p_floor_rgb) :
 	project_folder{ p_folder },
 	label{ p_label },
@@ -30,9 +30,7 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	lzw_comp_type{ p_lzw_ctype },
 	m_ext_boards{ string_to_data_ext(p_ext_boards) },
 	m_ext_walls{ string_to_data_ext(p_ext_walls) },
-
-	tile_picker{ p_tile_picker },
-	m_tile_picker{ p_tile_picker2 },
+	m_tile_picker{ p_tile_picker },
 	clip_overrides{ p_clip_overrides },
 	floor_color{ p_floor_rgb },
 	m_tile_picker_width{ 8 }
@@ -60,9 +58,13 @@ void kkit::Project_config::fill_tile_picker(void) {
 	std::vector<int> l_tmp;
 	bool l_first{ true };
 
+	std::set<int> l_defined_tiles;
+	for (const auto& kv : m_tile_picker)
+		for (int n : kv.second)
+			l_defined_tiles.insert(n);
+
 	for (int i{ -2 }; i < this->wall_count; ++i)
-		if (std::find(begin(tile_picker), end(tile_picker), i) == end(this->tile_picker)) {
-			tile_picker.push_back(i);
+		if (l_defined_tiles.find(i) == end(l_defined_tiles)) {
 			l_tmp.push_back(i);
 			if (l_tmp.size() == m_tile_picker_width) {
 				m_tile_picker.push_back(std::make_pair(
