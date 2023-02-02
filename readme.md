@@ -44,5 +44,12 @@ We also include a command-line tool, KKIT/CLI, which can decompress and compress
 
 <hr>
 
+### Upcoming changes in the next version
+* Complete UI overhaul, letting the whole screen be taken advantage of. A preview of the editor running on a widescreen in the development version:
+
+![widescreen preview](./klabkit-sdl/docs/images/x00_v-0_9_widescreen.png)
+
+<hr>
+
 "Ken's Labyrinth" Copyright (c) 1992-1993 Ken Silverman \
 Ken Silverman's official web site: "http://www.advsys.net/ken"
