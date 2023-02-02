@@ -67,18 +67,16 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 				save_boards_kzp(p_project, true);
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
-		ImGui::SameLine();
 	}
-
-	if (imgui::button("Save DAT", l_pref_kzp ? c::COLOR_STYLE_NORMAL : c::COLOR_STYLE_GREEN)) {
+	else if (imgui::button("Save DAT", c::COLOR_STYLE_GREEN)) {
 		try {
 			save_boards_kzp(p_project, false);
 		}
 		catch (const std::exception& ex) {
-			p_project.add_message(ex.what());
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 		}
 	}
 	ImGui::SameLine();
@@ -95,7 +93,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 				++l_exported;
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
 		p_project.add_message(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
@@ -112,7 +110,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 			}
 		}
 		catch (const std::exception& ex) {
-			p_project.add_message(ex.what());
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 		}
 
 		if (l_imported > 0)
@@ -169,8 +167,18 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
 
-	for (const auto& l_msg : p_project.get_messages())
+	static std::vector<ImVec4> ls_color_codes{
+		c::COLI_WHITE,
+		c::COLI_YELLOW,
+		c::COLI_GREEN,
+		c::COLI_RED
+	};
+
+	for (const auto& l_msg : p_project.get_messages()) {
+		ImGui::PushStyleColor(ImGuiCol_Text, ls_color_codes[l_msg.second]);
 		ImGui::Text(l_msg.first.c_str());
+		ImGui::PopStyleColor();
+	}
 
 	ImGui::End();
 }
@@ -351,7 +359,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 					++l_exported;
 				}
 				catch (const std::exception& ex) {
-					p_project.add_message(ex.what());
+					p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 				}
 			}
 			p_project.add_message(std::to_string(l_exported) + " xml file(s) exported");
@@ -365,7 +373,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 					++l_exported;
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 
 			if (l_exported > 0)
@@ -381,17 +389,16 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 					save_walls_kzp(p_project, p_gfx, true);
 				}
 				catch (const std::exception& ex) {
-					p_project.add_message(ex.what());
+					p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 				}
 			}
-			ImGui::SameLine();
 		}
-		if (imgui::button("Save DAT", l_pref_kzp ? c::COLOR_STYLE_GRAY : c::COLOR_STYLE_GREEN)) {
+		else if (imgui::button("Save DAT", c::COLOR_STYLE_GREEN)) {
 			try {
 				save_walls_kzp(p_project, p_gfx, false);
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
 
@@ -405,7 +412,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 					++l_imported;
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 
 			if (l_imported > 0)
@@ -424,7 +431,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 					++l_imported;
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 
 			if (l_imported > 0)
@@ -441,7 +448,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 				p_project.add_message("Tilemap bmp saved");
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
 		ImGui::SameLine();
@@ -451,7 +458,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 				p_project.add_message("Palette bmp saved");
 			}
 			catch (const std::exception& ex) {
-				p_project.add_message(ex.what());
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
 

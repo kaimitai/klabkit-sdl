@@ -592,10 +592,12 @@ void kkit::Board_ui::save_boards_kzp(kkit::Project& p_project, bool p_compress) 
 	// only v2.x boards should be saved as kzp - there is no real point otherwise
 	if (l_compress)
 		p_project.add_message(std::to_string(l_board_count) + " boards saved to KZP (" +
-			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)",
+			c::MSG_CODE_SUCCESS);
 	else
 		p_project.add_message(std::to_string(l_board_count) + " boards saved to DAT (" +
-			std::to_string(l_bytes) + " bytes)");
+			std::to_string(l_bytes) + " bytes)",
+			c::MSG_CODE_SUCCESS);
 }
 
 void kkit::Board_ui::save_walls_kzp(kkit::Project& p_project, kkit::Project_gfx& p_gfx, bool p_compress) const {
@@ -607,10 +609,12 @@ void kkit::Board_ui::save_walls_kzp(kkit::Project& p_project, kkit::Project_gfx&
 
 	if (p_compress && l_pref_kzp)
 		p_project.add_message(std::to_string(l_wall_count) + " wall tiles saved to KZP (" +
-			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)");
+			std::to_string(l_bytes) + " bytes, " + std::to_string(l_original_bytes) + " original)",
+			c::MSG_CODE_SUCCESS);
 	else
 		p_project.add_message(std::to_string(l_wall_count) + " wall tiles saved to DAT (" +
-			std::to_string(l_bytes) + " bytes)");
+			std::to_string(l_bytes) + " bytes)",
+			c::MSG_CODE_SUCCESS);
 }
 
 // logic

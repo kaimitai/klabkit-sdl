@@ -116,6 +116,12 @@ namespace kkit {
 		constexpr int WIN_META_Y{ 5 };
 		constexpr int WIN_META_W{ 340 };
 		constexpr int WIN_META_H{ 330 };
+
+		// message codes
+		constexpr int MSG_CODE_INFO{ 0 };
+		constexpr int MSG_CODE_WARNING{ MSG_CODE_INFO + 1 };
+		constexpr int MSG_CODE_SUCCESS{ MSG_CODE_WARNING + 1 };
+		constexpr int MSG_CODE_ERROR{ MSG_CODE_SUCCESS + 1 };
 	}
 }
 

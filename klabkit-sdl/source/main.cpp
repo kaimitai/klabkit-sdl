@@ -92,18 +92,19 @@ int main(int argc, char* args[]) try {
 			project.add_message("Shift + Left Click: Create selection rectangle");
 			project.add_message("Left Click: Select board tile");
 			project.add_message("Read the documentation for efficient usage tips!");
+			project.add_message("using configuration \"" + project.get_config_label() + "\"",
+				kkit::c::MSG_CODE_SUCCESS);
 			project.add_message("Loaded " + std::to_string(project.get_board_count()) + " boards (" +
 				std::string(project.is_boards_kzp() ? "KZP" : "DAT") +
 				") and " +
 				std::to_string(project.get_wall_image_count()) + " gfx tiles (" +
 				std::string(project.is_walls_kzp() ? "KZP" : "DAT")
-				+ ")");
-			project.add_message("Using configuration \"" + project.get_config_label() + "\"");
+				+ ")", kkit::c::MSG_CODE_SUCCESS);
 			project.add_message("Build Date: " + std::string(__DATE__) + " " + std::string(__TIME__) + " CET");
 			project.add_message("Homepage: https://github.com/kaimitai/klabkit-sdl");
 			project.add_message("Written by Kai E. Froeland aka \"kaimitai\"");
 			project.add_message("Welcome to KKIT/SDL!",
-				0);
+				kkit::c::MSG_CODE_SUCCESS);
 
 			while (!l_exit) {
 
