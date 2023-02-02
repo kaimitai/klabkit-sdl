@@ -220,3 +220,13 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 
 	return(result);
 }
+
+SDL_Color klib::gfx::pulse_color(SDL_Color a, SDL_Color b, int p_progress) {
+	float l_progress{ static_cast<float>(p_progress / 255.0f) };
+
+	Uint8 cr = static_cast<Uint8>(a.r + (b.r - a.r) * l_progress);
+	Uint8 cg = static_cast<Uint8>(a.g + (b.g - a.g) * l_progress);
+	Uint8 cb = static_cast<Uint8>(a.b + (b.b - a.b) * l_progress);
+	Uint8 ca = static_cast<Uint8>(a.a + (b.a - a.a) * l_progress);
+	return SDL_Color{ cr,cg,cb,ca };
+}

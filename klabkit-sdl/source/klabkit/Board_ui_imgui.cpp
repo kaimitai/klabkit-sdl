@@ -36,7 +36,8 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	bool l_shift{ p_input.is_shift_pressed() };
 	bool l_ctrl{ p_input.is_ctrl_pressed() };
 
-	ImGui::Begin("Main");
+	imgui::window("Main",
+		c::WIN_MAIN_X, c::WIN_MAIN_Y, c::WIN_MAIN_W, c::WIN_MAIN_H);
 	auto l_new_lvl_ind{ imgui::slider("Level", m_board_ind + 1, 1, p_project.get_board_count()) };
 	if (l_new_lvl_ind)
 		m_board_ind = l_new_lvl_ind.value() - 1;
@@ -122,10 +123,10 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	}
 
 	ImGui::Separator();
-	ImGui::Text("Flash");
+	ImGui::Text("Draw");
 
 	static std::vector<std::string> ls_labels{
-		"Directions", "Destructible", "Noclip", "Selected"
+		"Directions", "Destructible", "Noclip", "Selected", "Grid"
 	};
 
 	for (std::size_t i{ 0 }; i < m_toggles.size(); ++i) {
@@ -154,7 +155,8 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 void kkit::Board_ui::draw_ui_minimap(SDL_Renderer* p_rnd,
 	const klib::User_input& p_input, kkit::Project& p_project,
 	kkit::Project_gfx& p_gfx, int p_w, int p_h) {
-	ImGui::Begin("Minimap");
+	imgui::window("Minimap",
+		c::WIN_MINIMAP_X, c::WIN_MINIMAP_Y, c::WIN_MINIMAP_W, c::WIN_MINIMAP_H);
 
 	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
 	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
@@ -204,9 +206,9 @@ void kkit::Board_ui::draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 	bool l_inside = p_project.get_board(m_board_ind).is_inside(m_sel_tile_x, m_sel_tile_y);
 	bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
 
-	std::string l_label{ "Board Tile (" + std::to_string(m_sel_tile_x) +
-		"," + std::to_string(m_sel_tile_y) + ")###sbt" };
-	ImGui::Begin(l_label.c_str());
+	imgui::window("Board Tile (" + std::to_string(m_sel_tile_x) +
+		"," + std::to_string(m_sel_tile_y) + ")###sbt",
+		c::WIN_SBT_X, c::WIN_SBT_Y, c::WIN_SBT_W, c::WIN_SBT_H);
 
 	// draw tile
 	if (l_sel_tile_no >= 0) {
@@ -244,7 +246,8 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 	kkit::Project_gfx& p_gfx) {
 	auto& lr_tp = p_project.get_config().get_tile_picker();
 
-	ImGui::Begin("Tile Picker");
+	imgui::window("Tile Picker",
+		c::WIN_TP_X, c::WIN_TP_Y, c::WIN_TP_W, c::WIN_TP_H);
 
 	ImGui::Image(get_tp_tile_texture(p_gfx, m_sel_tp_tile_no), { c::WALL_IMG_W, c::WALL_IMG_H });
 	ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
@@ -295,7 +298,8 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	bool l_shift{ p_input.is_shift_pressed() };
 
-	ImGui::Begin("Graphics Metadata Editor");
+	imgui::window("Graphics Metadata Editor",
+		c::WIN_META_X, c::WIN_META_Y, c::WIN_META_W, c::WIN_META_H);
 
 	if (m_sel_tp_tile_no >= 0) {
 

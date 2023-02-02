@@ -90,6 +90,32 @@ namespace kkit {
 		constexpr int INDEX_APP_TEXTURES{ INDEX_WALL_TEXTURES + 1 };
 		constexpr int INDEX_BG_TEXTURES{ INDEX_APP_TEXTURES + 1 };
 		constexpr int INDEX_MM_TEXTURES{ INDEX_BG_TEXTURES + 1 }; // minimaps
+
+		// window position and size constants
+		constexpr int WIN_MAIN_X{ 5 };
+		constexpr int WIN_MAIN_Y{ 5 };
+		constexpr int WIN_MAIN_W{ 400 };
+		constexpr int WIN_MAIN_H{ 615 };
+
+		constexpr int WIN_MINIMAP_X{ 5 };
+		constexpr int WIN_MINIMAP_Y{ 625 };
+		constexpr int WIN_MINIMAP_W{ 130 };
+		constexpr int WIN_MINIMAP_H{ 130 };
+
+		constexpr int WIN_TP_X{ 615 };
+		constexpr int WIN_TP_Y{ 250 };
+		constexpr int WIN_TP_W{ 405 };
+		constexpr int WIN_TP_H{ 510 };
+
+		constexpr int WIN_SBT_X{ 755 };
+		constexpr int WIN_SBT_Y{ 5 };
+		constexpr int WIN_SBT_W{ 265 };
+		constexpr int WIN_SBT_H{ 240 };
+
+		constexpr int WIN_META_X{ 415 };
+		constexpr int WIN_META_Y{ 5 };
+		constexpr int WIN_META_W{ 340 };
+		constexpr int WIN_META_H{ 330 };
 	}
 }
 

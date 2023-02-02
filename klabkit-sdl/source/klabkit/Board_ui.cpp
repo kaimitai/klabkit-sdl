@@ -19,14 +19,14 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_minimap_texture{ SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::MAP_W, c::MAP_H) },
 	m_board_ind{ 0 }, m_cam_x{ 0 }, m_cam_y{ 0 }, m_cam_zoom{ 1.0f },
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
-	m_toggles{ std::vector<bool>(4, false) },
+	m_toggles{ std::vector<bool>(5, false) },
 	m_sel_tp_tile_no{ -1 },
 	m_show_meta_editor{ false }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));
 	// pulsating color timer
-	m_timers.push_back(klib::Timer(256, 5));
+	m_timers.push_back(klib::Timer(255, 1, true));
 
 	// directions should be on by default
 	m_toggles[0] = true;
@@ -130,6 +130,18 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 
 	klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, l_pstart_sprite_no), l_px, l_py, l_shrink_factor);
 
+	// draw gridlines
+	if (m_toggles[4]) {
+		auto l_pulse_color{ klib::gfx::pulse_color(c::COL_WHITE, c::COL_GOLD, m_timers[1].get_frame()) };
+
+		SDL_SetRenderDrawColor(p_rnd, l_pulse_color.r,
+			l_pulse_color.g, l_pulse_color.b, 0);
+
+		for (int i{ 1 }; i < c::MAP_W; ++i)
+			SDL_RenderDrawLine(p_rnd, i * c::WALL_IMG_W, 0, i * c::WALL_IMG_W, c::MAP_H * c::WALL_IMG_H);
+		for (int i{ 1 }; i < c::MAP_H; ++i)
+			SDL_RenderDrawLine(p_rnd, 0, i * c::WALL_IMG_H, c::MAP_W * c::WALL_IMG_W, i * c::WALL_IMG_H);
+	}
 
 	// draw selected tile
 	klib::gfx::draw_rect(p_rnd, m_sel_tile_x * 64, m_sel_tile_y * 64, 64, 64,
