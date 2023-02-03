@@ -134,12 +134,22 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 			for (int n : l_clip_overrides_v)
 				l_clip_overrides.insert(n - 1);
 
+			std::map<int, int> l_tile_overlays;
+			auto l_to_node = n_conf.child(XML_TAG_TILE_OVERLAYS);
+
+			if (l_to_node) {
+				auto l_vals = klib::util::string_split<int>(
+					l_to_node.attribute(XML_ATTR_VALUE).as_string(), ':');
+
+				l_tile_overlays.insert(std::make_pair(l_vals.at(0) - 1, l_vals.at(1) - 1));
+			}
 
 			return kkit::Project_config(l_label, l_proj_dir, l_bcount, l_wcount, l_lzw_type,
 				l_ext_boards, l_ext_walls,
 				l_clip_overrides,
 				l_tile_picker,
-				l_floor_rgb_t);
+				l_floor_rgb_t,
+				l_tile_overlays);
 
 		}
 

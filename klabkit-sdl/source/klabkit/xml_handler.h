@@ -30,6 +30,7 @@ namespace kkit {
 		constexpr char XML_TAG_CONFIG[]{ "config" };
 		constexpr char XML_TAG_CLIP_OVERRIDES[]{ "clip_overrides" };
 		constexpr char XML_TAG_TILE_PICKER[]{ "tile_picker" };
+		constexpr char XML_TAG_TILE_OVERLAYS[]{ "tile_overlays" };
 
 		constexpr char XML_TAG_BOARD[]{ "board" };
 		constexpr char XML_TAG_ROW[]{ "row" };

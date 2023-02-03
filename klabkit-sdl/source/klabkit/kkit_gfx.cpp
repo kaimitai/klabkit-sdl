@@ -327,12 +327,16 @@ void kkit::gfx::project_map_to_bmp(const kkit::Project& p_project, int p_board_n
 	int l_floor_index = find_nearest_palette_index(p_floor_col, p_project.get_palette());
 
 	const auto& l_board = p_project.get_board(p_board_no);
+	const auto& lr_tile_overlays{ p_project.get_config().get_tile_overlays() };
 
 	// draw board tiles first, using floor color as "background"
 	for (int t_y{ 0 }; t_y < c::MAP_H; ++t_y)
 		for (int t_x{ 0 }; t_x < c::MAP_W; ++t_x) {
 			int l_tile_no = l_board.get_tile_no(t_x, t_y);
 			draw_wall_tile_on_surface(l_bmp, p_project.get_image_as_2dv(l_tile_no), c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index);
+			auto iter{ lr_tile_overlays.find(l_tile_no) };
+			if (iter != end(lr_tile_overlays))
+				draw_wall_tile_on_surface(l_bmp, p_project.get_image_as_2dv(iter->second), c::WALL_IMG_W * t_x, c::WALL_IMG_H * t_y, l_floor_index, true);
 
 			// draw flash if applicable
 			if (p_flash_blast && l_board.is_blast(t_x, t_y))

@@ -36,6 +36,7 @@ namespace kkit {
 		std::set<int> clip_overrides;
 		// the tiles in the tile picker, in the boards screen
 		std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
+		std::map<int, int> m_tile_overlays;
 		std::tuple<byte, byte, byte> floor_color;
 		std::size_t m_tile_picker_width;
 
@@ -53,11 +54,13 @@ namespace kkit {
 			const std::string& p_ext_walls,
 			const std::set<int>& p_clip_overrides,
 			const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
-			const std::tuple<byte, byte, byte>& p_floor_rgb);
+			const std::tuple<byte, byte, byte>& p_floor_rgb,
+			const std::map<int, int>& p_tile_overlays);
 
 		kkit::Data_ext get_ext_boards(void) const;
 		kkit::Data_ext get_ext_walls(void) const;
 		const std::vector<std::pair<std::string, std::vector<int>>>& get_tile_picker(void) const;
+		const std::map<int, int>& get_tile_overlays(void) const;
 		bool is_clip_override(int p_tile_no) const;
 	};
 

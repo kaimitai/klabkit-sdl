@@ -94,6 +94,8 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 	SDL_SetRenderDrawColor(p_rnd, l_floor_col.r, l_floor_col.g, l_floor_col.b, 0);
 	SDL_RenderClear(p_rnd);
 
+	const auto& lr_tile_overlays{ p_project.get_config().get_tile_overlays() };
+
 	for (int i{ 0 }; i < 64; ++i)
 		for (int j{ 0 }; j < 64; ++j) {
 			int l_tile_no = board.get_tile_no(i, j);
@@ -107,8 +109,12 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 
 			l_flash |= m_toggles[3] && (l_tile_no == m_sel_tp_tile_no);
 
-			if (l_tile_no >= 0)
+			if (l_tile_no >= 0) {
 				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
+				auto iter{ lr_tile_overlays.find(l_tile_no) };
+				if (iter != end(lr_tile_overlays))
+					klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, iter->second), 64 * i, 64 * j);
+			}
 
 			if (m_toggles[0] && p_project.is_directional(l_tile_no))
 				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);

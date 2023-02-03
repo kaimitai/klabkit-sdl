@@ -22,7 +22,8 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	const std::string& p_ext_boards, const std::string& p_ext_walls,
 	const std::set<int>& p_clip_overrides,
 	const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
-	const std::tuple<byte, byte, byte>& p_floor_rgb) :
+	const std::tuple<byte, byte, byte>& p_floor_rgb,
+	const std::map<int, int>& p_tile_overlays) :
 	project_folder{ p_folder },
 	label{ p_label },
 	board_count{ p_bcount },
@@ -33,6 +34,7 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	m_tile_picker{ p_tile_picker },
 	clip_overrides{ p_clip_overrides },
 	floor_color{ p_floor_rgb },
+	m_tile_overlays{ p_tile_overlays },
 	m_tile_picker_width{ 8 }
 {
 	this->fill_tile_picker();
@@ -48,6 +50,10 @@ kkit::Data_ext kkit::Project_config::get_ext_walls(void) const {
 
 const std::vector<std::pair<std::string, std::vector<int>>>& kkit::Project_config::get_tile_picker(void) const {
 	return m_tile_picker;
+}
+
+const std::map<int, int>& kkit::Project_config::get_tile_overlays(void) const {
+	return m_tile_overlays;
 }
 
 bool kkit::Project_config::is_clip_override(int p_tile_no) const {
