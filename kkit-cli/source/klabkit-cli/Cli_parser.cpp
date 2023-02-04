@@ -10,7 +10,7 @@ kkit_cli::Cli_parser::Cli_parser(const std::vector<std::string>& p_args)
 
 		if (this->is_command(p_args[i])) {
 
-			auto l_cmd = this->get_command(p_args[i]);
+			auto l_cmd = to_lowercase(this->get_command(p_args[i]));
 
 			// commands d and c do not require an argument value (no argument value means compress or decompress all)
 			if (l_cmd == "c" || l_cmd == "d") {
@@ -98,8 +98,8 @@ std::string kkit_cli::Cli_parser::get_command(const std::string& p_arg) const {
 
 	if (COMMANDS.find(result) == end(COMMANDS))
 		throw_exception("Invalid command switch -" + result);
-	else
-		return result;
+
+	return result;
 }
 
 void kkit_cli::Cli_parser::throw_exception(const std::string& p_err_msg) const {
@@ -123,9 +123,18 @@ int kkit_cli::Cli_parser::get_version(void) const {
 }
 
 std::string kkit_cli::Cli_parser::get_compress_type(void) const {
-	return this->compress_type;
+	return to_lowercase(this->compress_type);
 }
 
 std::string kkit_cli::Cli_parser::get_folder(void) const {
 	return this->folder;
+}
+
+std::string kkit_cli::Cli_parser::to_lowercase(const std::string& p_arg) {
+	std::string result;
+
+	for (const char c : p_arg)
+		result.push_back((c >= 'A' && c <= 'Z') ? 'a' + (c - 'A') : c);
+
+	return result;
 }

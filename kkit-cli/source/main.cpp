@@ -5,7 +5,6 @@
 
 void output_header(void);
 void output_help(void);
-std::string to_lowercase(const std::string& p_arg);
 
 int main(int argc, char* argv[]) try {
 	output_header();
@@ -17,7 +16,7 @@ int main(int argc, char* argv[]) try {
 
 	std::vector<std::string> l_arguments;
 	for (int i = 1; i < argc; ++i)
-		l_arguments.push_back(to_lowercase(argv[i]));
+		l_arguments.push_back(argv[i]);
 
 	kkit_cli::Cli_parser parser(l_arguments);
 
@@ -147,13 +146,4 @@ void output_help(void) {
 		<< "-b: board count (if using a non-standard value - do not give unless you know what you are doing)\n"
 		<< "-w: tile count (if using a non-standard value - do not give unless you know what you are doing)\n\n"
 		<< "Example: kkit-cli -d walls -v 11 -f \"c:\\games\\ken3d_1_1\"";
-}
-
-std::string to_lowercase(const std::string& p_arg) {
-	std::string result;
-
-	for (const char c : p_arg)
-		result.push_back((c >= 'A' && c <= 'Z') ? 'a' + (c - 'A') : c);
-
-	return result;
 }

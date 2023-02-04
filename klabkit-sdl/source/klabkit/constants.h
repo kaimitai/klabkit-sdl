@@ -12,7 +12,7 @@ namespace kkit {
 
 		// application constants
 		constexpr char APP_TITLE[]{ "KKIT/SDL - Unofficial Ken's Labyrinth Editor's Toolkit" };
-		constexpr char APP_VERSION[]{ "0.9-snapshot" };
+		constexpr char APP_VERSION[]{ "0.9" };
 		constexpr int APP_W{ 1024 };
 		constexpr int APP_H{ 768 };
 		constexpr char CONF_FILE_NAME[]{ "kkit-sdl-config.xml" };
@@ -33,7 +33,7 @@ namespace kkit {
 		constexpr char TXT_NEXT_TILE[]{ "Go to next tile of selected type (hold Ctrl to go to next Tile Picker type)" };
 		constexpr char TXT_PREV_TILE[]{ "Go to previous tile of selected type (hold Ctrl to go to next Tile Picker tile)" };
 
-		constexpr char TXT_CLIP[]{ "Clip" };
+		constexpr char TXT_CLIP[]{ "Noclip" };
 		constexpr char TXT_DESTR[]{ "Destructible" };
 		constexpr char TXT_HORIZONTAL[]{ "Horizontal" };
 		constexpr char TXT_VERTICAL[]{ "Vertical" };

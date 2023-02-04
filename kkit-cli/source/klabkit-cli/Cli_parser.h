@@ -27,7 +27,8 @@ namespace kkit_cli {
 
 	public:
 		Cli_parser(const std::vector<std::string>& p_arguments);
-		
+
+		static std::string to_lowercase(const std::string& p_arg);
 		bool is_compress(void) const;
 		int get_board_count(void) const;
 		int get_wall_count(void) const;

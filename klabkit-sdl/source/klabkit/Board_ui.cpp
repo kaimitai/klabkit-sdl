@@ -509,6 +509,8 @@ void kkit::Board_ui::paste_from_clipboard(kkit::Project& p_project) {
 			for (int i{ 0 }; i < m_clipboard[j].size() && (m_sel_tile_y + i < 64); ++i) {
 				p_project.set_tile(m_board_ind, m_sel_tile_x + j, m_sel_tile_y + i, m_clipboard[j][i]);
 			}
+
+		this->show_selection_rectangle();
 	}
 }
 

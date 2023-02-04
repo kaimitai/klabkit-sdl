@@ -61,6 +61,25 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	}
 	ImGui::SameLine();
 
+	if (imgui::button(c::TXT_EXPORT_BMP, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
+		int l_exported{ 0 };
+
+		for (int i{ l_shift ? 0 : m_board_ind };
+			i < (l_shift ? p_project.get_board_count() : m_board_ind + 1);
+			++i) {
+			try {
+				kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), m_toggles[1], m_toggles[2]);
+				kkit::gfx::project_minimap_to_bmp(p_project, i);
+				++l_exported;
+			}
+			catch (const std::exception& ex) {
+				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+			}
+		}
+		p_project.add_message(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
+	}
+	ImGui::SameLine();
+
 	if (l_pref_kzp) {
 		if (imgui::button(c::TXT_SAVE_KZP, c::COLOR_STYLE_GREEN, c::TXT_SAVE_GF_BOARDS)) {
 			try {
@@ -78,25 +97,6 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 		catch (const std::exception& ex) {
 			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 		}
-	}
-	ImGui::SameLine();
-
-	if (imgui::button(c::TXT_EXPORT_BMP, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
-		int l_exported{ 0 };
-
-		for (int i{ l_shift ? 0 : m_board_ind };
-			i < (l_shift ? p_project.get_board_count() : m_board_ind + 1);
-			++i) {
-			try {
-				kkit::gfx::project_map_to_bmp(p_project, i, p_gfx.get_floor_color(), m_toggles[1], m_toggles[2]);
-				kkit::gfx::project_minimap_to_bmp(p_project, i);
-				++l_exported;
-			}
-			catch (const std::exception& ex) {
-				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
-			}
-		}
-		p_project.add_message(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
 	}
 
 	if (imgui::button(c::TXT_IMPORT_XML, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
