@@ -4,31 +4,31 @@ body {
 
 div.main-body {
     display: grid;
-    grid-template-columns: minmax(300px , auto)1fr;   
+    grid-template-columns: minmax(300px, auto)1fr;
     grid-template-areas: "navbar mainContent";
     grid-gap: 20px;
 }
-   
+
 nav#navbar {
     grid-area: navbar;
-    position: fixed;   
+    position: fixed;
 }
-   
-nav#navbar a {
-    display: block;
-    border: 1px solid black;
-    padding: 5px;
-    margin: 10px 0;
-    text-decoration: none;
-    color: black;
-}
-   
+
+    nav#navbar a {
+        display: block;
+        border: 1px solid black;
+        padding: 5px;
+        margin: 10px 0;
+        text-decoration: none;
+        color: black;
+    }
+
 main#main-doc {
     grid-area: mainContent;
 }
-   
+
 header {
     font-size: 36px;
     font-weight: bold;
-	color: darkblue;
+    color: darkblue;
 }
