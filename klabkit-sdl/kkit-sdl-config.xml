@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
-<kkit_sdl app_version="0.2" file_type="config" active_config_no="0">
+<kkit_sdl app_version="0.9" file_type="config" active_config_no="0">
 
   <config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
     <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
@@ -71,7 +71,7 @@
       <row no="2" description="Doors" value="21,48" />
       <row no="3" description="Walls" value="22,23,80,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,31" />
       <row no="4" description="Powerups and Items" value="63,45,59,46,60,32,39,36" />
-      <row no="6" description="Decorative" value="47,33,35,41,42,43,47,58,62,37" />
+      <row no="6" description="Decorative" value="47,33,35,41,42,43,58,62,37" />
     </tile_picker>
     <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
     <clip_overrides value="23,47" />

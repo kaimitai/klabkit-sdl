@@ -109,18 +109,23 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 
 			std::vector<std::pair<std::string, std::vector<int>>> l_tile_picker;
 
+			// ensure each tile only has one entry in the tile picker
+			std::set<int> l_tp_guard;
+
 			if (auto n_tp_node = n_conf.child(XML_TAG_TILE_PICKER)) {
 				for (auto n_tpr_node = n_tp_node.child(XML_TAG_ROW); n_tpr_node; n_tpr_node = n_tpr_node.next_sibling(XML_TAG_ROW)) {
 					std::vector<int> l_tp_row = klib::util::string_split<int>(n_tpr_node.attribute(XML_ATTR_VALUE).as_string(), ',');
-					std::string l_descr = n_tpr_node.attribute("description").as_string();
+					std::string l_descr = n_tpr_node.attribute(XML_ATTR_DESCRIPTION).as_string();
 					bool l_first{ true };
 					std::vector<int> l_tile_nos;
 					for (int n : l_tp_row) {
-						l_tile_nos.push_back(n - 1);
-						if (l_tile_nos.size() == 8) {
-							l_tile_picker.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
-							l_first = false;
-							l_tile_nos.clear();
+						if (l_tp_guard.insert(n).second) {
+							l_tile_nos.push_back(n - 1);
+							if (l_tile_nos.size() == 8) {
+								l_tile_picker.push_back(std::make_pair(l_first ? l_descr : std::string(), l_tile_nos));
+								l_first = false;
+								l_tile_nos.clear();
+							}
 						}
 					}
 

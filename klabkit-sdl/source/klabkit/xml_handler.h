@@ -54,6 +54,7 @@ namespace kkit {
 		constexpr char XML_ATTR_EXT_WALLS[]{ "ext_walls" };
 
 		constexpr char XML_ATTR_FLOOR_RGB[]{ "floor_rgb" };
+		constexpr char XML_ATTR_DESCRIPTION[]{ "description" };
 
 		constexpr char XML_ATTR_PLAYER_X[]{ "player_start_x" };
 		constexpr char XML_ATTR_PLAYER_Y[]{ "player_start_y" };
