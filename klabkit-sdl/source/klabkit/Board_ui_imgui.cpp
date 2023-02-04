@@ -21,7 +21,7 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 
 	draw_ui_main(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_minimap(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
-	draw_ui_selected_board_tile(p_rnd, p_input, p_project, p_gfx);
+	draw_ui_selected_board_tile(p_rnd, p_input, p_project, p_gfx, p_w, p_h);
 	draw_ui_tile_picker(p_rnd, p_project, p_gfx);
 	if (m_show_meta_editor)
 		draw_ui_gfx_editor(p_rnd, p_input, p_project, p_gfx);
@@ -47,7 +47,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 
 	bool l_pref_kzp{ p_project.get_config().get_ext_boards() == kkit::Data_ext::KZP };
 
-	if (imgui::button("Export xml")) {
+	if (imgui::button(c::TXT_EXPORT_XML, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
 		int l_exported{ 0 };
 
 		for (int i{ l_shift ? 0 : m_board_ind }; i < (l_shift ? p_project.get_board_count() : m_board_ind + 1); ++i) {
@@ -62,16 +62,16 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::SameLine();
 
 	if (l_pref_kzp) {
-		if (imgui::button("Save KZP", c::COLOR_STYLE_GREEN)) {
+		if (imgui::button(c::TXT_SAVE_KZP, c::COLOR_STYLE_GREEN, c::TXT_SAVE_GF_BOARDS)) {
 			try {
-				save_boards_kzp(p_project, true);
+				save_boards_kzp(p_project, !l_shift);
 			}
 			catch (const std::exception& ex) {
 				p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 			}
 		}
 	}
-	else if (imgui::button("Save DAT", c::COLOR_STYLE_GREEN)) {
+	else if (imgui::button(c::TXT_SAVE_DAT, c::COLOR_STYLE_GREEN, c::TXT_SAVE_GF_BOARDS)) {
 		try {
 			save_boards_kzp(p_project, false);
 		}
@@ -81,7 +81,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	}
 	ImGui::SameLine();
 
-	if (imgui::button("Save bmp")) {
+	if (imgui::button(c::TXT_EXPORT_BMP, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
 		int l_exported{ 0 };
 
 		for (int i{ l_shift ? 0 : m_board_ind };
@@ -99,7 +99,7 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 		p_project.add_message(std::to_string(l_exported) + " board and minimap bmp file(s) saved");
 	}
 
-	if (imgui::button("Import xml")) {
+	if (imgui::button(c::TXT_IMPORT_XML, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_BOARDS)) {
 		int l_imported{ 0 };
 
 		for (int i{ l_shift ? 0 : m_board_ind }; i < (l_shift ? p_project.get_board_count() : m_board_ind + 1); ++i)
@@ -119,35 +119,10 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 			p_project.add_message("No xml file(s) found");
 	}
 
-	ImGui::Separator();
-	ImGui::Text("Navigation");
-
-	if (imgui::button("Previous Tile")) {
-		prev_tile(p_project, l_ctrl, p_w, p_h);
-	}
-	ImGui::SameLine();
-	if (imgui::button("Next Tile")) {
-		next_tile(p_project, l_ctrl, p_w, p_h);
-	}
-	ImGui::SameLine();
-	if (imgui::button("Count Tiles")) {
-		int l_tile_no{ l_ctrl ? m_sel_tp_tile_no : get_selected_board_tile_no(p_project) };
-		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift);
-
-		std::string l_msg{ "Count selected " };
-		l_msg += (l_ctrl ? "tile picker" : "board");
-		l_msg += " tile (#" + std::to_string(l_tile_no + 1) + ", ";
-		l_msg += (l_shift ? "all boards" : "board " + std::to_string(m_board_ind + 1));
-		l_msg += "): " + std::to_string(l_tile_cnt);
-
-		p_project.add_message(l_msg);
-	}
-
-	ImGui::Separator();
 	ImGui::Text("Draw");
 
 	static std::vector<std::string> ls_labels{
-		"Directions", "Destructible", "Noclip", "Selected", "Grid"
+		"Directions", c::TXT_DESTR, c::TXT_CLIP, "Selected", "Grid"
 	};
 
 	for (std::size_t i{ 0 }; i < m_toggles.size(); ++i) {
@@ -229,13 +204,15 @@ void kkit::Board_ui::draw_ui_minimap(SDL_Renderer* p_rnd,
 
 void kkit::Board_ui::draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 	const klib::User_input& p_input, kkit::Project& p_project,
-	kkit::Project_gfx& p_gfx) {
+	kkit::Project_gfx& p_gfx, int p_w, int p_h) {
 
 	int l_sel_tile_no = get_selected_board_tile_no(p_project);
 	bool l_is_start_tile = p_project.get_board(m_board_ind).is_start_tile(m_sel_tile_x, m_sel_tile_y);
 	bool l_blast = p_project.get_board(m_board_ind).is_blast(m_sel_tile_x, m_sel_tile_y);
 	bool l_inside = p_project.get_board(m_board_ind).is_inside(m_sel_tile_x, m_sel_tile_y);
 	bool l_is_dir = (p_project.get_wall_type(l_sel_tile_no) == kkit::Wall_type::Direction);
+	bool l_ctrl{ p_input.is_ctrl_pressed() };
+	bool l_shift{ p_input.is_shift_pressed() };
 
 	imgui::window("Board Tile (" + std::to_string(m_sel_tile_x) +
 		"," + std::to_string(m_sel_tile_y) + ")###sbt",
@@ -252,22 +229,47 @@ void kkit::Board_ui::draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 
 	ImGui::Separator();
 	ImGui::Text("Properties");
-	// toggle board tile: destructible
-	if (imgui::button("Destructible", l_blast ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
-		p_project.toggle_mt_blast(m_board_ind, m_sel_tile_x, m_sel_tile_y);
-	ImGui::SameLine();
+
 	// toggle board tile: clip/noclip
-	if (imgui::button("Noclip", l_inside ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+	if (imgui::button(c::TXT_CLIP, l_inside ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
 		p_project.toggle_mt_inside(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+	ImGui::SameLine();
+	// toggle board tile: destructible
+	if (imgui::button(c::TXT_DESTR, l_blast ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+		p_project.toggle_mt_blast(m_board_ind, m_sel_tile_x, m_sel_tile_y);
 	if (l_is_dir || l_is_start_tile) {
 		ImGui::SameLine();
 		// toggle board tile: direction
 		std::string l_dir_descr{ l_is_start_tile ?
 		"Face: " + p_project.get_board(m_board_ind).get_player_direction_as_string() :
-		(p_project.get_board(m_board_ind).is_vertical(m_sel_tile_x, m_sel_tile_y) ? "Vertical" : "Horizontal") };
+		(p_project.get_board(m_board_ind).is_vertical(m_sel_tile_x, m_sel_tile_y) ? c::TXT_VERTICAL : c::TXT_HORIZONTAL) };
 
 		if (imgui::button(l_dir_descr.c_str(), c::COLOR_STYLE_ORANGE))
 			p_project.toggle_mt_direction(m_board_ind, m_sel_tile_x, m_sel_tile_y);
+	}
+
+	ImGui::Separator();
+	ImGui::Text("Navigation");
+
+	if (imgui::button("Previous Tile", c::COLOR_STYLE_NORMAL, c::TXT_PREV_TILE)) {
+		prev_tile(p_project, l_ctrl, p_w, p_h);
+	}
+	ImGui::SameLine();
+	if (imgui::button("Next Tile", c::COLOR_STYLE_NORMAL, c::TXT_NEXT_TILE)) {
+		next_tile(p_project, l_ctrl, p_w, p_h);
+	}
+
+	if (imgui::button("Count Tiles", c::COLOR_STYLE_NORMAL, c::TXT_COUNT_TILES)) {
+		int l_tile_no{ l_ctrl ? m_sel_tp_tile_no : get_selected_board_tile_no(p_project) };
+		int l_tile_cnt = this->count_tiles(p_project, l_tile_no, l_shift);
+
+		std::string l_msg{ "Count selected " };
+		l_msg += (l_ctrl ? "tile picker" : "board");
+		l_msg += " tile (#" + std::to_string(l_tile_no + 1) + ", ";
+		l_msg += (l_shift ? "all boards" : "board " + std::to_string(m_board_ind + 1));
+		l_msg += "): " + std::to_string(l_tile_cnt);
+
+		p_project.add_message(l_msg);
 	}
 
 	ImGui::End();
@@ -284,9 +286,9 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 	ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
 
 	if (m_sel_tp_tile_no >= -1) {
-		imgui::button("Noclip", p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
+		imgui::button(c::TXT_CLIP, p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
 		ImGui::SameLine();
-		imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
+		imgui::button(c::TXT_DESTR, p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
 		ImGui::SameLine();
 		imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE);
 	}
@@ -337,10 +339,10 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 		ImGui::Image(get_tp_tile_texture(p_gfx, m_sel_tp_tile_no), { 2 * c::WALL_IMG_W,2 * c::WALL_IMG_H });
 		ImGui::Text(get_tp_tile_description(m_sel_tp_tile_no).c_str());
 
-		if (imgui::button("Noclip", p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+		if (imgui::button(c::TXT_CLIP, p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
 			p_project.toggle_wt_inside(m_sel_tp_tile_no);
 		ImGui::SameLine();
-		if (imgui::button("Destructible", p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
+		if (imgui::button(c::TXT_DESTR, p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY))
 			p_project.toggle_wt_blast(m_sel_tp_tile_no);
 		ImGui::SameLine();
 		if (imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE))
@@ -350,7 +352,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 
 		ImGui::Text("File Operations");
 
-		if (imgui::button("Export xml")) {
+		if (imgui::button(c::TXT_EXPORT_XML, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_WALLS)) {
 			int l_exported{ 0 };
 
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i) {
@@ -365,7 +367,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 			p_project.add_message(std::to_string(l_exported) + " xml file(s) exported");
 		}
 		ImGui::SameLine();
-		if (imgui::button("Export bmp")) {
+		if (imgui::button(c::TXT_EXPORT_BMP, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_WALLS)) {
 			int l_exported{ 0 };
 			for (int i{ l_shift ? 0 : m_sel_tp_tile_no }; i < (l_shift ? p_project.get_wall_image_count() : m_sel_tp_tile_no + 1); ++i)
 				try {
@@ -384,16 +386,16 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 		ImGui::SameLine();
 		bool l_pref_kzp{ p_project.get_config().get_ext_walls() == kkit::Data_ext::KZP };
 		if (l_pref_kzp) {
-			if (imgui::button("Save KZP", c::COLOR_STYLE_GREEN)) {
+			if (imgui::button(c::TXT_SAVE_KZP, c::COLOR_STYLE_GREEN, c::TXT_SAVE_GF_WALLS)) {
 				try {
-					save_walls_kzp(p_project, p_gfx, true);
+					save_walls_kzp(p_project, p_gfx, !l_shift);
 				}
 				catch (const std::exception& ex) {
 					p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 				}
 			}
 		}
-		else if (imgui::button("Save DAT", c::COLOR_STYLE_GREEN)) {
+		else if (imgui::button(c::TXT_SAVE_DAT, c::COLOR_STYLE_GREEN, c::TXT_SAVE_GF_WALLS)) {
 			try {
 				save_walls_kzp(p_project, p_gfx, false);
 			}
@@ -402,7 +404,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 			}
 		}
 
-		if (imgui::button("Import xml")) {
+		if (imgui::button(c::TXT_IMPORT_XML, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_WALLS)) {
 			int l_imported{ 0 };
 			int l_total_cnt = p_project.get_wall_image_count();
 
@@ -421,7 +423,7 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 				p_project.add_message("No xml file(s) found");
 		}
 		ImGui::SameLine();
-		if (imgui::button("Import bmp")) {
+		if (imgui::button(c::TXT_IMPORT_BMP, c::COLOR_STYLE_NORMAL, c::TXT_SHIFT_WALLS)) {
 			int l_imported{ 0 };
 			int l_total_cnt = p_project.get_wall_image_count();
 

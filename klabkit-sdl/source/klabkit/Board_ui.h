@@ -60,7 +60,7 @@ namespace kkit {
 			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_selected_board_tile(SDL_Renderer* p_rnd,
 			const klib::User_input& p_input, kkit::Project& p_project,
-			kkit::Project_gfx& p_gfx);
+			kkit::Project_gfx& p_gfx, int p_w, int p_h);
 		void draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_project,
 			kkit::Project_gfx& p_gfx);
 		void draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,

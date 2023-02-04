@@ -17,6 +17,27 @@ namespace kkit {
 		constexpr int APP_H{ 768 };
 		constexpr char CONF_FILE_NAME[]{ "kkit-sdl-config.xml" };
 
+		// text constants
+		constexpr char TXT_SAVE_KZP[]{ "Save KZP" };
+		constexpr char TXT_SAVE_DAT[]{ "Save DAT" };
+		constexpr char TXT_SAVE_GF_BOARDS[]{ "Save boards data file used by the game" };
+		constexpr char TXT_SAVE_GF_WALLS[]{ "Save graphics data file used by the game" };
+		constexpr char TXT_EXPORT_XML[]{ "Export xml" };
+		constexpr char TXT_IMPORT_XML[]{ "Import xml" };
+		constexpr char TXT_EXPORT_BMP[]{ "Export bmp" };
+		constexpr char TXT_IMPORT_BMP[]{ "Import bmp" };
+		constexpr char TXT_SHIFT_BOARDS[]{ "Hold shift to perform operation for all boards" };
+		constexpr char TXT_SHIFT_WALLS[]{ "Hold shift to perform operation for all tiles" };
+
+		constexpr char TXT_COUNT_TILES[]{ "Count tiles of selected type (hold Ctrl to count for Tile Picker type, hold Shift to count for all boards)" };
+		constexpr char TXT_NEXT_TILE[]{ "Go to next tile of selected type (hold Ctrl to go to next Tile Picker type)" };
+		constexpr char TXT_PREV_TILE[]{ "Go to previous tile of selected type (hold Ctrl to go to next Tile Picker tile)" };
+
+		constexpr char TXT_CLIP[]{ "Clip" };
+		constexpr char TXT_DESTR[]{ "Destructible" };
+		constexpr char TXT_HORIZONTAL[]{ "Horizontal" };
+		constexpr char TXT_VERTICAL[]{ "Vertical" };
+
 		using byte = unsigned char;
 
 		// filename constants
