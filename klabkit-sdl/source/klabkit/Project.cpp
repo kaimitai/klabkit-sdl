@@ -18,6 +18,8 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 		initialize_maps_walken();
 	else
 		initialize_maps();
+
+	initialize_saves();
 }
 
 void kkit::Project::add_message(const std::string& p_message, int p_status_code) {
@@ -190,6 +192,19 @@ void kkit::Project::initialize_maps(void) {
 
 	for (int i{ 0 }; i < l_num_maps; ++i)
 		maps.push_back(kkit::Board(std::vector<unsigned char>(begin(map_bytes) + i * c::MAP_BYTES, begin(map_bytes) + (i + 1) * c::MAP_BYTES)));
+}
+
+void kkit::Project::initialize_saves(void) {
+	m_saves = std::vector<std::optional<kkit::Savegame>>(8, std::nullopt);
+
+	for (int i{ 0 }; i < 8; ++i) {
+		try {
+			std::string l_filename{ get_file_path("SAVGAME" + std::to_string(i),
+				c::FILE_EXT_DAT) };
+			m_saves[i] = Savegame(klib::file::read_file_as_bytes(l_filename));
+		}
+		catch (const std::exception&) {}
+	}
 }
 
 void kkit::Project::initialize_maps_walken(void) {
@@ -495,6 +510,20 @@ void kkit::Project::toggle_wt_inside(int p_wall_no) {
 
 void kkit::Project::set_wall_image(int p_wall_no, const std::vector<std::vector<byte>>& p_bytes) {
 	walls.at(p_wall_no).set_image(p_bytes);
+}
+
+// savegames
+// savegames
+bool kkit::Project::has_savegame(std::size_t p_slot) const {
+	return m_saves.at(p_slot).has_value();
+}
+
+const kkit::Savegame& kkit::Project::get_savegame(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value();
+}
+
+void kkit::Project::load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot) {
+	maps.at(p_board_slot) = m_saves.at(p_save_slot).value().get_board();
 }
 
 // wall attribute getters

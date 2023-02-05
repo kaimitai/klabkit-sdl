@@ -4,11 +4,13 @@
 #include <deque>
 #include <string>
 #include <tuple>
+#include <optional>
 #include <utility>
 #include <vector>
 
 #include "Wall.h"
 #include "Board.h"
+#include "Savegame.h"
 #include "Project_config.h"
 
 namespace kkit {
@@ -18,6 +20,7 @@ namespace kkit {
 
 		std::vector<Wall> walls;
 		std::vector<Board> maps;
+		std::vector<std::optional<Savegame>> m_saves;
 		std::vector<std::tuple<byte, byte, byte>> palette;
 
 		// user messages
@@ -30,6 +33,7 @@ namespace kkit {
 		void initialize_palette(void);
 		void initialize_walls(void);
 		void initialize_maps(void);
+		void initialize_saves(void);
 
 		// walken-specific initializers
 		void initialize_walls_walken(void);
@@ -107,6 +111,11 @@ namespace kkit {
 		void toggle_wt_blast(int p_wall_no);
 		void toggle_wt_inside(int p_wall_no);
 		void set_wall_image(int p_wall_no, const std::vector<std::vector<byte>>& p_bytes);
+
+		// savegames
+		bool has_savegame(std::size_t p_slot) const;
+		const kkit::Savegame& get_savegame(std::size_t p_slot) const;
+		void load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot);
 
 		// save and load
 		int save_boards_kzp(bool p_compress = true) const;
