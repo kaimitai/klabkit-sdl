@@ -488,9 +488,9 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
 	ImGui::Begin("Savefile Editor");
 
-	auto l_nidx{ imgui::slider<std::size_t>("Slot", m_sel_save_file + 1, 1, 8) };
+	auto l_nidx{ imgui::slider<std::size_t>("Slot", m_sel_save_file, 0, 7) };
 	if (l_nidx)
-		m_sel_save_file = l_nidx.value() - 1;
+		m_sel_save_file = l_nidx.value();
 
 	ImGui::Separator();
 

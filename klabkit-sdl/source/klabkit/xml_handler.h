@@ -66,6 +66,8 @@ namespace kkit {
 		constexpr char XML_ATTR_VERTICAL[]{ "vertical" };
 		constexpr char XML_ATTR_DESTRUCTIBLE[]{ "destructible" };
 		constexpr char XML_ATTR_CLIP[]{ "clip" };
+		constexpr char XML_ATTR_BIT1[]{ "bit1" };
+		constexpr char XML_ATTR_BIT2[]{ "bit2" };
 
 		constexpr char XML_ATTR_WALL_TYPE[]{ "wall_type" };
 		constexpr char XML_ATTR_VALUE[]{ "value" };

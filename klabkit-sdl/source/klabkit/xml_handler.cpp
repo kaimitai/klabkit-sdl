@@ -33,8 +33,10 @@ kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
 			bool l_blast = (strcmp(n_bc_node.attribute(XML_ATTR_DESTRUCTIBLE).as_string(), XML_VALUE_TRUE) == 0);
 			bool l_inside = (strcmp(n_bc_node.attribute(XML_ATTR_CLIP).as_string(), XML_VALUE_TRUE) == 0);
 			bool l_vertical = (strcmp(n_bc_node.attribute(XML_ATTR_VERTICAL).as_string(), XML_VALUE_TRUE) == 0);
+			bool l_bit1 = n_bc_node.attribute(XML_ATTR_BIT1).as_bool();
+			bool l_bit2 = n_bc_node.attribute(XML_ATTR_BIT2).as_bool();
 
-			l_board[y][x] = kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical);
+			l_board[y][x] = kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical, l_bit1, l_bit2);
 			++y;
 		}
 
@@ -258,15 +260,21 @@ void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_
 				n_tile.append_attribute(XML_ATTR_DESTRUCTIBLE);
 				n_tile.attribute(XML_ATTR_DESTRUCTIBLE).set_value(XML_VALUE_TRUE);
 			}
-
 			if (p_board.is_inside(x, y)) {
 				n_tile.append_attribute(XML_ATTR_CLIP);
 				n_tile.attribute(XML_ATTR_CLIP).set_value(XML_VALUE_TRUE);
 			}
-
 			if (p_board.is_vertical(x, y)) {
 				n_tile.append_attribute(XML_ATTR_VERTICAL);
 				n_tile.attribute(XML_ATTR_VERTICAL).set_value(XML_VALUE_TRUE);
+			}
+			if (p_board.is_bit_1(x, y)) {
+				n_tile.append_attribute(XML_ATTR_BIT1);
+				n_tile.attribute(XML_ATTR_BIT1).set_value(XML_VALUE_TRUE);
+			}
+			if (p_board.is_bit_2(x, y)) {
+				n_tile.append_attribute(XML_ATTR_BIT2);
+				n_tile.attribute(XML_ATTR_BIT2).set_value(XML_VALUE_TRUE);
 			}
 
 		}

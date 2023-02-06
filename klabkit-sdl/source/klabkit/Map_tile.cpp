@@ -2,8 +2,8 @@
 
 using byte = unsigned char;
 
-kkit::Map_tile::Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vertical) :
-	tile_no{ p_tile_no }, inside{ p_inside }, blast{ p_blast }, vertical{ p_vertical }
+kkit::Map_tile::Map_tile(int p_tile_no, bool p_inside, bool p_blast, bool p_vertical, bool p_bit_1, bool p_bit_2) :
+	tile_no{ p_tile_no }, inside{ p_inside }, blast{ p_blast }, vertical{ p_vertical }, bit_1{ p_bit_1 }, bit_2{ p_bit_2 }
 { }
 
 bool kkit::Map_tile::empty(void) const {
@@ -24,6 +24,14 @@ bool kkit::Map_tile::is_blast(void) const {
 
 bool kkit::Map_tile::is_vertical(void) const {
 	return this->vertical;
+}
+
+bool kkit::Map_tile::is_bit_1(void) const {
+	return bit_1;
+}
+
+bool kkit::Map_tile::is_bit_2(void) const {
+	return bit_2;
 }
 
 // manipulators

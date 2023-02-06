@@ -26,6 +26,10 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 			bool l_player_sq = (l_value & 0b1000000000000) >> 12;
 			// 14th bit is vertical indicator
 			bool l_vertical = (l_value & 0b10000000000000) >> 13;
+			// second bit from the left
+			bool l_bit_2 = (l_value & 0b100000000000000) >> 14;
+			// first bit from the left
+			bool l_bit_1 = (l_value & 0b1000000000000000) >> 15;
 
 			if (l_player_sq) {
 				this->player_x = j;
@@ -46,7 +50,7 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 				l_vertical = false;
 			}
 
-			l_tiles.push_back(kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical));
+			l_tiles.push_back(kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical, l_bit_1, l_bit_2));
 		}
 
 		this->tiles.push_back(l_tiles);
@@ -75,6 +79,14 @@ bool kkit::Board::is_blast(int p_x, int p_y) const {
 
 bool kkit::Board::is_vertical(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).is_vertical();
+}
+
+bool kkit::Board::is_bit_1(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_bit_1();
+}
+
+bool kkit::Board::is_bit_2(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_bit_2();
 }
 
 int kkit::Board::get_player_start_x(void) const {
@@ -136,6 +148,10 @@ std::vector<byte> kkit::Board::get_bytes(bool p_incl_player_start) const {
 					l_result |= 0b100000000000;
 				if (tiles[j][i].is_vertical())
 					l_result |= 0b10000000000000;
+				if (tiles[j][i].is_bit_2())
+					l_result |= 0b100000000000000;
+				if (tiles[j][i].is_bit_1())
+					l_result |= 0b1000000000000000;
 
 				byte b1 = static_cast<byte>(l_result % 256);
 				byte b2 = static_cast<byte>(l_result / 256);
