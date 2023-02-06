@@ -21,7 +21,8 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
 	m_toggles{ std::vector<bool>(5, false) },
 	m_sel_tp_tile_no{ -1 },
-	m_show_meta_editor{ false }
+	m_sel_save_file{ 0 },
+	m_show_meta_editor{ false }, m_show_save_editor{ true }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));

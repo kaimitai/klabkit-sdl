@@ -28,8 +28,11 @@ namespace kkit {
 		std::vector<std::vector<kkit::Map_tile>> m_clipboard;
 		std::vector<bool> m_toggles;
 
+		// savegame window variables
+		std::size_t m_sel_save_file;
+
 		// gameboard dragging variables
-		bool m_mouse_drag_active, m_show_meta_editor;
+		bool m_mouse_drag_active, m_show_meta_editor, m_show_save_editor;
 		std::pair<int, int> m_mouse_drag_pos;
 
 		// timers
@@ -64,6 +67,8 @@ namespace kkit {
 		void draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_project,
 			kkit::Project_gfx& p_gfx);
 		void draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
+			kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+		void draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
 			kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 
 		// file UI

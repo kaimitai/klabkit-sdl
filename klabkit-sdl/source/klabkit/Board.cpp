@@ -104,13 +104,14 @@ std::string kkit::Board::get_player_direction_as_string(void) const {
 		return PLAYER_DIR_LEFT;
 }
 
-std::vector<byte> kkit::Board::get_bytes(void) const {
+std::vector<byte> kkit::Board::get_bytes(bool p_incl_player_start) const {
 	std::vector<byte> result;
 
 	for (int j{ 0 }; j < this->tiles.size(); ++j)
 		for (int i{ 0 }; i < this->tiles[j].size(); ++i) {
 
-			if (j == this->player_x && i == this->player_y) {
+			if (p_incl_player_start &&
+				(j == this->player_x && i == this->player_y)) {
 
 				int l_result = 0b1000000000000;
 				if (this->player_direction == Player_direction::Down)

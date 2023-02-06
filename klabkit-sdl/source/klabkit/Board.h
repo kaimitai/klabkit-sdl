@@ -38,7 +38,7 @@ namespace kkit {
 
 		// logical getters
 		bool is_empty_tile(int p_x, int p_y) const;
-		std::vector<byte> get_bytes(void) const;
+		std::vector<byte> get_bytes(bool p_incl_player_start = true) const;
 		bool is_start_tile(int p_x, int p_y) const;
 		std::string get_player_direction_as_string(void) const;
 		std::vector<std::vector<kkit::Map_tile>> get_rectangle(int p_x, int p_y, int p_w, int p_h) const;

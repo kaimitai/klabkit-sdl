@@ -25,6 +25,8 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 	draw_ui_tile_picker(p_rnd, p_project, p_gfx);
 	if (m_show_meta_editor)
 		draw_ui_gfx_editor(p_rnd, p_input, p_project, p_gfx);
+	if (m_show_save_editor)
+		draw_ui_savefile_editor(p_rnd, p_input, p_project, p_gfx);
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -136,8 +138,14 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::NewLine();
 
 	ImGui::Separator();
-	ImGui::Text("Graphics Metadata Editor");
-	ImGui::Checkbox("Enable", &m_show_meta_editor);
+
+	ImGui::Text("Other Editors");
+
+	ImGui::Checkbox("Graphics Metadata", &m_show_meta_editor);
+	ImGui::SameLine();
+	ImGui::Checkbox("Savefiles", &m_show_save_editor);
+	ImGui::SameLine();
+
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
@@ -473,5 +481,31 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 	if (imgui::button("Close", c::COLOR_STYLE_NORMAL)) {
 		m_show_meta_editor = false;
 	}
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
+	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	ImGui::Begin("Savefile Editor");
+
+	auto l_nidx{ imgui::slider<std::size_t>("Slot", m_sel_save_file + 1, 1, 8) };
+	if (l_nidx)
+		m_sel_save_file = l_nidx.value() - 1;
+
+	ImGui::Separator();
+
+	if (p_project.has_savegame(m_sel_save_file)) {
+		if (imgui::button("Savefile to Board Grid")) {
+			p_project.load_saveboard(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
+			this->board_changed(p_rnd, p_project, p_gfx);
+		}
+		//if (imgui::button("Board Grid to Savefile"))
+			//p_project.load_saveboard(m_sel_save_file, static_cast<std::size_t>(m_board_ind));
+	}
+	else {
+		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file + 1) + " not loaded" };
+		ImGui::Text(l_descr.c_str());
+	}
+
 	ImGui::End();
 }
