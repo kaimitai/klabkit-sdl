@@ -6,7 +6,9 @@
 
 using byte = unsigned char;
 
-kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config }, kzp_walls{ false }, kzp_boards{ false } {
+kkit::Project::Project(const kkit::Project_config& p_config) :
+	config{ p_config }, kzp_walls{ false }, kzp_boards{ false }, m_saves(8, std::nullopt)
+{
 	initialize_palette();
 
 	if (this->is_walken())
@@ -18,8 +20,6 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 		initialize_maps_walken();
 	else
 		initialize_maps();
-
-	initialize_saves();
 }
 
 void kkit::Project::add_message(const std::string& p_message, int p_status_code) {
@@ -192,19 +192,6 @@ void kkit::Project::initialize_maps(void) {
 
 	for (int i{ 0 }; i < l_num_maps; ++i)
 		maps.push_back(kkit::Board(std::vector<unsigned char>(begin(map_bytes) + i * c::MAP_BYTES, begin(map_bytes) + (i + 1) * c::MAP_BYTES)));
-}
-
-void kkit::Project::initialize_saves(void) {
-	m_saves = std::vector<std::optional<kkit::Savegame>>(8, std::nullopt);
-
-	for (int i{ 0 }; i < 8; ++i) {
-		try {
-			std::string l_filename{ get_file_path("SAVGAME" + std::to_string(i),
-				c::FILE_EXT_DAT) };
-			m_saves[i] = Savegame(klib::file::read_file_as_bytes(l_filename));
-		}
-		catch (const std::exception&) {}
-	}
 }
 
 void kkit::Project::initialize_maps_walken(void) {
@@ -524,6 +511,17 @@ const kkit::Savegame& kkit::Project::get_savegame(std::size_t p_slot) const {
 
 void kkit::Project::load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot) {
 	maps.at(p_board_slot) = m_saves.at(p_save_slot).value().get_board();
+}
+
+void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
+	m_saves.at(p_save_slot) = Savegame(klib::file::read_file_as_bytes(
+		get_dat_file_name("SAVGAME" + std::to_string(p_save_slot))
+	));
+}
+
+void kkit::Project::save_savefile_dat(std::size_t p_save_slot) {
+	klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(),
+		get_dat_file_name("SAVGAME" + std::to_string(p_save_slot)));
 }
 
 // wall attribute getters

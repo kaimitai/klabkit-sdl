@@ -494,7 +494,9 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 
 	ImGui::Separator();
 
-	if (p_project.has_savegame(m_sel_save_file)) {
+	bool l_has_save{ p_project.has_savegame(m_sel_save_file) };
+
+	if (l_has_save) {
 		if (imgui::button("Savefile to Board Grid")) {
 			p_project.load_saveboard(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 			this->board_changed(p_rnd, p_project, p_gfx);
@@ -505,6 +507,25 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	else {
 		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file + 1) + " not loaded" };
 		ImGui::Text(l_descr.c_str());
+	}
+
+	ImGui::Separator();
+	ImGui::Text("File Operations");
+
+	if (imgui::button("Load DAT")) try {
+		p_project.load_savefile_dat(m_sel_save_file);
+		p_project.add_message("Savefile loaded", c::MSG_CODE_SUCCESS);
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+
+	if (l_has_save && imgui::button("Save DAT")) try {
+		p_project.save_savefile_dat(m_sel_save_file);
+		p_project.add_message("Savefile saved", c::MSG_CODE_SUCCESS);
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 	}
 
 	ImGui::End();

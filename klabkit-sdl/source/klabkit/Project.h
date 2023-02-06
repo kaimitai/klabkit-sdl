@@ -33,7 +33,6 @@ namespace kkit {
 		void initialize_palette(void);
 		void initialize_walls(void);
 		void initialize_maps(void);
-		void initialize_saves(void);
 
 		// walken-specific initializers
 		void initialize_walls_walken(void);
@@ -116,6 +115,8 @@ namespace kkit {
 		bool has_savegame(std::size_t p_slot) const;
 		const kkit::Savegame& get_savegame(std::size_t p_slot) const;
 		void load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot);
+		void load_savefile_dat(std::size_t p_save_slot);
+		void save_savefile_dat(std::size_t p_save_slot);
 
 		// save and load
 		int save_boards_kzp(bool p_compress = true) const;
