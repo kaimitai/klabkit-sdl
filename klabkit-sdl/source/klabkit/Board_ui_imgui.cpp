@@ -501,8 +501,8 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 			p_project.load_saveboard(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 			this->board_changed(p_rnd, p_project, p_gfx);
 		}
-		//if (imgui::button("Board Grid to Savefile"))
-			//p_project.load_saveboard(m_sel_save_file, static_cast<std::size_t>(m_board_ind));
+		if (imgui::button("Board Grid to Savefile"))
+			p_project.export_board_to_save(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 	}
 	else {
 		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file + 1) + " not loaded" };
@@ -519,14 +519,35 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	catch (const std::exception& ex) {
 		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 	}
-
-	if (l_has_save && imgui::button("Save DAT")) try {
-		p_project.save_savefile_dat(m_sel_save_file);
-		p_project.add_message("Savefile saved", c::MSG_CODE_SUCCESS);
+	ImGui::SameLine();
+	if (imgui::button(c::TXT_IMPORT_XML)) try {
+		p_project.add_message("Savefile xml imported", c::MSG_CODE_SUCCESS);
 	}
 	catch (const std::exception& ex) {
 		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 	}
+
+	if (l_has_save) {
+		if (imgui::button(c::TXT_SAVE_DAT)) try {
+			p_project.save_savefile_dat(m_sel_save_file);
+			p_project.add_message("Savefile saved", c::MSG_CODE_SUCCESS);
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+		ImGui::SameLine();
+		if (imgui::button(c::TXT_EXPORT_XML)) try {
+			p_project.save_savefile_xml(m_sel_save_file);
+			p_project.add_message("Savefile exported to xml", c::MSG_CODE_SUCCESS);
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+	}
+
+	ImGui::Separator();
+	if (imgui::button("Close"))
+		m_show_save_editor = false;
 
 	ImGui::End();
 }

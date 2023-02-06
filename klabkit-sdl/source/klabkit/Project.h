@@ -115,8 +115,10 @@ namespace kkit {
 		bool has_savegame(std::size_t p_slot) const;
 		const kkit::Savegame& get_savegame(std::size_t p_slot) const;
 		void load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot);
+		void export_board_to_save(std::size_t p_board_slot, std::size_t p_save_slot);
 		void load_savefile_dat(std::size_t p_save_slot);
 		void save_savefile_dat(std::size_t p_save_slot);
+		void save_savefile_xml(std::size_t p_save_slot);
 
 		// save and load
 		int save_boards_kzp(bool p_compress = true) const;

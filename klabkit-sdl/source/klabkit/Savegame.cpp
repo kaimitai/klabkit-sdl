@@ -1,268 +1,70 @@
 #include "Savegame.h"
 #include <stdexcept>
 
+void kkit::Savegame::read_variable_range(std::size_t p_start, std::size_t p_end, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_count) {
+	for (std::size_t i{ p_start }; i <= p_end; ++i)
+		read_variable(m_variable_sizes[i].first, p_bytes, p_offset, m_variable_sizes[i].second, p_count);
+}
+
 kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) :
 	m_board{ std::vector<byte>(begin(p_bytes) + 27, begin(p_bytes) + 27 + 8192) }
 {
-	hiscorenam = std::string(begin(p_bytes), begin(p_bytes) + 16);
+	m_variable_sizes = { {"hiscorenamstat", 1}, {"boardnum", 2}, {"scorecount", 4}, {"scoreclock", 4},
+		{"skilevel", 2}, {"life", 2}, {"death", 2}, {"lifevests", 2}, {"lightnings", 2}, {"firepowers_0", 2}, {"firepowers_1", 2}, {"firepowers_2", 2}, {"bulchoose", 2}, {"keys", 4}, {"coins", 2}, {"compass", 2}, {"cheated", 2}, {"animate2", 2}, {"animate3", 2}, {"animate4", 2}, {"oscillate3", 2}, {"oscillate5", 2}, {"animate6", 2}, {"animate7", 2}, {"animate8", 2}, {"animate10", 2}, {"animate11", 2}, {"animate15", 2}, {"statusbar", 2}, {"statusbargoal", 2}, {"posx", 2}, {"posy", 2}, {"posz", 2}, {"ang", 2}, {"startx", 2}, {"starty", 2}, {"startang", 2}, {"angvel", 2}, {"vel", 2}, {"mxvel", 2}, {"myvel", 2}, {"svel", 2}, {"hvel", 2}, {"oldposx", 2}, {"oldposy", 2},
+		{"bulnum", 2}, {"bultype_todo", 2}, {"bulang", 2}, {"bulx", 2}, {"buly", 2}, {"bulstat", 4},
+		{"lastbulshoot", 4},
+		{"mnum", 2}, {"mposx", 2}, {"mposy", 2}, {"mgolx", 2}, {"mgoly", 2}, {"moldx", 2}, {"moldy", 2}, {"mstat", 2}, {"mshock", 2}, {"mshot", 1},
+		{"doorx", 2}, {"doory", 2}, {"doorstat", 2},
+		{"numwarps", 1}, {"justwarped", 1}, {"xwarp", 1}, {"ywarp", 1},
+		{"totalclock", 4}, {"purpletime", 4}, {"greentime", 4}, {"capetime_0", 4}, {"capetime_1", 4}, {"musicstatus", 4}, {"clockspeed", 2}, {"count", 4}, {"countstop", 4}, {"nownote", 2}, {"junk", 2},
+		{"chanage", 4}, {"chanfreq", 1},
+		{"midiinst", 2}, {"mute", 2}, {"namrememberstat", 1}, {"fadewarpval", 2}, {"fadehurtval", 2}, {"slottime", 2}, {"slotpos_0", 2}, {"slotpos_1", 2}, {"slotpos_2", 2}, {"owecoins", 2}, {"owecoinwait", 2} };
+
+	for (std::size_t i{ 0 }; i < 16 && p_bytes.at(i) != 0x00; ++i)
+		m_hiscore_name.push_back(p_bytes.at(i));
+
+	// skip hiscore name
 	std::size_t l_offset{ 16 };
 
-	hiscorenamstat = read_uint_le(p_bytes, 1, l_offset);
-	boardnum = read_uint16_le(p_bytes, l_offset);
-	scorecount = read_uint_le(p_bytes, 4, l_offset);
-	scoreclock = read_uint_le(p_bytes, 4, l_offset);
+	read_variable_range(0, 3, p_bytes, l_offset);
 
-	l_offset += 8192; // skip board data
+	// skip board data
+	l_offset += 8192;
 
-	skilevel = read_uint16_le(p_bytes, l_offset);
-	life = read_uint16_le(p_bytes, l_offset);
-	death = read_uint16_le(p_bytes, l_offset);
-	lifevests = read_uint16_le(p_bytes, l_offset);
-	lightnings = read_uint16_le(p_bytes, l_offset);
-	firepowers_0 = read_uint16_le(p_bytes, l_offset);
-	firepowers_1 = read_uint16_le(p_bytes, l_offset);
-	firepowers_2 = read_uint16_le(p_bytes, l_offset);
-	bulchoose = read_uint16_le(p_bytes, l_offset);
-	keys = read_uint_le(p_bytes, 4, l_offset);
-	coins = read_uint16_le(p_bytes, l_offset);
-	compass = read_uint16_le(p_bytes, l_offset);
-	cheated = read_uint16_le(p_bytes, l_offset);
-	animate2 = read_uint16_le(p_bytes, l_offset);
-	animate3 = read_uint16_le(p_bytes, l_offset);
-	animate4 = read_uint16_le(p_bytes, l_offset);
-	oscillate3 = read_uint16_le(p_bytes, l_offset);
-	oscillate5 = read_uint16_le(p_bytes, l_offset);
-	animate6 = read_uint16_le(p_bytes, l_offset);
-	animate7 = read_uint16_le(p_bytes, l_offset);
-	animate8 = read_uint16_le(p_bytes, l_offset);
-	animate10 = read_uint16_le(p_bytes, l_offset);
-	animate11 = read_uint16_le(p_bytes, l_offset);
-	animate15 = read_uint16_le(p_bytes, l_offset);
-	statusbar = read_uint16_le(p_bytes, l_offset);
-	statusbargoal = read_uint16_le(p_bytes, l_offset);
-	posx = read_uint16_le(p_bytes, l_offset);
-	posy = read_uint16_le(p_bytes, l_offset);
-	posz = read_uint16_le(p_bytes, l_offset);
-	ang = read_uint16_le(p_bytes, l_offset);
-	startx = read_uint16_le(p_bytes, l_offset);
-	starty = read_uint16_le(p_bytes, l_offset);
-	startang = read_uint16_le(p_bytes, l_offset);
-	angvel = read_uint16_le(p_bytes, l_offset);
-	vel = read_uint16_le(p_bytes, l_offset);
-	mxvel = read_uint16_le(p_bytes, l_offset);
-	myvel = read_uint16_le(p_bytes, l_offset);
-	svel = read_uint16_le(p_bytes, l_offset);
-	hvel = read_uint16_le(p_bytes, l_offset);
-	oldposx = read_uint16_le(p_bytes, l_offset);
-	oldposy = read_uint16_le(p_bytes, l_offset);
+	read_variable_range(4, 45, p_bytes, l_offset);
 
 	// bullets
-	bulnum = read_uint16_le(p_bytes, l_offset);
-
-	read_vector(p_bytes, l_offset, bultype_todo, bulnum, 2);
-	read_vector(p_bytes, l_offset, bulang, bulnum, 2);
-	read_vector(p_bytes, l_offset, bulx, bulnum, 2);
-	read_vector(p_bytes, l_offset, buly, bulnum, 2);
-	read_vector(p_bytes, l_offset, bulstat, bulnum, 4);
-
-	lastbulshoot = read_uint_le(p_bytes, 4, l_offset);
+	read_variable_range(46, 50, p_bytes, l_offset, get_variable_value("bulnum"));
+	read_variable_range(51, 52, p_bytes, l_offset);
 
 	// enemies
-	mnum = read_uint16_le(p_bytes, l_offset);
-
-	read_vector(p_bytes, l_offset, mposx, mnum, 2);
-	read_vector(p_bytes, l_offset, mposy, mnum, 2);
-	read_vector(p_bytes, l_offset, mgolx, mnum, 2);
-	read_vector(p_bytes, l_offset, mgolx, mnum, 2);
-	read_vector(p_bytes, l_offset, moldx, mnum, 2);
-	read_vector(p_bytes, l_offset, moldy, mnum, 2);
-	read_vector(p_bytes, l_offset, mstat, mnum, 2);
-	read_vector(p_bytes, l_offset, mshock, mnum, 2);
-	read_vector(p_bytes, l_offset, mshot, mnum, 1);
-
-	doorx = read_uint16_le(p_bytes, l_offset);
-	doory = read_uint16_le(p_bytes, l_offset);
-	doorstat = read_uint16_le(p_bytes, l_offset);
+	read_variable_range(53, 61, p_bytes, l_offset, get_variable_value("mnum"));
+	read_variable_range(62, 66, p_bytes, l_offset);
 
 	// warps
-	numwarps = read_uint_le(p_bytes, 1, l_offset);
-	justwarped = read_uint_le(p_bytes, 1, l_offset);
-	read_vector(p_bytes, l_offset, xwarp, numwarps, 1);
-	read_vector(p_bytes, l_offset, ywarp, numwarps, 1);
-
-	totalclock = read_uint_le(p_bytes, 4, l_offset);
-	purpletime = read_uint_le(p_bytes, 4, l_offset);
-	greentime = read_uint_le(p_bytes, 4, l_offset);
-	capetime_0 = read_uint_le(p_bytes, 4, l_offset);
-	capetime_1 = read_uint_le(p_bytes, 4, l_offset);
-	musicstatus = read_uint_le(p_bytes, 4, l_offset);
-	clockspeed = read_uint16_le(p_bytes, l_offset);
-	count = read_uint_le(p_bytes, 4, l_offset);
-	countstop = read_uint_le(p_bytes, 4, l_offset);
-	nownote = read_uint16_le(p_bytes, l_offset);
-	junk = read_uint16_le(p_bytes, l_offset);
+	read_variable_range(67, 68, p_bytes, l_offset, get_variable_value("numwarps"));
+	read_variable_range(69, 79, p_bytes, l_offset);
 
 	// channels
-	read_vector(p_bytes, l_offset, chanage, 18, 4);
-	read_vector(p_bytes, l_offset, chanfreq, 18, 1);
-
-	midiinst = read_uint16_le(p_bytes, l_offset);
-	mute = read_uint16_le(p_bytes, l_offset);
-	namrememberstat = read_uint_le(p_bytes, 1, l_offset);
-	fadewarpval = read_uint16_le(p_bytes, l_offset);
-	fadehurtval = read_uint16_le(p_bytes, l_offset);
-	slottime = read_uint16_le(p_bytes, l_offset);
-	slotpos_0 = read_uint16_le(p_bytes, l_offset);
-	slotpos_1 = read_uint16_le(p_bytes, l_offset);
-	slotpos_2 = read_uint16_le(p_bytes, l_offset);
-	owecoins = read_uint16_le(p_bytes, l_offset);
-	owecoinwait = read_uint16_le(p_bytes, l_offset);
+	read_variable_range(80, 81, p_bytes, l_offset, 18);
+	read_variable_range(82, 92, p_bytes, l_offset);
 
 	// store extra unmapped bytes
 	m_unknown_bytes = std::vector<byte>(begin(p_bytes) + l_offset,
 		end(p_bytes));
 
 	// set the board start position based on the board start-variables in the savefile
-	int l_px{ static_cast<int>(startx / 1024) };
-	int l_py{ static_cast<int>(starty / 1024) };
+	int l_px{ static_cast<int>(get_variable_value("startx") / 1024) };
+	int l_py{ static_cast<int>(get_variable_value("starty") / 1024) };
+	int l_startang{ static_cast<int>(get_variable_value("startang") / 1024) };
 	kkit::Player_direction l_dir{ kkit::Player_direction::Up };
-	if (startang < 512)
+	if (l_startang < 512)
 		l_dir = kkit::Player_direction::Right;
-	else if (startang < 1024)
+	else if (l_startang < 1024)
 		l_dir = kkit::Player_direction::Down;
-	else if (startang < 1536)
+	else if (l_startang < 1536)
 		l_dir = kkit::Player_direction::Left;
 	m_board.set_player_start_position(l_px, l_py, l_dir);
-}
-
-std::vector<byte> kkit::Savegame::get_bytes(void) const {
-	std::vector<byte> result(begin(hiscorenam), end(hiscorenam));
-
-	write_uint_le(result, hiscorenamstat, 1);
-	write_uint16_le(result, boardnum);
-	write_uint_le(result, scorecount, 4);
-	write_uint_le(result, scoreclock, 4);
-
-	// get board bytes, but remove player start
-	auto l_board_bytes{ m_board.get_bytes(false) };
-	result.insert(end(result),
-		begin(l_board_bytes), end(l_board_bytes));
-
-	write_uint16_le(result, skilevel);
-	write_uint16_le(result, life);
-	write_uint16_le(result, death);
-	write_uint16_le(result, lifevests);
-	write_uint16_le(result, lightnings);
-	write_uint16_le(result, firepowers_0);
-	write_uint16_le(result, firepowers_1);
-	write_uint16_le(result, firepowers_2);
-	write_uint16_le(result, bulchoose);
-	write_uint_le(result, keys, 4);
-	write_uint16_le(result, coins);
-	write_uint16_le(result, compass);
-	write_uint16_le(result, cheated);
-	write_uint16_le(result, animate2);
-	write_uint16_le(result, animate3);
-	write_uint16_le(result, animate4);
-	write_uint16_le(result, oscillate3);
-	write_uint16_le(result, oscillate5);
-	write_uint16_le(result, animate6);
-	write_uint16_le(result, animate7);
-	write_uint16_le(result, animate8);
-	write_uint16_le(result, animate10);
-	write_uint16_le(result, animate11);
-	write_uint16_le(result, animate15);
-	write_uint16_le(result, statusbar);
-	write_uint16_le(result, statusbargoal);
-	write_uint16_le(result, posx);
-	write_uint16_le(result, posy);
-	write_uint16_le(result, posz);
-	write_uint16_le(result, ang);
-	write_uint16_le(result, startx);
-	write_uint16_le(result, starty);
-	write_uint16_le(result, startang);
-	write_uint16_le(result, angvel);
-	write_uint16_le(result, vel);
-	write_uint16_le(result, mxvel);
-	write_uint16_le(result, myvel);
-	write_uint16_le(result, svel);
-	write_uint16_le(result, hvel);
-	write_uint16_le(result, oldposx);
-	write_uint16_le(result, oldposy);
-
-	write_uint16_le(result, bulnum);
-	write_vector(result, bultype_todo, 2);
-	write_vector(result, bulang, 2);
-	write_vector(result, bulx, 2);
-	write_vector(result, buly, 2);
-	write_vector(result, bulstat, 4);
-
-	write_uint_le(result, lastbulshoot, 4);
-
-	write_uint16_le(result, mnum);
-	write_vector(result, mposx, 2);
-	write_vector(result, mposy, 2);
-	write_vector(result, mgolx, 2);
-	write_vector(result, mgoly, 2);
-	write_vector(result, moldx, 2);
-	write_vector(result, moldy, 2);
-	write_vector(result, mstat, 2);
-	write_vector(result, mshock, 2);
-	write_vector(result, mshot, 1);
-
-	write_uint16_le(result, doorx);
-	write_uint16_le(result, doory);
-	write_uint16_le(result, doorstat);
-
-	write_uint_le(result, numwarps, 1);
-	write_uint_le(result, justwarped, 1);
-
-	write_vector(result, xwarp, 1);
-	write_vector(result, ywarp, 1);
-
-	write_uint_le(result, totalclock, 4);
-	write_uint_le(result, purpletime, 4);
-	write_uint_le(result, greentime, 4);
-	write_uint_le(result, capetime_0, 4);
-	write_uint_le(result, capetime_1, 4);
-	write_uint_le(result, musicstatus, 4);
-	write_uint16_le(result, clockspeed);
-	write_uint_le(result, count, 4);
-	write_uint_le(result, countstop, 4);
-	write_uint16_le(result, nownote);
-	write_uint16_le(result, junk);
-
-	write_vector(result, chanage, 4);
-	write_vector(result, chanfreq, 1);
-
-	write_uint16_le(result, midiinst);
-	write_uint16_le(result, mute);
-	write_uint_le(result, namrememberstat, 1);
-	write_uint16_le(result, fadewarpval);
-	write_uint16_le(result, fadehurtval);
-	write_uint16_le(result, slottime);
-	write_uint16_le(result, slotpos_0);
-	write_uint16_le(result, slotpos_1);
-	write_uint16_le(result, slotpos_2);
-	write_uint16_le(result, owecoins);
-	write_uint16_le(result, owecoinwait);
-
-	result.insert(end(result),
-		begin(m_unknown_bytes), end(m_unknown_bytes));
-
-	return result;
-}
-
-void kkit::Savegame::write_vector(std::vector<byte>& p_bytes,
-	const std::vector<unsigned int>& p_values, unsigned int p_data_size) {
-	for (auto n : p_values)
-		write_uint_le(p_bytes, n, p_data_size);
-}
-
-void kkit::Savegame::read_vector(const std::vector<byte>& p_bytes, std::size_t& p_offset,
-	std::vector<unsigned int>& p_values, unsigned int p_count, unsigned int p_data_size) {
-	for (unsigned int i{ 0 }; i < p_count; ++i)
-		p_values.push_back(read_uint_le(p_bytes, p_data_size, p_offset));
 }
 
 void kkit::Savegame::write_uint_le(std::vector<byte>& p_bytes,
@@ -277,13 +79,44 @@ void kkit::Savegame::write_uint_le(std::vector<byte>& p_bytes,
 	}
 }
 
-void kkit::Savegame::write_uint16_le(std::vector<byte>& p_bytes,
-	unsigned int p_value) {
-	write_uint_le(p_bytes, p_value, 2);
+void kkit::Savegame::write_variable_range(std::size_t p_start, std::size_t p_end, std::vector<byte>& p_bytes) const {
+	for (std::size_t i{ p_start }; i <= p_end; ++i) {
+		const auto& l_key = m_variable_sizes[i].first;
+		std::size_t l_data_size = m_variable_sizes[i].second;
+
+		if (m_variable_values.find(l_key) != end(m_variable_values))
+			for (unsigned int n : m_variable_values.at(l_key))
+				write_uint_le(p_bytes, n, l_data_size);
+	}
 }
 
-unsigned int kkit::Savegame::read_uint16_le(const std::vector<byte>& p_bytes, std::size_t& p_offset) {
-	return read_uint_le(p_bytes, 2, p_offset);
+std::vector<byte> kkit::Savegame::get_bytes(void) const {
+	std::vector<byte> result{ std::vector<byte>(begin(m_hiscore_name), end(m_hiscore_name)) };
+
+	while (result.size() < 16)
+		result.push_back(0x00);
+
+	write_variable_range(0, 3, result);
+
+	// get board bytes, but remove player start
+	auto l_board_bytes{ m_board.get_bytes(false) };
+	result.insert(end(result),
+		begin(l_board_bytes), end(l_board_bytes));
+
+	write_variable_range(4, m_variable_sizes.size() - 1, result);
+
+	result.insert(end(result),
+		begin(m_unknown_bytes), end(m_unknown_bytes));
+
+	return result;
+}
+
+unsigned int kkit::Savegame::get_variable_value(const std::string& p_key, std::size_t p_slot) const {
+	auto iter{ m_variable_values.find(p_key) };
+	if (iter == end(m_variable_values))
+		return 0;
+	else
+		return iter->second.at(p_slot);
 }
 
 unsigned int kkit::Savegame::read_uint_le(const std::vector<byte>& p_bytes,
@@ -300,6 +133,16 @@ unsigned int kkit::Savegame::read_uint_le(const std::vector<byte>& p_bytes,
 	return result;
 }
 
+void kkit::Savegame::set_board(const kkit::Board& p_board) {
+	m_board = p_board;
+}
+
 kkit::Board kkit::Savegame::get_board(void) const {
 	return m_board;
+}
+
+void kkit::Savegame::read_variable(const std::string& p_key, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_byte_size, std::size_t p_count) {
+
+	for (std::size_t i{ 0 }; i < p_count; ++i)
+		m_variable_values[p_key].push_back(read_uint_le(p_bytes, p_byte_size, p_offset));
 }

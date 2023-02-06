@@ -21,6 +21,7 @@ namespace kkit {
 		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
 
 		pugi::xml_node create_header(pugi::xml_document& p_doc);
+		void add_board_to_node(pugi::xml_node&, const kkit::Board& p_board);
 
 		constexpr char XML_COMMENTS[]{ "KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)" };
 

@@ -513,6 +513,10 @@ void kkit::Project::load_saveboard(std::size_t p_board_slot, std::size_t p_save_
 	maps.at(p_board_slot) = m_saves.at(p_save_slot).value().get_board();
 }
 
+void kkit::Project::export_board_to_save(std::size_t p_board_slot, std::size_t p_save_slot) {
+	m_saves.at(p_save_slot).value().set_board(maps.at(p_board_slot));
+}
+
 void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
 	m_saves.at(p_save_slot) = Savegame(klib::file::read_file_as_bytes(
 		get_dat_file_name("SAVGAME" + std::to_string(p_save_slot))
@@ -522,6 +526,11 @@ void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
 void kkit::Project::save_savefile_dat(std::size_t p_save_slot) {
 	klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(),
 		get_dat_file_name("SAVGAME" + std::to_string(p_save_slot)));
+}
+
+void kkit::Project::save_savefile_xml(std::size_t p_save_slot) {
+	xml::save_board_xml(m_saves.at(p_save_slot).value().get_board(),
+		this->get_file_directory(c::FILE_EXT_XML, static_cast<int>(p_save_slot)), "SAVGAME" + std::to_string(p_save_slot) + "." + c::FILE_EXT_XML, config.label);
 }
 
 // wall attribute getters
