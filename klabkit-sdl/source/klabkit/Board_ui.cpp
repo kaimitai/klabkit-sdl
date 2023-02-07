@@ -22,7 +22,7 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_toggles{ std::vector<bool>(5, false) },
 	m_sel_tp_tile_no{ -1 },
 	m_sel_save_file{ 0 },
-	m_show_meta_editor{ false }, m_show_save_editor{ true }
+	m_show_meta_editor{ false }, m_show_save_editor{ false }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));

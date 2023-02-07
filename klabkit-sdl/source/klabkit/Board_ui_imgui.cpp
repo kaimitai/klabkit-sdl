@@ -144,7 +144,6 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::Checkbox("Graphics Metadata", &m_show_meta_editor);
 	ImGui::SameLine();
 	ImGui::Checkbox("Savefiles", &m_show_save_editor);
-	ImGui::SameLine();
 
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
