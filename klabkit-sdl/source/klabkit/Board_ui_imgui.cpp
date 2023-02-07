@@ -27,6 +27,8 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 		draw_ui_gfx_editor(p_rnd, p_input, p_project, p_gfx);
 	if (m_show_save_editor)
 		draw_ui_savefile_editor(p_rnd, p_input, p_project, p_gfx);
+	if (m_show_hiscore_editor)
+		draw_ui_hiscore_editor(p_rnd, p_project, p_gfx);
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -141,9 +143,11 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 
 	ImGui::Text("Other Editors");
 
-	ImGui::Checkbox("Graphics Metadata", &m_show_meta_editor);
+	ImGui::Checkbox("Gfx Metadata", &m_show_meta_editor);
 	ImGui::SameLine();
 	ImGui::Checkbox("Savefiles", &m_show_save_editor);
+	ImGui::SameLine();
+	ImGui::Checkbox("Hiscores", &m_show_hiscore_editor);
 
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
@@ -563,6 +567,73 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	ImGui::Separator();
 	if (imgui::button("Close"))
 		m_show_save_editor = false;
+
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_hiscore_editor(SDL_Renderer* p_rnd, kkit::Project& p_project,
+	kkit::Project_gfx& p_gfx) {
+	imgui::window("Hiscore Editor", c::WIN_HS_X, c::WIN_HS_Y, c::WIN_HS_W, c::WIN_HS_H);
+
+	bool l_has_hiscore{ p_project.has_hiscore() };
+
+	if (l_has_hiscore) {
+		const auto& lr_hiscore{ p_project.get_hiscore() };
+
+		auto l_nidx{ imgui::slider<std::size_t>("Board", m_sel_hiscore + 1, 1,
+			lr_hiscore.size()) };
+		if (l_nidx)
+			m_sel_hiscore = l_nidx.value() - 1;
+
+		ImGui::Separator();
+
+		for (std::size_t i{ 0 }; i < lr_hiscore.size(m_sel_hiscore); ++i) {
+			const auto& lr_hi{ lr_hiscore.get_score(m_sel_hiscore, i) };
+			std::string l_lbl{ lr_hi.first + ": " + std::to_string(lr_hi.second) };
+			ImGui::Text(l_lbl.c_str());
+		}
+
+	}
+	else {
+		ImGui::Text("Hiscore file not loaded");
+	}
+
+	ImGui::Separator();
+	ImGui::Text("File Operations");
+
+	if (imgui::button("Load DAT")) try {
+		p_project.load_hiscore_dat();
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+	ImGui::SameLine();
+	if (imgui::button(c::TXT_IMPORT_XML)) try {
+		throw std::runtime_error("Hiscore import xml not implemented");
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+
+	if (l_has_hiscore) {
+		if (imgui::button(c::TXT_SAVE_DAT)) try {
+			p_project.save_hiscore_dat();
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+		ImGui::SameLine();
+		if (imgui::button(c::TXT_EXPORT_XML)) try {
+			throw std::runtime_error("Hiscore export xml not implemented");
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+	}
+
+	ImGui::Separator();
+	if (imgui::button("Close"))
+		m_show_hiscore_editor = false;
 
 	ImGui::End();
 }

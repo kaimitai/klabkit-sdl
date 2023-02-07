@@ -29,11 +29,14 @@ namespace kkit {
 		std::vector<bool> m_toggles;
 
 		// savegame window variables
-		std::size_t m_sel_save_file;
+		std::size_t m_sel_save_file, m_sel_hiscore;
 
 		// gameboard dragging variables
-		bool m_mouse_drag_active, m_show_meta_editor, m_show_save_editor;
+		bool m_mouse_drag_active;
 		std::pair<int, int> m_mouse_drag_pos;
+
+		// other editor toggles
+		bool m_show_meta_editor, m_show_save_editor, m_show_hiscore_editor;
 
 		// timers
 		std::vector<klib::Timer> m_timers;
@@ -70,6 +73,8 @@ namespace kkit {
 			kkit::Project& p_project, kkit::Project_gfx& p_gfx);
 		void draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
 			kkit::Project& p_project, kkit::Project_gfx& p_gfx);
+		void draw_ui_hiscore_editor(SDL_Renderer* p_rnd, kkit::Project& p_project,
+			kkit::Project_gfx& p_gfx);
 
 		// file UI
 		void xml_export(kkit::Project& p_project, int p_board_no) const;

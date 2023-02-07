@@ -559,6 +559,34 @@ void kkit::Project::save_savefile_xml(std::size_t p_save_slot) {
 	add_message(l_out_xml_file + " saved", c::MSG_CODE_SUCCESS);
 }
 
+// hiscore
+bool kkit::Project::has_hiscore(void) const {
+	return m_hiscore.has_value();
+}
+
+const kkit::Hiscore& kkit::Project::get_hiscore(void) const {
+	return m_hiscore.value();
+}
+
+void kkit::Project::load_hiscore_dat(void) {
+	std::string l_file_path{ get_dat_file_name(c::FILE_HISCORE) };
+
+	m_hiscore = kkit::Hiscore(klib::file::read_file_as_bytes(
+		l_file_path
+	));
+
+	add_message("Loaded " + l_file_path, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::save_hiscore_dat(void) {
+	std::string l_file_path{ get_dat_file_name(c::FILE_HISCORE) };
+
+	klib::file::write_bytes_to_file(m_hiscore.value().get_bytes(),
+		l_file_path);
+
+	add_message("Saved " + l_file_path, c::MSG_CODE_SUCCESS);
+}
+
 // wall attribute getters
 bool kkit::Project::is_blast(int p_wall_no) const {
 	return (p_wall_no == -1 ? false : walls.at(p_wall_no).is_blast());

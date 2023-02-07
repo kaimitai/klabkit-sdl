@@ -10,6 +10,13 @@ namespace klib {
 
 		using byte = unsigned char;
 
+		// read/write little-endiad ints from/to vectors
+		void write_uint_le(std::vector<byte>& p_bytes,
+			unsigned int p_value, std::size_t p_byte_size);
+		unsigned int read_uint_le(const std::vector<byte>& p_bytes,
+			std::size_t p_byte_size,
+			std::size_t p_offset);
+
 		// check if (px, py) is in rect (rx, ry, rx+rw,rx+rh)
 		bool is_p_in_rect(int p_x, int p_y, int r_x, int r_y, int r_w, int r_h);
 

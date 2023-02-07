@@ -11,6 +11,7 @@
 #include "Wall.h"
 #include "Board.h"
 #include "Savegame.h"
+#include "Hiscore.h"
 #include "Project_config.h"
 
 namespace kkit {
@@ -21,6 +22,7 @@ namespace kkit {
 		std::vector<Wall> walls;
 		std::vector<Board> maps;
 		std::vector<std::optional<Savegame>> m_saves;
+		std::optional<kkit::Hiscore> m_hiscore;
 		std::vector<std::tuple<byte, byte, byte>> palette;
 
 		// user messages
@@ -123,6 +125,12 @@ namespace kkit {
 		void save_savefile_dat(std::size_t p_save_slot);
 		void load_savefile_xml(std::size_t p_save_slot);
 		void save_savefile_xml(std::size_t p_save_slot);
+
+		// hiscore
+		bool has_hiscore(void) const;
+		const kkit::Hiscore& get_hiscore(void) const;
+		void load_hiscore_dat(void);
+		void save_hiscore_dat(void);
 
 		// save and load
 		int save_boards_kzp(bool p_compress = true) const;

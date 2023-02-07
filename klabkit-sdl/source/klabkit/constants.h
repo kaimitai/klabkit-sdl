@@ -44,6 +44,7 @@ namespace kkit {
 		constexpr char FILE_WALLS[]{ "WALLS" };
 		constexpr char FILE_BOARDS[]{ "BOARDS" };
 		constexpr char FILE_SAVEGAME[]{ "SAVGAME" };
+		constexpr char FILE_HISCORE[]{ "HISCORE" };
 		constexpr char FILE_EXT_DAT[]{ "DAT" };
 		constexpr char FILE_EXT_KZP[]{ "KZP" };
 		constexpr char FILE_EXT_BMP[]{ "bmp" };
@@ -144,6 +145,12 @@ namespace kkit {
 		constexpr int WIN_SF_Y{ 5 };
 		constexpr int WIN_SF_W{ 385 };
 		constexpr int WIN_SF_H{ 235 };
+
+		// hiscores editor window
+		constexpr int WIN_HS_X{ 415 };
+		constexpr int WIN_HS_Y{ 5 };
+		constexpr int WIN_HS_W{ 245 };
+		constexpr int WIN_HS_H{ 280 };
 
 		// message codes
 		constexpr int MSG_CODE_INFO{ 0 };

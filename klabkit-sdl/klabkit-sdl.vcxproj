@@ -31,6 +31,7 @@
     <ClInclude Include="source\klabkit\compression.h" />
     <ClInclude Include="source\klabkit\constants.h" />
     <ClInclude Include="source\klabkit\constants_color.h" />
+    <ClInclude Include="source\klabkit\Hiscore.h" />
     <ClInclude Include="source\klabkit\imgui_helper.h" />
     <ClInclude Include="source\klabkit\kkit_gfx.h" />
     <ClInclude Include="source\klabkit\Board.h" />
@@ -64,6 +65,7 @@
     <ClCompile Include="source\klabkit\Board_ui_imgui.cpp" />
     <ClCompile Include="source\klabkit\compression.cpp" />
     <ClCompile Include="source\klabkit\constants.cpp" />
+    <ClCompile Include="source\klabkit\Hiscore.cpp" />
     <ClCompile Include="source\klabkit\imgui_helper.cpp" />
     <ClCompile Include="source\klabkit\kkit_gfx.cpp" />
     <ClCompile Include="source\klabkit\Board.cpp" />
