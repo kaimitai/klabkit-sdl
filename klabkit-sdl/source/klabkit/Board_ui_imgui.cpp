@@ -486,9 +486,11 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 
 void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
 	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
-	ImGui::Begin("Savefile Editor");
+	bool l_ctrl{ p_input.is_ctrl_pressed() };
 
-	auto l_nidx{ imgui::slider<std::size_t>("Slot", m_sel_save_file, 0, 7) };
+	imgui::window("Savefile Editor", c::WIN_SF_X, c::WIN_SF_Y, c::WIN_SF_W, c::WIN_SF_H);
+
+	auto l_nidx{ imgui::slider<std::size_t>("Save Slot", m_sel_save_file, 0, 7) };
 	if (l_nidx)
 		m_sel_save_file = l_nidx.value();
 
@@ -497,11 +499,20 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	bool l_has_save{ p_project.has_savegame(m_sel_save_file) };
 
 	if (l_has_save) {
-		if (imgui::button("Savefile to Board Grid")) {
+		ImGui::Text("Board Editing");
+
+		if (imgui::button("Savefile Board to Editor",
+			c::COLOR_STYLE_NORMAL,
+			"Bring the board from the savefile into the editor (hold Ctrl to use)")
+			&& l_ctrl) {
 			p_project.load_saveboard(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 			this->board_changed(p_rnd, p_project, p_gfx);
 		}
-		if (imgui::button("Board Grid to Savefile"))
+		ImGui::SameLine();
+		if (imgui::button("Editor Board to Savefile",
+			c::COLOR_STYLE_NORMAL,
+			"Bring the board from the editor into the savefile (hold Ctrl to use)")
+			&& l_ctrl)
 			p_project.export_board_to_save(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 	}
 	else {
@@ -514,14 +525,13 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 
 	if (imgui::button("Load DAT")) try {
 		p_project.load_savefile_dat(m_sel_save_file);
-		p_project.add_message("Savefile loaded", c::MSG_CODE_SUCCESS);
 	}
 	catch (const std::exception& ex) {
 		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
 	}
 	ImGui::SameLine();
 	if (imgui::button(c::TXT_IMPORT_XML)) try {
-		p_project.add_message("Savefile xml imported", c::MSG_CODE_SUCCESS);
+		p_project.load_savefile_xml(m_sel_save_file);
 	}
 	catch (const std::exception& ex) {
 		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
@@ -530,7 +540,6 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	if (l_has_save) {
 		if (imgui::button(c::TXT_SAVE_DAT)) try {
 			p_project.save_savefile_dat(m_sel_save_file);
-			p_project.add_message("Savefile saved", c::MSG_CODE_SUCCESS);
 		}
 		catch (const std::exception& ex) {
 			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
@@ -538,7 +547,6 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 		ImGui::SameLine();
 		if (imgui::button(c::TXT_EXPORT_XML)) try {
 			p_project.save_savefile_xml(m_sel_save_file);
-			p_project.add_message("Savefile exported to xml", c::MSG_CODE_SUCCESS);
 		}
 		catch (const std::exception& ex) {
 			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);

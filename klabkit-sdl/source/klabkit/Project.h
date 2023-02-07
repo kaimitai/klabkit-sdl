@@ -66,6 +66,7 @@ namespace kkit {
 		std::string get_file_directory(const std::string& p_extension, int p_frame_no = -1) const;
 		std::string get_file_name(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
 		std::string get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no = -1) const;
+		std::string get_savegame_filename(std::size_t p_slot_no);
 
 		// getters
 		std::string get_bmp_folder(void) const;
@@ -118,6 +119,7 @@ namespace kkit {
 		void export_board_to_save(std::size_t p_board_slot, std::size_t p_save_slot);
 		void load_savefile_dat(std::size_t p_save_slot);
 		void save_savefile_dat(std::size_t p_save_slot);
+		void load_savefile_xml(std::size_t p_save_slot);
 		void save_savefile_xml(std::size_t p_save_slot);
 
 		// save and load

@@ -43,6 +43,7 @@ namespace kkit {
 		// filename constants
 		constexpr char FILE_WALLS[]{ "WALLS" };
 		constexpr char FILE_BOARDS[]{ "BOARDS" };
+		constexpr char FILE_SAVEGAME[]{ "SAVGAME" };
 		constexpr char FILE_EXT_DAT[]{ "DAT" };
 		constexpr char FILE_EXT_KZP[]{ "KZP" };
 		constexpr char FILE_EXT_BMP[]{ "bmp" };
@@ -137,6 +138,12 @@ namespace kkit {
 		constexpr int WIN_META_Y{ 5 };
 		constexpr int WIN_META_W{ 340 };
 		constexpr int WIN_META_H{ 330 };
+
+		// savefile editor window
+		constexpr int WIN_SF_X{ 415 };
+		constexpr int WIN_SF_Y{ 5 };
+		constexpr int WIN_SF_W{ 385 };
+		constexpr int WIN_SF_H{ 195 };
 
 		// message codes
 		constexpr int MSG_CODE_INFO{ 0 };

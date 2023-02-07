@@ -15,7 +15,7 @@ namespace kkit {
 		std::string m_hiscore_name;
 		std::vector<byte> m_unknown_bytes;
 		std::map<std::string, std::vector<unsigned int>> m_variable_values;
-		std::vector<std::pair<std::string, std::size_t>> m_variable_sizes;
+		static std::vector<std::pair<std::string, std::size_t>> m_variable_sizes;
 		kkit::Board m_board;
 
 		static void write_uint_le(std::vector<byte>& p_bytes,
@@ -32,9 +32,19 @@ namespace kkit {
 
 	public:
 		Savegame(const std::vector<byte>& p_bytes);
+		Savegame(const std::string& p_hiscore_name,
+			const std::map<std::string, std::vector<unsigned int>>& p_var_values,
+			const kkit::Board& p_board,
+			const std::vector<byte>& p_unknown_bytes);
+
 		void set_board(const kkit::Board& p_board);
 
+		const std::map<std::string, std::vector<unsigned int>>& get_variable_values(void) const;
+		const std::vector<byte>& get_unknown_bytes(void) const;
+		static std::vector<std::string> get_variable_order(void);
+
 		Board get_board(void) const;
+		std::string get_hiscore_name(void) const;
 		std::vector<byte> get_bytes(void) const;
 	};
 }

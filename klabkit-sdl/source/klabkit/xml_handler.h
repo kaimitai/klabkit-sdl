@@ -5,6 +5,7 @@
 #include "../pugixml/pugixml.hpp"
 #include "Board.h"
 #include "Wall.h"
+#include "Savegame.h"
 #include "Project_config.h"
 
 namespace kkit {
@@ -15,13 +16,16 @@ namespace kkit {
 		kkit::Project_config read_config_xml(const std::string& p_file_name);
 		kkit::Wall load_wall_xml(const std::string& p_file_name);
 		kkit::Board load_board_xml(const std::string& p_file_name);
+		kkit::Savegame load_savefile_xml(const std::string& p_file_name);
 
 		// save XMLs
 		void save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
 		void save_wall_xml(const kkit::Wall& p_wall, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
+		void save_savefile_xml(const kkit::Savegame& p_save, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version);
 
 		pugi::xml_node create_header(pugi::xml_document& p_doc);
 		void add_board_to_node(pugi::xml_node&, const kkit::Board& p_board);
+		kkit::Board get_board_from_node(pugi::xml_node& p_node);
 
 		constexpr char XML_COMMENTS[]{ "KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)" };
 
@@ -39,6 +43,9 @@ namespace kkit {
 
 		constexpr char XML_TAG_WALL[]{ "wall" };
 		constexpr char XML_TAG_PIXEL_ROW[]{ "pixel_row" };
+
+		constexpr char XML_TAG_PLAYER_NAME[]{ "player_name" };
+		constexpr char XML_TAG_UNK_BYTES[]{ "unknown_bytes" };
 
 		// xml attributes
 		constexpr char XML_ATTR_APP_V[]{ "app_version" };
@@ -76,6 +83,7 @@ namespace kkit {
 		// XML constant values
 		constexpr char XML_VALUE_FTYPE_WALL[]{ "wall" };
 		constexpr char XML_VALUE_FTYPE_BOARD[]{ "board" };
+		constexpr char XML_VALUE_FTYPE_SAVEFILE[]{ "savefile" };
 
 		constexpr char XML_VALUE_CUBE[]{ "cube" };
 		constexpr char XML_VALUE_PLANE[]{ "plane" };

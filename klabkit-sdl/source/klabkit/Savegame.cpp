@@ -1,15 +1,7 @@
 #include "Savegame.h"
 #include <stdexcept>
 
-void kkit::Savegame::read_variable_range(std::size_t p_start, std::size_t p_end, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_count) {
-	for (std::size_t i{ p_start }; i <= p_end; ++i)
-		read_variable(m_variable_sizes[i].first, p_bytes, p_offset, m_variable_sizes[i].second, p_count);
-}
-
-kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) :
-	m_board{ std::vector<byte>(begin(p_bytes) + 27, begin(p_bytes) + 27 + 8192) }
-{
-	m_variable_sizes = { {"hiscorenamstat", 1}, {"boardnum", 2}, {"scorecount", 4}, {"scoreclock", 4},
+std::vector<std::pair<std::string, std::size_t>> kkit::Savegame::m_variable_sizes = { {"hiscorenamstat", 1}, {"boardnum", 2}, {"scorecount", 4}, {"scoreclock", 4},
 		{"skilevel", 2}, {"life", 2}, {"death", 2}, {"lifevests", 2}, {"lightnings", 2}, {"firepowers_0", 2}, {"firepowers_1", 2}, {"firepowers_2", 2}, {"bulchoose", 2}, {"keys", 4}, {"coins", 2}, {"compass", 2}, {"cheated", 2}, {"animate2", 2}, {"animate3", 2}, {"animate4", 2}, {"oscillate3", 2}, {"oscillate5", 2}, {"animate6", 2}, {"animate7", 2}, {"animate8", 2}, {"animate10", 2}, {"animate11", 2}, {"animate15", 2}, {"statusbar", 2}, {"statusbargoal", 2}, {"posx", 2}, {"posy", 2}, {"posz", 2}, {"ang", 2}, {"startx", 2}, {"starty", 2}, {"startang", 2}, {"angvel", 2}, {"vel", 2}, {"mxvel", 2}, {"myvel", 2}, {"svel", 2}, {"hvel", 2}, {"oldposx", 2}, {"oldposy", 2},
 		{"bulnum", 2}, {"bultype_todo", 2}, {"bulang", 2}, {"bulx", 2}, {"buly", 2}, {"bulstat", 4},
 		{"lastbulshoot", 4},
@@ -20,6 +12,14 @@ kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) :
 		{"chanage", 4}, {"chanfreq", 1},
 		{"midiinst", 2}, {"mute", 2}, {"namrememberstat", 1}, {"fadewarpval", 2}, {"fadehurtval", 2}, {"slottime", 2}, {"slotpos_0", 2}, {"slotpos_1", 2}, {"slotpos_2", 2}, {"owecoins", 2}, {"owecoinwait", 2} };
 
+void kkit::Savegame::read_variable_range(std::size_t p_start, std::size_t p_end, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_count) {
+	for (std::size_t i{ p_start }; i <= p_end; ++i)
+		read_variable(m_variable_sizes[i].first, p_bytes, p_offset, m_variable_sizes[i].second, p_count);
+}
+
+kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) :
+	m_board{ std::vector<byte>(begin(p_bytes) + 27, begin(p_bytes) + 27 + 8192) }
+{
 	for (std::size_t i{ 0 }; i < 16 && p_bytes.at(i) != 0x00; ++i)
 		m_hiscore_name.push_back(p_bytes.at(i));
 
@@ -56,16 +56,26 @@ kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) :
 	// set the board start position based on the board start-variables in the savefile
 	int l_px{ static_cast<int>(get_variable_value("startx") / 1024) };
 	int l_py{ static_cast<int>(get_variable_value("starty") / 1024) };
-	int l_startang{ static_cast<int>(get_variable_value("startang") / 1024) };
+	int l_startang{ static_cast<int>(get_variable_value("startang")) };
 	kkit::Player_direction l_dir{ kkit::Player_direction::Up };
 	if (l_startang < 512)
 		l_dir = kkit::Player_direction::Right;
-	else if (l_startang < 1024)
+	else if (l_startang < 512 * 2)
 		l_dir = kkit::Player_direction::Down;
-	else if (l_startang < 1536)
+	else if (l_startang < 512 * 3)
 		l_dir = kkit::Player_direction::Left;
 	m_board.set_player_start_position(l_px, l_py, l_dir);
 }
+
+kkit::Savegame::Savegame(const std::string& p_hiscore_name,
+	const std::map<std::string, std::vector<unsigned int>>& p_var_values,
+	const kkit::Board& p_board,
+	const std::vector<byte>& p_unknown_bytes) :
+	m_hiscore_name{ p_hiscore_name },
+	m_variable_values{ p_var_values },
+	m_board{ p_board },
+	m_unknown_bytes{ p_unknown_bytes }
+{ }
 
 void kkit::Savegame::write_uint_le(std::vector<byte>& p_bytes,
 	unsigned int p_value, std::size_t p_byte_size) {
@@ -135,10 +145,45 @@ unsigned int kkit::Savegame::read_uint_le(const std::vector<byte>& p_bytes,
 
 void kkit::Savegame::set_board(const kkit::Board& p_board) {
 	m_board = p_board;
+
+	m_variable_values["startx"] = { static_cast<unsigned int>(m_board.get_player_start_x()) * 1024 + 512 };
+	m_variable_values["starty"] = { static_cast<unsigned int>(m_board.get_player_start_y()) * 1024 + 512 };
+
+	auto l_dir{ m_board.get_player_start_direction() };
+	unsigned int l_dir_angle{ 0 };
+
+	if (l_dir == kkit::Player_direction::Down)
+		l_dir_angle = 512;
+	else if (l_dir == kkit::Player_direction::Left)
+		l_dir_angle = 512 * 2;
+	else if (l_dir == kkit::Player_direction::Up)
+		l_dir_angle = 512 * 3;
+
+	m_variable_values["startang"] = { l_dir_angle };
+
+}
+
+const std::map<std::string, std::vector<unsigned int>>& kkit::Savegame::get_variable_values(void) const {
+	return m_variable_values;
+}
+
+const std::vector<byte>& kkit::Savegame::get_unknown_bytes(void) const {
+	return m_unknown_bytes;
+}
+
+std::vector<std::string> kkit::Savegame::get_variable_order(void) {
+	std::vector<std::string> result;
+	for (const auto& kv : m_variable_sizes)
+		result.push_back(kv.first);
+	return result;
 }
 
 kkit::Board kkit::Savegame::get_board(void) const {
 	return m_board;
+}
+
+std::string kkit::Savegame::get_hiscore_name(void) const {
+	return m_hiscore_name;
 }
 
 void kkit::Savegame::read_variable(const std::string& p_key, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_byte_size, std::size_t p_count) {
