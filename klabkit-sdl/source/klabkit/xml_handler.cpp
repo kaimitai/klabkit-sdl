@@ -86,6 +86,32 @@ kkit::Savegame kkit::xml::load_savefile_xml(const std::string& p_file_name) {
 	return kkit::Savegame(l_hname, l_var_values, l_board, l_unk_bytes);
 }
 
+kkit::Hiscore kkit::xml::load_hiscore_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::runtime_error("Could not load " + p_file_name);
+
+	std::vector<std::vector<std::pair<std::string, unsigned int>>> l_scores;
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+
+	for (auto n_brd = n_meta.child(XML_TAG_BOARD); n_brd;
+		n_brd = n_brd.next_sibling(XML_TAG_BOARD)) {
+
+		std::vector<std::pair<std::string, unsigned int>> l_bscores;
+		for (auto n_sco = n_brd.child(XML_TAG_SCORE); n_sco;
+			n_sco = n_sco.next_sibling(XML_TAG_SCORE)) {
+			l_bscores.push_back(std::make_pair(
+				n_sco.attribute(XML_TAG_PLAYER_NAME).as_string(),
+				n_sco.attribute(XML_TAG_SCORE).as_int()
+			));
+		}
+		l_scores.push_back(l_bscores);
+	}
+
+	return kkit::Hiscore(l_scores);
+}
+
 kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_file_name.c_str()))
@@ -303,6 +329,43 @@ void kkit::xml::save_savefile_xml(const kkit::Savegame& p_save,
 	l_unknown.attribute(XML_ATTR_VALUE).set_value(
 		klib::util::string_join<byte>(p_save.get_unknown_bytes(), ',').c_str()
 	);
+
+	if (!doc.save_file(l_full_file_path.c_str()))
+		throw std::runtime_error("Could not save XML");
+}
+
+void kkit::xml::save_hiscore_xml(const kkit::Hiscore& p_hiscore, const std::string& p_directory,
+	const std::string& p_filename, const std::string& p_klab_version) {
+
+	std::filesystem::create_directories(p_directory);
+	std::string l_full_file_path = p_directory + "/" + p_filename;
+
+	pugi::xml_document doc;
+	auto n_root = create_header(doc);
+	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_HISCORE);
+
+	for (std::size_t i{ 0 }; i < p_hiscore.size(); ++i) {
+		auto n_brd = n_root.append_child(XML_TAG_BOARD);
+		n_brd.append_attribute(XML_ATTR_NO);
+		n_brd.attribute(XML_ATTR_NO).set_value(i);
+
+		for (std::size_t j{ 0 }; j < p_hiscore.size(i); ++j) {
+			auto n_sco = n_brd.append_child(XML_TAG_SCORE);
+			n_sco.append_attribute(XML_ATTR_NO);
+			n_sco.attribute(XML_ATTR_NO).set_value(j);
+
+			n_sco.append_attribute(XML_TAG_PLAYER_NAME);
+			n_sco.attribute(XML_TAG_PLAYER_NAME).set_value(
+				p_hiscore.get_score(i, j).first.c_str()
+			);
+
+			n_sco.append_attribute(XML_TAG_SCORE);
+			n_sco.attribute(XML_TAG_SCORE).set_value(
+				p_hiscore.get_score(i, j).second
+			);
+		}
+	}
 
 	if (!doc.save_file(l_full_file_path.c_str()))
 		throw std::runtime_error("Could not save XML");

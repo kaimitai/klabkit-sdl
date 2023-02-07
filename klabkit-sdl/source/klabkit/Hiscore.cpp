@@ -19,6 +19,10 @@ kkit::Hiscore::Hiscore(const std::vector<byte>& p_bytes) {
 	}
 }
 
+kkit::Hiscore::Hiscore(const std::vector<std::vector<std::pair<std::string, unsigned int>>>& p_scores) :
+	m_scores{ p_scores }
+{}
+
 std::vector<byte> kkit::Hiscore::get_bytes(void) const {
 	std::vector<byte> result;
 

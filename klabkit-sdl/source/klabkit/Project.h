@@ -131,6 +131,8 @@ namespace kkit {
 		const kkit::Hiscore& get_hiscore(void) const;
 		void load_hiscore_dat(void);
 		void save_hiscore_dat(void);
+		void load_hiscore_xml(void);
+		void save_hiscore_xml(void);
 
 		// save and load
 		int save_boards_kzp(bool p_compress = true) const;

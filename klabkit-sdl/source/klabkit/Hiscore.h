@@ -17,6 +17,7 @@ namespace kkit {
 
 	public:
 		Hiscore(const std::vector<byte>& p_bytes);
+		Hiscore(const std::vector<std::vector<std::pair<std::string, unsigned int>>>& p_scores);
 		std::vector<byte> get_bytes(void) const;
 
 		bool empty(void) const;

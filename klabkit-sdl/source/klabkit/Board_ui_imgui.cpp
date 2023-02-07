@@ -609,7 +609,7 @@ void kkit::Board_ui::draw_ui_hiscore_editor(SDL_Renderer* p_rnd, kkit::Project& 
 	}
 	ImGui::SameLine();
 	if (imgui::button(c::TXT_IMPORT_XML)) try {
-		throw std::runtime_error("Hiscore import xml not implemented");
+		p_project.load_hiscore_xml();
 	}
 	catch (const std::exception& ex) {
 		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
@@ -624,7 +624,7 @@ void kkit::Board_ui::draw_ui_hiscore_editor(SDL_Renderer* p_rnd, kkit::Project& 
 		}
 		ImGui::SameLine();
 		if (imgui::button(c::TXT_EXPORT_XML)) try {
-			throw std::runtime_error("Hiscore export xml not implemented");
+			p_project.save_hiscore_xml();
 		}
 		catch (const std::exception& ex) {
 			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
