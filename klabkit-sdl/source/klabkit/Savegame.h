@@ -44,7 +44,8 @@ namespace kkit {
 		static std::vector<std::string> get_variable_order(void);
 
 		Board get_board(void) const;
-		std::string get_hiscore_name(void) const;
+		const std::string& get_hiscore_name(void) const;
+		unsigned int get_board_num(void) const;
 		std::vector<byte> get_bytes(void) const;
 	};
 }

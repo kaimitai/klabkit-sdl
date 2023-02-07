@@ -76,6 +76,8 @@ namespace kkit {
 		std::tuple<byte, byte, byte> get_floor_color(void) const;
 		const Project_config& get_config(void) const;
 		const std::deque<std::pair<std::string, int>>& get_messages(void) const;
+		const std::string& get_savegame_player_name(std::size_t p_slot) const;
+		unsigned int get_savegame_board_num(std::size_t p_slot) const;
 
 		// wall attribute getters
 		bool is_blast(int p_wall_no) const;

@@ -498,6 +498,14 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 	bool l_has_save{ p_project.has_savegame(m_sel_save_file) };
 
 	if (l_has_save) {
+		std::string l_lbl_player{ "Player: " + p_project.get_savegame_player_name(m_sel_save_file) };
+		std::string l_lbl_board{ " Board: " + std::to_string(p_project.get_savegame_board_num(m_sel_save_file) + 1) };
+
+		ImGui::Text(l_lbl_player.c_str());
+		ImGui::Text(l_lbl_board.c_str());
+
+		ImGui::Separator();
+
 		ImGui::Text("Board Editing");
 
 		if (imgui::button("Savefile Board to Editor",
@@ -515,7 +523,7 @@ void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::Us
 			p_project.export_board_to_save(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
 	}
 	else {
-		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file + 1) + " not loaded" };
+		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file) + " not loaded" };
 		ImGui::Text(l_descr.c_str());
 	}
 

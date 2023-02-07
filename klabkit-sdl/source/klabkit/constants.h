@@ -143,7 +143,7 @@ namespace kkit {
 		constexpr int WIN_SF_X{ 415 };
 		constexpr int WIN_SF_Y{ 5 };
 		constexpr int WIN_SF_W{ 385 };
-		constexpr int WIN_SF_H{ 195 };
+		constexpr int WIN_SF_H{ 235 };
 
 		// message codes
 		constexpr int MSG_CODE_INFO{ 0 };

@@ -1,7 +1,9 @@
 #include "Savegame.h"
 #include <stdexcept>
 
-std::vector<std::pair<std::string, std::size_t>> kkit::Savegame::m_variable_sizes = { {"hiscorenamstat", 1}, {"boardnum", 2}, {"scorecount", 4}, {"scoreclock", 4},
+constexpr char SAVE_CODE_BOARDNUM[]{ "boardnum" };
+
+std::vector<std::pair<std::string, std::size_t>> kkit::Savegame::m_variable_sizes = { {"hiscorenamstat", 1}, {SAVE_CODE_BOARDNUM, 2}, {"scorecount", 4}, {"scoreclock", 4},
 		{"skilevel", 2}, {"life", 2}, {"death", 2}, {"lifevests", 2}, {"lightnings", 2}, {"firepowers_0", 2}, {"firepowers_1", 2}, {"firepowers_2", 2}, {"bulchoose", 2}, {"keys", 4}, {"coins", 2}, {"compass", 2}, {"cheated", 2}, {"animate2", 2}, {"animate3", 2}, {"animate4", 2}, {"oscillate3", 2}, {"oscillate5", 2}, {"animate6", 2}, {"animate7", 2}, {"animate8", 2}, {"animate10", 2}, {"animate11", 2}, {"animate15", 2}, {"statusbar", 2}, {"statusbargoal", 2}, {"posx", 2}, {"posy", 2}, {"posz", 2}, {"ang", 2}, {"startx", 2}, {"starty", 2}, {"startang", 2}, {"angvel", 2}, {"vel", 2}, {"mxvel", 2}, {"myvel", 2}, {"svel", 2}, {"hvel", 2}, {"oldposx", 2}, {"oldposy", 2},
 		{"bulnum", 2}, {"bultype_todo", 2}, {"bulang", 2}, {"bulx", 2}, {"buly", 2}, {"bulstat", 4},
 		{"lastbulshoot", 4},
@@ -182,12 +184,15 @@ kkit::Board kkit::Savegame::get_board(void) const {
 	return m_board;
 }
 
-std::string kkit::Savegame::get_hiscore_name(void) const {
+const std::string& kkit::Savegame::get_hiscore_name(void) const {
 	return m_hiscore_name;
 }
 
-void kkit::Savegame::read_variable(const std::string& p_key, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_byte_size, std::size_t p_count) {
+unsigned int kkit::Savegame::get_board_num(void) const {
+	return this->get_variable_value(SAVE_CODE_BOARDNUM);
+}
 
+void kkit::Savegame::read_variable(const std::string& p_key, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_byte_size, std::size_t p_count) {
 	for (std::size_t i{ 0 }; i < p_count; ++i)
 		m_variable_values[p_key].push_back(read_uint_le(p_bytes, p_byte_size, p_offset));
 }

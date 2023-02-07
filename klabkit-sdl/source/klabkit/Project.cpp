@@ -593,3 +593,11 @@ const kkit::Project_config& kkit::Project::get_config(void) const {
 const std::deque<std::pair<std::string, int>>& kkit::Project::get_messages(void) const {
 	return m_messages;
 }
+
+const std::string& kkit::Project::get_savegame_player_name(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value().get_hiscore_name();
+}
+
+unsigned int kkit::Project::get_savegame_board_num(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value().get_board_num();
+}
