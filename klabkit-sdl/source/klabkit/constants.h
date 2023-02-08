@@ -114,6 +114,11 @@ namespace kkit {
 		constexpr int INDEX_BG_TEXTURES{ INDEX_APP_TEXTURES + 1 };
 		constexpr int INDEX_MM_TEXTURES{ INDEX_BG_TEXTURES + 1 }; // minimaps
 
+		// savefile variable codes
+		constexpr char SAVE_CODE_BOARD[]{ "board" };
+		constexpr char SAVE_CODE_BOARDNUM[]{ "boardnum" };
+		constexpr char SAVE_CODE_HISCORENAME[]{ "hiscorename" };
+
 		// window position and size constants
 		constexpr int WIN_MAIN_X{ 5 };
 		constexpr int WIN_MAIN_Y{ 5 };

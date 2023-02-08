@@ -20,6 +20,49 @@ kkit::Project::Project(const kkit::Project_config& p_config) :
 		initialize_maps_walken();
 	else
 		initialize_maps();
+
+	std::vector<kkit::Savegame_variable> l_variables = {
+		{c::SAVE_CODE_HISCORENAME, 16},
+		{"hiscorenamstat", 1},
+		{c::SAVE_CODE_BOARDNUM}, {"scorecount", 4}, {"scoreclock", 4},
+		{c::SAVE_CODE_BOARD, 8192},
+		{"skilevel"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers_0"}, {"firepowers_1"}, {"firepowers_2"}, {"bulchoose"}, {"keys", 4}, {"coins"}, {"compass"}, {"cheated"}, {"animate2"}, {"animate3"}, {"animate4"}, {"oscillate3"}, {"oscillate5"}, {"animate6"}, {"animate7"}, {"animate8"}, {"animate10"}, {"animate11"}, {"animate15"}, {"statusbar"}, {"statusbargoal"}, {"posx"}, {"posy"}, {"posz"}, {"ang"}, {"startx"}, {"starty"}, {"startang"}, {"angvel"}, {"vel"}, {"mxvel"}, {"myvel"}, {"svel"}, {"hvel"}, {"oldposx"}, {"oldposy"},
+		{"bulnum", 2},
+		{"bultype_todo", 2, "bulnum"}, {"bulang", 2, "bulnum"}, {"bulx", 2, "bulnum"}, {"buly", 2, "bulnum"}, {"bulstat", 4, "bulnum"},
+		{"lastbulshoot", 4},
+		{"mnum"},
+		{"mposx", 2, "mnum"}, {"mposy", 2}, {"mgolx", 2}, {"mgoly", 2}, {"moldx", 2}, {"moldy", 2, "mnum"}, {"mstat", 2, "mnum"}, {"mshock", 2, "mnum"}, {"mshot", 1, "mnum"},
+		{"doorx", 2}, {"doory", 2}, {"doorstat", 2},
+		{"numwarps", 1},
+		{"justwarped", 1},
+		{"xwarp", 1, "numwarps"}, {"ywarp", 1, "numwarps"},
+		{"totalclock", 4}, {"purpletime", 4}, {"greentime", 4}, {"capetime_0", 4}, {"capetime_1", 4}, {"musicstatus", 4}, {"clockspeed"}, {"count", 4}, {"countstop", 4}, {"nownote"}, {"junk"},
+		{"chanage", 4, "18"}, {"chanfreq", 1, "18"},
+		{"midiinst"}, {"mute"}, {"namrememberstat", 1}, {"fadewarpval"}, {"fadehurtval"}, {"slottime"}, {"slotpos_0"}, {"slotpos_1"}, {"slotpos_2"}, {"owecoins"}, {"owecoinwait"}
+	};
+
+	std::vector<kkit::Savegame_variable> l_var_10 = {
+		{"board",8192},
+		{"mboard",1,"4096"}, {"boardnum"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers_0",2}, {"firepowers_1",2}, {"firepowers_2",2},{"bulchoose"},{"keys_0",4},{"compass"},{"cheated"},{"heatpos"},{"fanpos"},{"warpos"},{"kenpos"},{"ballpos"},{"rogermode"},{"statusbar"},{"statusbargoal"},{"posx"},{"posy"},{"posz"},{"ang"},{"startx"},{"starty"},{"startang"},{"angvel"},{"vel"},{"mxvel"},{"myvel"},{"svel"},{"hvel"},{"oldposx"},{"oldposy"},
+		{"bulnum"},
+		{"bulang_0",2,"bulnum"},{"bulkind_0",2,"bulnum"},{"bulx_0",2,"bulnum"},{"buly_0",2,"bulnum"},{"bulstat_0",4,"bulnum"},
+		{"lastbulshoot",4},
+		{"mnum"},
+		{"mposx_0",2,"mnum"}, {"mposy_0",2,"mnum"}, {"mgolx_0",2,"mnum"}, {"mgoly_0",2,"mnum"}, {"moldx_0",2,"mnum"},{"moldy_0",2,"mnum"},{"mstat_0",1,"mnum"},{"mshock_0",2,"mnum"}, {"mshot_0",1,"mnum"},
+		{"doorx"},{"doory"},{"doorstat"},
+		{"numwarps",1},{"justwarped",1},
+		{"xwarp_0",1,"numwarps"},{"ywarp_0",1,"numwarps"},
+		{"totalclock",4},{"scoreclock",4},{"scorecount",4},{"purpletime",4},{"greentime",4},{"capetime_0",4},{"capetime_1",4},
+		{c::SAVE_CODE_HISCORENAME,16},
+		{"hiscorenamstat",1}, {"musicstatus",4}, {"clockspeed"}, {"count",4}, {"countstop",4}, {"nownote",4},
+		{"chanage",4,"18"},
+		{"chanfreq",1,"18"}
+	};
+
+	if (config.lzw_comp_type == 2)
+		kkit::Savegame::set_variables(l_variables);
+	else if (config.lzw_comp_type == 1)
+		kkit::Savegame::set_variables(l_var_10);
 }
 
 void kkit::Project::add_message(const std::string& p_message, int p_status_code) {

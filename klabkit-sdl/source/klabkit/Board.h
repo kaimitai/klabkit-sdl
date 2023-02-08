@@ -23,6 +23,7 @@ namespace kkit {
 		std::vector<std::vector<kkit::Map_tile>> tiles;
 
 	public:
+		Board(void);
 		Board(const std::vector<byte>& p_bytes);
 		Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int p_player_x, int p_player_y, kkit::Player_direction p_player_dir);
 

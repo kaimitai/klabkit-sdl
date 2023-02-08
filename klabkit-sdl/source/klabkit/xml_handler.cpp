@@ -61,9 +61,7 @@ kkit::Savegame kkit::xml::load_savefile_xml(const std::string& p_file_name) {
 
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
 
-	std::string l_hname{
-		n_meta.child(XML_TAG_PLAYER_NAME).attribute(XML_ATTR_VALUE).as_string()
-	};
+	std::string l_hname{ n_meta.child(XML_TAG_PLAYER_NAME).attribute(XML_ATTR_VALUE).as_string() };
 
 	auto n_board = n_meta.child(XML_TAG_BOARD);
 	kkit::Board l_board{ get_board_from_node(n_board) };
@@ -74,11 +72,14 @@ kkit::Savegame kkit::xml::load_savefile_xml(const std::string& p_file_name) {
 			',')
 	};
 
-	const auto& lr_vars{ kkit::Savegame::get_variable_order() };
+	const auto& lr_vars{ kkit::Savegame::get_variables() };
+
 	for (const auto& l_var : lr_vars) {
-		auto l_node{ n_meta.child(l_var.c_str()) };
+		std::string l_key{ l_var.m_var_name };
+		auto l_node{ n_meta.child(l_key.c_str()) };
+
 		if (l_node)
-			l_var_values[l_var] = klib::util::string_split<unsigned int>(
+			l_var_values[l_key] = klib::util::string_split<unsigned int>(
 				l_node.attribute(XML_ATTR_VALUE).as_string(),
 				',');
 	}
@@ -103,7 +104,7 @@ kkit::Hiscore kkit::xml::load_hiscore_xml(const std::string& p_file_name) {
 			n_sco = n_sco.next_sibling(XML_TAG_SCORE)) {
 			l_bscores.push_back(std::make_pair(
 				n_sco.attribute(XML_TAG_PLAYER_NAME).as_string(),
-				n_sco.attribute(XML_TAG_SCORE).as_int()
+				n_sco.attribute(XML_TAG_SCORE).as_uint()
 			));
 		}
 		l_scores.push_back(l_bscores);
@@ -302,27 +303,32 @@ void kkit::xml::save_savefile_xml(const kkit::Savegame& p_save,
 	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
 	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_SAVEFILE);
 
-	auto l_hn = n_root.append_child(XML_TAG_PLAYER_NAME);
-	l_hn.append_attribute(XML_ATTR_VALUE);
-	l_hn.attribute(XML_ATTR_VALUE).set_value(p_save.get_hiscore_name().c_str());
-
 	const auto l_vars{ p_save.get_variable_order() };
 	const auto& lr_values{ p_save.get_variable_values() };
 
 	for (const auto& l_var : l_vars) {
-		auto iter{ lr_values.find(l_var) };
-		if (iter != end(lr_values)) {
 
-			std::string l_attr_name{ iter->first };
-			auto l_attr_vals{ klib::util::string_join<unsigned int>(iter->second, ',') };
-			auto l_node{ n_root.append_child(l_attr_name.c_str()) };
+		std::string l_attr_name{ l_var };
 
-			l_node.append_attribute(XML_ATTR_VALUE);
-			l_node.attribute(XML_ATTR_VALUE).set_value(l_attr_vals.c_str());
+		if (l_attr_name == c::SAVE_CODE_BOARD) {
+			add_board_to_node(n_root, p_save.get_board());
+		}
+		else if (l_attr_name == c::SAVE_CODE_HISCORENAME) {
+			auto l_hn = n_root.append_child(XML_TAG_PLAYER_NAME);
+			l_hn.append_attribute(XML_ATTR_VALUE);
+			l_hn.attribute(XML_ATTR_VALUE).set_value(p_save.get_hiscore_name().c_str());
+		}
+		else {
+			auto iter{ lr_values.find(l_var) };
+			if (iter != end(lr_values)) {
+				auto l_attr_vals{ klib::util::string_join<unsigned int>(iter->second, ',') };
+
+				auto l_node{ n_root.append_child(l_attr_name.c_str()) };
+				l_node.append_attribute(XML_ATTR_VALUE);
+				l_node.attribute(XML_ATTR_VALUE).set_value(l_attr_vals.c_str());
+			}
 		}
 	}
-
-	add_board_to_node(n_root, p_save.get_board());
 
 	auto l_unknown = n_root.append_child(XML_TAG_UNK_BYTES);
 	l_unknown.append_attribute(XML_ATTR_VALUE);

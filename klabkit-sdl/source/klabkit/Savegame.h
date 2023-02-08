@@ -11,11 +11,22 @@ using byte = unsigned char;
 
 namespace kkit {
 
+	struct Savegame_variable {
+
+		std::string m_var_name, m_count;
+		std::size_t m_byte_size;
+
+		Savegame_variable(const std::string& p_var_name,
+			std::size_t p_byte_size = 2,
+			const std::string& p_count = std::string("1"));
+
+		bool is_numeric_count(void) const;
+	};
+
 	class Savegame {
 		std::string m_hiscore_name;
 		std::vector<byte> m_unknown_bytes;
 		std::map<std::string, std::vector<unsigned int>> m_variable_values;
-		static std::vector<std::pair<std::string, std::size_t>> m_variable_sizes;
 		kkit::Board m_board;
 
 		static void write_uint_le(std::vector<byte>& p_bytes,
@@ -27,10 +38,10 @@ namespace kkit {
 
 		unsigned int get_variable_value(const std::string& p_key, std::size_t p_slot = 0) const;
 		void read_variable(const std::string& p_key, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_byte_size, std::size_t p_count = 1);
-		void read_variable_range(std::size_t p_start, std::size_t p_end, const std::vector<byte>& p_bytes, std::size_t& p_offset, std::size_t p_count = 1);
-		void write_variable_range(std::size_t p_start, std::size_t p_end, std::vector<byte>& p_bytes) const;
 
 	public:
+		static std::vector<kkit::Savegame_variable> m_variables;
+
 		Savegame(const std::vector<byte>& p_bytes);
 		Savegame(const std::string& p_hiscore_name,
 			const std::map<std::string, std::vector<unsigned int>>& p_var_values,
@@ -39,9 +50,11 @@ namespace kkit {
 
 		void set_board(const kkit::Board& p_board);
 
-		const std::map<std::string, std::vector<unsigned int>>& get_variable_values(void) const;
+		static void set_variables(const std::vector<kkit::Savegame_variable>& p_variables);
+		static const std::vector<Savegame_variable>& get_variables(void);
 		const std::vector<byte>& get_unknown_bytes(void) const;
 		static std::vector<std::string> get_variable_order(void);
+		const std::map<std::string, std::vector<unsigned int>>& get_variable_values(void) const;
 
 		Board get_board(void) const;
 		const std::string& get_hiscore_name(void) const;

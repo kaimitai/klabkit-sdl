@@ -61,6 +61,11 @@ kkit::Board::Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int 
 	tiles{ p_tiles }, player_x{ p_player_x }, player_y{ p_player_y }, player_direction{ p_player_dir }
 { }
 
+kkit::Board::Board(void) :
+	kkit::Board(std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, 0)),
+		0, 0, kkit::Player_direction::Up)
+{ }
+
 bool kkit::Board::is_empty_tile(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).empty();
 }
