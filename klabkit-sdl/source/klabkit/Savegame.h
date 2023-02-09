@@ -18,8 +18,8 @@ namespace kkit {
 		std::size_t m_byte_size;
 
 		Savegame_variable(const std::string& p_var_name,
-			std::size_t p_byte_size = 2,
-			const std::string& p_count = std::string("1"));
+			std::size_t p_byte_size,
+			const std::string& p_count);
 
 		bool is_numeric_count(void) const;
 	};

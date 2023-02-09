@@ -232,7 +232,8 @@ void kkit::Savegame::read_variable(const std::string& p_key, const std::vector<b
 
 kkit::Savegame_variable::Savegame_variable(const std::string& p_var_name, std::size_t p_byte_size,
 	const std::string& p_count) :
-	m_var_name{ p_var_name }, m_byte_size{ p_byte_size }, m_count{ p_count }
+	m_var_name{ p_var_name }, m_byte_size{ p_byte_size },
+	m_count{ p_count.empty() ? "1" : p_count }
 { }
 
 bool kkit::Savegame_variable::is_numeric_count(void) const {
