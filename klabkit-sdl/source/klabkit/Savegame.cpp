@@ -8,35 +8,36 @@ void kkit::Savegame::set_variables(const std::vector<kkit::Savegame_variable>& p
 	kkit::Savegame::m_variables = p_variables;
 }
 
-kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) {
-	std::size_t l_offset{ 0 };
-	for (const auto& l_variable : m_variables) {
-		const auto& l_key{ l_variable.m_var_name };
-		std::size_t l_byte_size{ l_variable.m_byte_size };
-		const std::string& l_count_str{ l_variable.m_count };
-		std::size_t l_count{ l_variable.is_numeric_count() ?
-		atoi(l_count_str.c_str()) : get_variable_value(l_key) };
+void kkit::Savegame::parse_block(const std::vector<byte>& p_bytes,
+	const kkit::Savegame_variable& p_var,
+	std::size_t& p_offset) {
+	const auto& l_key{ p_var.m_var_name };
+	std::size_t l_byte_size{ p_var.m_byte_size };
+	const std::string& l_count_str{ p_var.m_count };
+	std::size_t l_count{ p_var.is_numeric_count() ?
+	atoi(l_count_str.c_str()) : get_variable_value(l_count_str) };
 
-		// parse name
-		if (l_key == c::SAVE_CODE_HISCORENAME) {
-			for (std::size_t i{ 0 }; i < l_byte_size && p_bytes.at(l_offset + i) != 0x00; ++i)
-				m_hiscore_name.push_back(p_bytes.at(l_offset + i));
-			l_offset += l_byte_size;
-		}
-		// parse board
-		else if (l_key == c::SAVE_CODE_BOARD) {
-			m_board = kkit::Board(std::vector<byte>(
-				begin(p_bytes) + l_offset,
-				begin(p_bytes) + l_offset + l_byte_size));
-			l_offset += l_byte_size;
-		}
-		// parse numeric variables
-		else
-			read_variable(l_key, p_bytes, l_offset, l_byte_size, l_count);
+	// parse name
+	if (l_key == c::SAVE_CODE_HISCORENAME) {
+		for (std::size_t i{ 0 }; i < l_byte_size && p_bytes.at(p_offset + i) != 0x00; ++i)
+			m_hiscore_name.push_back(p_bytes.at(p_offset + i));
+		p_offset += l_byte_size;
 	}
+	// parse board
+	else if (l_key == c::SAVE_CODE_BOARD) {
+		m_board = kkit::Board(std::vector<byte>(
+			begin(p_bytes) + p_offset,
+			begin(p_bytes) + p_offset + l_byte_size));
+		p_offset += l_byte_size;
+	}
+	// parse numeric variables
+	else
+		read_variable(l_key, p_bytes, p_offset, l_byte_size, l_count);
+}
 
+void kkit::Savegame::post_load(const std::vector<byte>& p_bytes, std::size_t p_offset) {
 	// store unknown bytes (probably inconsequential garbage memory)
-	m_unknown_bytes = std::vector<byte>(begin(p_bytes) + l_offset, end(p_bytes));
+	m_unknown_bytes = std::vector<byte>(begin(p_bytes) + p_offset, end(p_bytes));
 
 	// set the board start position based on the board start-variables in the savefile
 	int l_px{ static_cast<int>(get_variable_value("startx") / 1024) };
@@ -50,6 +51,27 @@ kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) {
 	else if (l_startang < 512 * 3)
 		l_dir = kkit::Player_direction::Left;
 	m_board.set_player_start_position(l_px, l_py, l_dir);
+}
+
+kkit::Savegame::Savegame(const std::vector<byte>& p_bytes) {
+	std::size_t l_offset{ 0 };
+	for (const auto& l_variable : m_variables)
+		parse_block(p_bytes, l_variable, l_offset);
+	post_load(p_bytes, l_offset);
+}
+
+kkit::Savegame::Savegame(const std::vector<byte>& p_bytes, const std::vector<kkit::Wall>& p_walls) {
+	std::size_t l_offset{ 0 };
+	for (const auto& l_variable : m_variables) {
+		if (l_variable.m_var_name == c::SAVE_CODE_BOARD) {
+			m_board = kkit::Board(std::vector<byte>(begin(p_bytes) + l_offset,
+				begin(p_bytes) + l_offset + 4096), p_walls);
+			l_offset += 4096;
+		}
+		else
+			parse_block(p_bytes, l_variable, l_offset);
+	}
+	post_load(p_bytes, l_offset);
 }
 
 kkit::Savegame::Savegame(const std::string& p_hiscore_name,
@@ -74,31 +96,54 @@ void kkit::Savegame::write_uint_le(std::vector<byte>& p_bytes,
 	}
 }
 
+void kkit::Savegame::get_block_bytes(std::vector<byte>& p_bytes,
+	const Savegame_variable& p_var) const {
+
+	const auto& l_key{ p_var.m_var_name };
+	std::size_t l_byte_size{ p_var.m_byte_size };
+
+	if (l_key == c::SAVE_CODE_BOARD) {
+		// get board bytes, but remove player start
+		auto l_board_bytes{ m_board.get_bytes(false) };
+		p_bytes.insert(end(p_bytes),
+			begin(l_board_bytes), end(l_board_bytes));
+	}
+	else if (l_key == c::SAVE_CODE_HISCORENAME) {
+		for (std::size_t i{ 0 }; i < l_byte_size && i < m_hiscore_name.size(); ++i)
+			p_bytes.push_back(m_hiscore_name[i]);
+		for (std::size_t i{ m_hiscore_name.size() }; i < l_byte_size; ++i)
+			p_bytes.push_back(0x00);
+	}
+	else {
+		if (m_variable_values.find(l_key) != end(m_variable_values))
+			for (unsigned int n : m_variable_values.at(l_key))
+				write_uint_le(p_bytes, n, l_byte_size);
+	}
+
+}
+
 std::vector<byte> kkit::Savegame::get_bytes(void) const {
 	std::vector<byte> result;
 
+	for (const auto& l_variable : m_variables)
+		get_block_bytes(result, l_variable);
+
+	result.insert(end(result),
+		begin(m_unknown_bytes), end(m_unknown_bytes));
+
+	return result;
+}
+
+std::vector<byte> kkit::Savegame::get_bytes(const std::vector<kkit::Wall>& p_walls) const {
+	std::vector<byte> result;
+
 	for (const auto& l_variable : m_variables) {
-		const auto& l_key{ l_variable.m_var_name };
-		std::size_t l_byte_size{ l_variable.m_byte_size };
-
-		if (l_key == c::SAVE_CODE_BOARD) {
-			// get board bytes, but remove player start
-			auto l_board_bytes{ m_board.get_bytes(false) };
-			result.insert(end(result),
-				begin(l_board_bytes), end(l_board_bytes));
+		if (l_variable.m_var_name == c::SAVE_CODE_BOARD) {
+			auto l_walken_board_bytes{ m_board.get_bytes(p_walls, false) };
+			result.insert(end(result), begin(l_walken_board_bytes), end(l_walken_board_bytes));
 		}
-		else if (l_key == c::SAVE_CODE_HISCORENAME) {
-			for (std::size_t i{ 0 }; i < l_byte_size && i < m_hiscore_name.size(); ++i)
-				result.push_back(m_hiscore_name[i]);
-			for (std::size_t i{ m_hiscore_name.size() }; i < l_byte_size; ++i)
-				result.push_back(0x00);
-		}
-		else {
-			if (m_variable_values.find(l_key) != end(m_variable_values))
-				for (unsigned int n : m_variable_values.at(l_key))
-					write_uint_le(result, n, l_byte_size);
-		}
-
+		else
+			get_block_bytes(result, l_variable);
 	}
 
 	result.insert(end(result),

@@ -4,6 +4,50 @@
 
 using byte = unsigned char;
 
+kkit::Board::Board(const std::vector<byte>& p_bytes, const std::vector<Wall>& p_walls) {
+	this->tiles = std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
+	player_x = 0;
+	player_y = 0;
+
+	int l_px{ 0 };
+	int l_py{ 0 };
+	this->player_direction = kkit::Player_direction::Up;
+
+	for (int j{ 0 }; j < 4096; ++j) {
+		int l_x = j / 64;
+		int l_y = j % 64;
+		int l_tile_no = p_bytes.at(j);
+
+		bool l_inside{ false };
+
+		if (l_tile_no >= 252) {
+			this->player_x = l_x;
+			this->player_y = l_y;
+			if (l_tile_no == 252)
+				this->player_direction = kkit::Player_direction::Right;
+			else if (l_tile_no == 253)
+				this->player_direction = kkit::Player_direction::Down;
+			else if (l_tile_no == 254)
+				this->player_direction = kkit::Player_direction::Left;
+
+			l_tile_no = 0;
+			l_inside = true;
+		}
+		else if (l_tile_no >= 128) {
+			l_tile_no -= 128;
+			l_inside = (l_tile_no != 0);
+
+		}
+		else if (l_tile_no == 0)
+			l_inside = true;
+
+		if (l_tile_no > 0)
+			l_inside |= (l_tile_no == 0 ? true : p_walls.at(l_tile_no - 1).is_inside());
+
+		tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
+	}
+}
+
 kkit::Board::Board(const std::vector<byte>& p_bytes) {
 
 	for (int j{ 0 }; j < c::MAP_H; ++j) {
@@ -167,6 +211,42 @@ std::vector<byte> kkit::Board::get_bytes(bool p_incl_player_start) const {
 
 
 		}
+
+	return result;
+}
+
+std::vector<byte> kkit::Board::get_bytes(const std::vector<kkit::Wall>& p_walls,
+	bool p_incl_player_start) const {
+	std::vector<byte> result;
+
+	int l_p_index = 64 * get_player_start_x() + get_player_start_y();
+
+	byte l_pbyte{ 252 };
+	if (get_player_start_direction() == kkit::Player_direction::Down)
+		l_pbyte = 253;
+	else if (get_player_start_direction() == kkit::Player_direction::Left)
+		l_pbyte = 254;
+	else if (get_player_start_direction() == kkit::Player_direction::Up)
+		l_pbyte = 255;
+
+	kkit::Player_direction l_sdir = get_player_start_direction();
+
+	for (int x = 0; x < 64; ++x)
+		for (int y = 0; y < 64; ++y) {
+			int l_tile_no = get_tile_no(x, y);
+
+			bool l_clip_override = (l_tile_no != -1) && (is_inside(x, y) && !p_walls.at(l_tile_no).is_inside());
+			l_clip_override |= (l_tile_no == -1 && !is_inside(x, y));
+
+			if (l_clip_override)
+				l_tile_no += 128;
+
+			result.push_back(static_cast<byte>(l_tile_no + 1));
+		}
+
+	// overwrite the start direction tile
+	if (p_incl_player_start)
+		result.at(l_p_index) = l_pbyte;
 
 	return result;
 }

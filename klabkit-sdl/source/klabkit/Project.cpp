@@ -41,9 +41,39 @@ kkit::Project::Project(const kkit::Project_config& p_config) :
 		{"midiinst"}, {"mute"}, {"namrememberstat", 1}, {"fadewarpval"}, {"fadehurtval"}, {"slottime"}, {"slotpos_0"}, {"slotpos_1"}, {"slotpos_2"}, {"owecoins"}, {"owecoinwait"}
 	};
 
+	std::vector<kkit::Savegame_variable> l_var_walken = { {"board",4096},
+	{"mboard",1,"4096"},
+	{"boardnum"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers"}, {"keys"}, {"flowerpos"}, {"kenpos"}, {"ballpos"}, {"rogermode"}, {"statusbar"}, {"statusbargoal"}, {"posx"}, {"posy"}, {"posz"}, {"ang"}, {"startx"}, {"starty"}, {"startang"}, {"angvel"}, {"vel"}, {"hvel"}, {"oldposx"}, {"oldposy"}, {"youbulnum"},
+	{"bulnum"},
+	{"bulang",2,"bulnum"},{"bulkind",2,"bulnum"},{"bulx",2,"bulnum"},{"buly",2,"bulnum"},{"bulstat",4,"bulnum"},
+	{"lastbulshoot",4},
+	{"mnum"},
+	{"mposx",2,"mnum"},{"mposy",2,"mnum"},{"mgolx",2,"mnum"},{"mgoly",2,"mnum"},{"moldx",2,"mnum"},{"moldy",2,"mnum"},{"mstat",1,"mnum"},{"mshock",2,"mnum"},{"mshot",1,"mnum"},
+	{"totalclock",4},{"musicstatus",4},{"clockspeed"},{"count",4},{"countstop",4},{"nownote",4},
+	{"chanage",4,"18"},
+	{"chanfreq",1,"18"} };
+
 	std::vector<kkit::Savegame_variable> l_var_10 = {
+	{"board",8192},
+	{"mboard",1,"4096"}, {"boardnum"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers_0"}, {"firepowers_1"}, {"firepowers_2"},{"bulchoose"},{"keys_0",4},{"compass"},{"cheated"},{"heatpos"},{"fanpos"},{"warpos"},{"kenpos"}, {"ballpos"},{"rogermode"},{"statusbar"},{"statusbargoal"},{"posx"},{"posy"},{"posz"},{"ang"},{"startx"},{"starty"},{"startang"},{"angvel"},{"vel"},{"mxvel"},{"myvel"},{"svel"},{"hvel"},{"oldposx"},{"oldposy"},
+	{"bulnum"},
+	{"bulang_0",2,"bulnum"},{"bulkind_0",2,"bulnum"},{"bulx_0",2,"bulnum"},{"buly_0",2,"bulnum"},{"bulstat_0",4,"bulnum"},
+	{"lastbulshoot",4},
+	{"mnum"},
+	{"mposx_0",2,"mnum"}, {"mposy_0",2,"mnum"}, {"mgolx_0",2,"mnum"}, {"mgoly_0",2,"mnum"}, {"moldx_0",2,"mnum"},{"moldy_0",2,"mnum"},{"mstat_0",1,"mnum"},{"mshock_0",2,"mnum"}, {"mshot_0",1,"mnum"},
+	{"doorx"},{"doory"},{"doorstat"},
+	{"numwarps",1},{"justwarped",1},
+	{"xwarp_0",1,"numwarps"},{"ywarp_0",1,"numwarps"},
+	{"totalclock",4},{"scoreclock",4},{"scorecount",4},{"purpletime",4},{"greentime",4},{"capetime_0",4},{"capetime_1",4},
+	{c::SAVE_CODE_HISCORENAME,16},
+	{"hiscorenamstat",1}, {"musicstatus",4}, {"clockspeed"}, {"count",4}, {"countstop",4}, {"nownote",4},
+	{"chanage",4,"18"},
+	{"chanfreq",1,"18"}
+	};
+
+	std::vector<kkit::Savegame_variable> l_var_11 = {
 		{"board",8192},
-		{"mboard",1,"4096"}, {"boardnum"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers_0",2}, {"firepowers_1",2}, {"firepowers_2",2},{"bulchoose"},{"keys_0",4},{"compass"},{"cheated"},{"heatpos"},{"fanpos"},{"warpos"},{"kenpos"},{"ballpos"},{"rogermode"},{"statusbar"},{"statusbargoal"},{"posx"},{"posy"},{"posz"},{"ang"},{"startx"},{"starty"},{"startang"},{"angvel"},{"vel"},{"mxvel"},{"myvel"},{"svel"},{"hvel"},{"oldposx"},{"oldposy"},
+		{"mboard",1,"4096"}, {"boardnum"}, {"life"}, {"death"}, {"lifevests"}, {"lightnings"}, {"firepowers_0"}, {"firepowers_1"}, {"firepowers_2"},{"bulchoose"},{"keys_0",4},{"compass"},{"cheated"},{"heatpos"},{"fanpos"},{"warpos"},{"kenpos"},{"unknown",4}, {"ballpos"},{"rogermode"},{"statusbar"},{"statusbargoal"},{"posx"},{"posy"},{"posz"},{"ang"},{"startx"},{"starty"},{"startang"},{"angvel"},{"vel"},{"mxvel"},{"myvel"},{"svel"},{"hvel"},{"oldposx"},{"oldposy"},
 		{"bulnum"},
 		{"bulang_0",2,"bulnum"},{"bulkind_0",2,"bulnum"},{"bulx_0",2,"bulnum"},{"buly_0",2,"bulnum"},{"bulstat_0",4,"bulnum"},
 		{"lastbulshoot",4},
@@ -59,6 +89,8 @@ kkit::Project::Project(const kkit::Project_config& p_config) :
 		{"chanfreq",1,"18"}
 	};
 
+	if (config.lzw_comp_type == 0)
+		kkit::Savegame::set_variables(l_var_walken);
 	if (config.lzw_comp_type == 2)
 		kkit::Savegame::set_variables(l_variables);
 	else if (config.lzw_comp_type == 1)
@@ -242,50 +274,10 @@ void kkit::Project::initialize_maps_walken(void) {
 
 	// calculate the entire board here
 	for (int i{ 0 }; i < config.board_count; ++i) {
-		std::vector<std::vector<kkit::Map_tile>> tiles(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
-		int l_px{ 0 };
-		int l_py{ 0 };
-		kkit::Player_direction l_pdir = kkit::Player_direction::Up;
-
-		for (int j{ 0 }; j < 4096; ++j) {
-			int l_x = j / 64;
-			int l_y = j % 64;
-			int l_tile_no = map_bytes.at(i * 4096 + j);
-
-			bool l_inside{ false };
-
-			if (l_tile_no >= 252) {
-				l_px = l_x;
-				l_py = l_y;
-				if (l_tile_no == 252)
-					l_pdir = kkit::Player_direction::Right;
-				else if (l_tile_no == 253)
-					l_pdir = kkit::Player_direction::Down;
-				else if (l_tile_no == 254)
-					l_pdir = kkit::Player_direction::Left;
-				else
-					l_pdir = kkit::Player_direction::Up;
-
-				l_tile_no = 0;
-				l_inside = true;
-			}
-			else if (l_tile_no >= 128) {
-				l_tile_no -= 128;
-				l_inside = (l_tile_no != 0);
-
-			}
-			else if (l_tile_no == 0)
-				l_inside = true;
-
-			if (l_tile_no > 0)
-				l_inside |= this->is_inside(l_tile_no - 1);
-
-			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
-		}
-
-		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
+		std::vector<byte> l_map_bytes(begin(map_bytes) + i * 4096,
+			begin(map_bytes) + (i + 1) * 4096);
+		maps.push_back(kkit::Board(l_map_bytes, walls));
 	}
-
 }
 
 // walken-specific save boards to file
@@ -294,37 +286,7 @@ int kkit::Project::save_boards_dat_walken() const {
 
 	// traverse all boards, and translate the board bytes based on clip indicators and player start position
 	for (int i{ 0 }; i < this->get_board_count(); ++i) {
-		std::vector<byte> l_brd_bytes;
-
-		const auto& l_brd = this->get_board(i);
-		int l_p_index = 64 * l_brd.get_player_start_x() + l_brd.get_player_start_y();
-
-		byte l_pbyte{ 252 };
-		if (l_brd.get_player_start_direction() == kkit::Player_direction::Down)
-			l_pbyte = 253;
-		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Left)
-			l_pbyte = 254;
-		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Up)
-			l_pbyte = 255;
-
-		kkit::Player_direction l_sdir = l_brd.get_player_start_direction();
-
-		for (int x = 0; x < 64; ++x)
-			for (int y = 0; y < 64; ++y) {
-				int l_tile_no = l_brd.get_tile_no(x, y);
-
-				bool l_clip_override = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
-				l_clip_override |= (l_tile_no == -1 && !l_brd.is_inside(x, y));
-
-				if (l_clip_override)
-					l_tile_no += 128;
-
-				l_brd_bytes.push_back(static_cast<byte>(l_tile_no + 1));
-			}
-
-		// overwrite the start direction tile
-
-		l_brd_bytes.at(l_p_index) = l_pbyte;
+		std::vector<byte> l_brd_bytes{ get_board(i).get_bytes(walls) };
 		l_bytes.insert(end(l_bytes), begin(l_brd_bytes), end(l_brd_bytes));
 	}
 
@@ -567,8 +529,9 @@ void kkit::Project::export_board_to_save(std::size_t p_board_slot, std::size_t p
 
 void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
 	const auto l_filepath{ get_dat_file_name(c::FILE_SAVEGAME + std::to_string(p_save_slot)) };
+	auto l_bytes{ klib::file::read_file_as_bytes(l_filepath) };
 
-	m_saves.at(p_save_slot) = Savegame(klib::file::read_file_as_bytes(l_filepath));
+	m_saves.at(p_save_slot) = is_walken() ? Savegame(l_bytes, walls) : Savegame(l_bytes);
 
 	add_message("Loaded " + l_filepath, c::MSG_CODE_SUCCESS);
 }
@@ -576,8 +539,12 @@ void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
 void kkit::Project::save_savefile_dat(std::size_t p_save_slot) {
 	const auto l_filepath{ get_dat_file_name(c::FILE_SAVEGAME + std::to_string(p_save_slot)) };
 
-	klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(),
-		l_filepath);
+	if (is_walken())
+		klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(walls),
+			l_filepath);
+	else
+		klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(),
+			l_filepath);
 
 	add_message("Saved " + l_filepath, c::MSG_CODE_SUCCESS);
 }

@@ -61,7 +61,11 @@ kkit::Savegame kkit::xml::load_savefile_xml(const std::string& p_file_name) {
 
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
 
-	std::string l_hname{ n_meta.child(XML_TAG_PLAYER_NAME).attribute(XML_ATTR_VALUE).as_string() };
+	auto n_hname{ n_meta.child(XML_TAG_PLAYER_NAME) };
+
+	std::string l_hname;
+	if (n_hname)
+		l_hname = n_hname.attribute(XML_ATTR_VALUE).as_string();
 
 	auto n_board = n_meta.child(XML_TAG_BOARD);
 	kkit::Board l_board{ get_board_from_node(n_board) };
