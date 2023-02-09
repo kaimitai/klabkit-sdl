@@ -31,7 +31,7 @@ kkit::Project::Project(const kkit::Project_config& p_config) :
 		{"bultype_todo", 2, "bulnum"}, {"bulang", 2, "bulnum"}, {"bulx", 2, "bulnum"}, {"buly", 2, "bulnum"}, {"bulstat", 4, "bulnum"},
 		{"lastbulshoot", 4},
 		{"mnum"},
-		{"mposx", 2, "mnum"}, {"mposy", 2}, {"mgolx", 2}, {"mgoly", 2}, {"moldx", 2}, {"moldy", 2, "mnum"}, {"mstat", 2, "mnum"}, {"mshock", 2, "mnum"}, {"mshot", 1, "mnum"},
+		{"mposx", 2, "mnum"}, {"mposy", 2, "mnum"}, {"mgolx", 2, "mnum"}, {"mgoly", 2, "mnum"}, {"moldx", 2, "mnum"}, {"moldy", 2, "mnum"}, {"mstat", 2, "mnum"}, {"mshock", 2, "mnum"}, {"mshot", 1, "mnum"},
 		{"doorx", 2}, {"doory", 2}, {"doorstat", 2},
 		{"numwarps", 1},
 		{"justwarped", 1},
