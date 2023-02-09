@@ -6,7 +6,8 @@
 #include <string>
 #include <tuple>
 #include <vector>
-#include "constants.h"
+#include "./Savegame.h"
+#include "./constants.h"
 
 namespace kkit {
 
@@ -39,6 +40,7 @@ namespace kkit {
 		std::map<int, int> m_tile_overlays;
 		std::tuple<byte, byte, byte> floor_color;
 		std::size_t m_tile_picker_width;
+		std::vector<kkit::Savegame_variable> m_savegame_variables;
 
 		// fill the tile picker with tiles that have not been explicitly set
 		void fill_tile_picker(void);
@@ -55,7 +57,8 @@ namespace kkit {
 			const std::set<int>& p_clip_overrides,
 			const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
 			const std::tuple<byte, byte, byte>& p_floor_rgb,
-			const std::map<int, int>& p_tile_overlays);
+			const std::map<int, int>& p_tile_overlays,
+			const std::vector<kkit::Savegame_variable>& p_save_variables);
 
 		kkit::Data_ext get_ext_boards(void) const;
 		kkit::Data_ext get_ext_walls(void) const;

@@ -15,6 +15,7 @@ namespace kkit {
 
 		// load XMLs
 		kkit::Project_config read_config_xml(const std::string& p_file_name);
+		std::vector<kkit::Savegame_variable> get_savegame_variables(const pugi::xml_node& p_root_node, int p_config_no);
 		kkit::Wall load_wall_xml(const std::string& p_file_name);
 		kkit::Board load_board_xml(const std::string& p_file_name);
 		kkit::Savegame load_savefile_xml(const std::string& p_file_name);
@@ -39,6 +40,9 @@ namespace kkit {
 		constexpr char XML_TAG_CLIP_OVERRIDES[]{ "clip_overrides" };
 		constexpr char XML_TAG_TILE_PICKER[]{ "tile_picker" };
 		constexpr char XML_TAG_TILE_OVERLAYS[]{ "tile_overlays" };
+		constexpr char XML_TAG_SAVE_FILE_CONFIGS[]{ "saveconfigs" };
+		constexpr char XML_TAG_SAVE_FILE_CONFIG[]{ "saveconfig" };
+		constexpr char XML_TAG_VARIABLE[]{ "variable" };
 
 		constexpr char XML_TAG_BOARD[]{ "board" };
 		constexpr char XML_TAG_ROW[]{ "row" };
@@ -56,6 +60,11 @@ namespace kkit {
 		constexpr char XML_ATTR_LAB3D_V[]{ "lab3d_version" };
 
 		constexpr char XML_ATTR_FTYPE[]{ "file_type" };
+
+		constexpr char XML_ATTR_CONFIG_NO[]{ "config_no" };
+		constexpr char XML_ATTR_NAME[]{ "name" };
+		constexpr char XML_ATTR_SIZE[]{ "size" };
+		constexpr char XML_ATTR_COUNT[]{ "count" };
 
 		constexpr char XML_ATTR_LABEL[]{ "label" };
 		constexpr char XML_ATTR_PROJ_DIR[]{ "project_directory" };

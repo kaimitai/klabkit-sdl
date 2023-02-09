@@ -117,6 +117,39 @@ kkit::Hiscore kkit::xml::load_hiscore_xml(const std::string& p_file_name) {
 	return kkit::Hiscore(l_scores);
 }
 
+std::vector<kkit::Savegame_variable> kkit::xml::get_savegame_variables(const pugi::xml_node& p_root_node,
+	int p_config_no) {
+	std::vector<kkit::Savegame_variable> result;
+
+	auto l_node = p_root_node.child(XML_TAG_SAVE_FILE_CONFIGS);
+	if (l_node) {
+		for (auto l_cnode = l_node.child(XML_TAG_SAVE_FILE_CONFIG); l_cnode;
+			l_cnode = l_cnode.next_sibling(XML_TAG_SAVE_FILE_CONFIG)) {
+			auto l_cnfg_list{ klib::util::string_split<int>(
+			l_cnode.attribute(XML_ATTR_CONFIG_NO).as_string(), ',') };
+
+			bool l_is_match{
+				std::find(begin(l_cnfg_list), end(l_cnfg_list), p_config_no) != end(l_cnfg_list)
+			};
+
+			if (l_is_match) {
+				for (auto l_vnode = l_cnode.child(XML_TAG_VARIABLE); l_vnode;
+					l_vnode = l_vnode.next_sibling(XML_TAG_VARIABLE)) {
+					std::string l_var_name{ l_vnode.attribute(XML_ATTR_NAME).as_string() };
+					std::size_t l_var_size{ l_vnode.attribute(XML_ATTR_SIZE).as_uint() };
+					std::string l_count{ l_vnode.attribute(XML_ATTR_COUNT).as_string() };
+
+					result.push_back(kkit::Savegame_variable(l_var_name,
+						l_var_size == 0 ? 2 : l_var_size,
+						l_count));
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
 kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_file_name.c_str()))
@@ -226,8 +259,8 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 				l_clip_overrides,
 				l_tile_picker,
 				l_floor_rgb_t,
-				l_tile_overlays);
-
+				l_tile_overlays,
+				get_savegame_variables(n_meta, l_config_no));
 		}
 
 		throw std::runtime_error("Invalid value for default_config_no in the configuration xml");
