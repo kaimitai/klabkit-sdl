@@ -129,6 +129,12 @@
     <ClInclude Include="source\klabkit\constants_color.h">
       <Filter>Source Files\klabkit</Filter>
     </ClInclude>
+    <ClInclude Include="source\klabkit\Savegame.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
+    <ClInclude Include="source\klabkit\Hiscore.h">
+      <Filter>Header Files\klabkit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\klib\file.cpp">
@@ -214,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="source\klabkit\Board_ui_gfx.cpp">
       <Filter>Source Files\klabkit\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Savegame.cpp">
+      <Filter>Source Files\klabkit</Filter>
+    </ClCompile>
+    <ClCompile Include="source\klabkit\Hiscore.cpp">
+      <Filter>Source Files\klabkit</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

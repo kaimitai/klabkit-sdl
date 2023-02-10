@@ -10,6 +10,13 @@ namespace klib {
 
 		using byte = unsigned char;
 
+		// read/write little-endiad ints from/to vectors
+		void write_uint_le(std::vector<byte>& p_bytes,
+			unsigned int p_value, std::size_t p_byte_size);
+		unsigned int read_uint_le(const std::vector<byte>& p_bytes,
+			std::size_t p_byte_size,
+			std::size_t p_offset);
+
 		// check if (px, py) is in rect (rx, ry, rx+rw,rx+rh)
 		bool is_p_in_rect(int p_x, int p_y, int r_x, int r_y, int r_w, int r_h);
 
@@ -73,14 +80,14 @@ namespace klib {
 
 			while (l_next != std::string::npos) {
 				auto l_next_num = p_values.substr(l_last, l_next - l_last);
-				result.push_back(static_cast<T>(atoi(l_next_num.c_str())));
+				result.push_back(static_cast<T>(std::strtoul(l_next_num.c_str(), nullptr, 10)));
 
 				l_last = l_next + 1;
 				l_next = p_values.find(p_delimeter, l_last);
 			}
 			auto l_next_num = p_values.substr(l_last, l_next - l_last);
 			if (!l_next_num.empty())
-				result.push_back(static_cast<T>(atoi(l_next_num.c_str())));
+				result.push_back(static_cast<T>(std::strtoul(l_next_num.c_str(), nullptr, 10)));
 
 			return result;
 		}
@@ -92,7 +99,8 @@ namespace klib {
 			for (std::size_t i{ 0 }; i < p_values.size(); ++i)
 				result += std::to_string(p_values[i]) + p_delimiter;
 
-			result.pop_back();
+			if (!result.empty())
+				result.pop_back();
 
 			return result;
 		}

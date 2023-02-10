@@ -90,4 +90,322 @@
     <clip_overrides value="22,23,24,25,26,27,28,29,51" />
   </config>
 
+  <saveconfigs>
+    <saveconfig config_no="0,1">
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="boardnum" />
+      <variable name="scorecount" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="board" size="8192" />
+      <variable name="skilevel" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
+      <variable name="coins" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="animate2" />
+      <variable name="animate3" />
+      <variable name="animate4" />
+      <variable name="oscillate3" />
+      <variable name="oscillate5" />
+      <variable name="animate6" />
+      <variable name="animate7" />
+      <variable name="animate8" />
+      <variable name="animate10" />
+      <variable name="animate11" />
+      <variable name="animate15" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bultype" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" />
+      <variable name="junk" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+      <variable name="midiinst" />
+      <variable name="mute" />
+      <variable name="namrememberstat" size="1" />
+      <variable name="fadewarpval" />
+      <variable name="fadehurtval" />
+      <variable name="slottime" />
+      <variable name="slotpos_0" />
+      <variable name="slotpos_1" />
+      <variable name="slotpos_2" />
+      <variable name="owecoins" />
+      <variable name="owecoinwait" />
+    </saveconfig>
+    <saveconfig config_no="2">
+      <variable name="board" size="8192" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
+      <variable name="coins" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="heatpos" />
+      <variable name="fanpos" />
+      <variable name="warpos" />
+      <variable name="unknown" />
+      <variable name="kenpos" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="scorecount" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+    <saveconfig config_no="3">
+      <variable name="board" size="8192" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="heatpos" />
+      <variable name="fanpos" />
+      <variable name="warpos" />
+      <variable name="kenpos" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="scorecount" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+    <saveconfig config_no="4">
+      <variable name="board" size="4096" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers" />
+      <variable name="keys" />
+      <variable name="flowerpos" />
+      <variable name="kenpos" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="youbulnum" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="totalclock" size="4" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+  </saveconfigs>
+
 </kkit_sdl>

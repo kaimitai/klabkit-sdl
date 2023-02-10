@@ -23,7 +23,8 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	const std::set<int>& p_clip_overrides,
 	const std::vector<std::pair<std::string, std::vector<int>>>& p_tile_picker,
 	const std::tuple<byte, byte, byte>& p_floor_rgb,
-	const std::map<int, int>& p_tile_overlays) :
+	const std::map<int, int>& p_tile_overlays,
+	const std::vector<kkit::Savegame_variable>& p_save_variables) :
 	project_folder{ p_folder },
 	label{ p_label },
 	board_count{ p_bcount },
@@ -35,7 +36,8 @@ kkit::Project_config::Project_config(const std::string& p_label, const std::stri
 	clip_overrides{ p_clip_overrides },
 	floor_color{ p_floor_rgb },
 	m_tile_overlays{ p_tile_overlays },
-	m_tile_picker_width{ 8 }
+	m_tile_picker_width{ 8 },
+	m_savegame_variables{ p_save_variables }
 {
 	this->fill_tile_picker();
 }

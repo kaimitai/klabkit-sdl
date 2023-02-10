@@ -43,6 +43,8 @@ namespace kkit {
 		// filename constants
 		constexpr char FILE_WALLS[]{ "WALLS" };
 		constexpr char FILE_BOARDS[]{ "BOARDS" };
+		constexpr char FILE_SAVEGAME[]{ "SAVGAME" };
+		constexpr char FILE_HISCORE[]{ "HISCORE" };
 		constexpr char FILE_EXT_DAT[]{ "DAT" };
 		constexpr char FILE_EXT_KZP[]{ "KZP" };
 		constexpr char FILE_EXT_BMP[]{ "bmp" };
@@ -112,6 +114,11 @@ namespace kkit {
 		constexpr int INDEX_BG_TEXTURES{ INDEX_APP_TEXTURES + 1 };
 		constexpr int INDEX_MM_TEXTURES{ INDEX_BG_TEXTURES + 1 }; // minimaps
 
+		// savefile variable codes
+		constexpr char SAVE_CODE_BOARD[]{ "board" };
+		constexpr char SAVE_CODE_BOARDNUM[]{ "boardnum" };
+		constexpr char SAVE_CODE_HISCORENAME[]{ "hiscorename" };
+
 		// window position and size constants
 		constexpr int WIN_MAIN_X{ 5 };
 		constexpr int WIN_MAIN_Y{ 5 };
@@ -137,6 +144,18 @@ namespace kkit {
 		constexpr int WIN_META_Y{ 5 };
 		constexpr int WIN_META_W{ 340 };
 		constexpr int WIN_META_H{ 330 };
+
+		// savefile editor window
+		constexpr int WIN_SF_X{ 415 };
+		constexpr int WIN_SF_Y{ 5 };
+		constexpr int WIN_SF_W{ 385 };
+		constexpr int WIN_SF_H{ 235 };
+
+		// hiscores editor window
+		constexpr int WIN_HS_X{ 415 };
+		constexpr int WIN_HS_Y{ 5 };
+		constexpr int WIN_HS_W{ 245 };
+		constexpr int WIN_HS_H{ 280 };
 
 		// message codes
 		constexpr int MSG_CODE_INFO{ 0 };

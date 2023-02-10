@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "Map_tile.h"
+#include "Wall.h"
 
 namespace kkit {
 
@@ -23,7 +24,9 @@ namespace kkit {
 		std::vector<std::vector<kkit::Map_tile>> tiles;
 
 	public:
+		Board(void);
 		Board(const std::vector<byte>& p_bytes);
+		Board(const std::vector<byte>& p_bytes, const std::vector<Wall>& p_walls);
 		Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int p_player_x, int p_player_y, kkit::Player_direction p_player_dir);
 
 		// getters
@@ -31,14 +34,17 @@ namespace kkit {
 		bool is_inside(int p_x, int p_y) const;
 		bool is_blast(int p_x, int p_y) const;
 		bool is_vertical(int p_x, int p_y) const;
+		bool is_bit_1(int p_x, int p_y) const;
+		bool is_bit_2(int p_x, int p_y) const;
 		int get_player_start_x(void) const;
 		int get_player_start_y(void) const;
 		kkit::Player_direction get_player_start_direction(void) const;
 
-
 		// logical getters
 		bool is_empty_tile(int p_x, int p_y) const;
-		std::vector<byte> get_bytes(void) const;
+		std::vector<byte> get_bytes(bool p_incl_player_start = true) const;
+		std::vector<byte> get_bytes(const std::vector<kkit::Wall>& p_walls,
+			bool p_incl_player_start = true) const;
 		bool is_start_tile(int p_x, int p_y) const;
 		std::string get_player_direction_as_string(void) const;
 		std::vector<std::vector<kkit::Map_tile>> get_rectangle(int p_x, int p_y, int p_w, int p_h) const;

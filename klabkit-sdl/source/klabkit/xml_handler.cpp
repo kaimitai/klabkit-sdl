@@ -11,30 +11,26 @@
 
 using byte = unsigned char;
 
-kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
-	pugi::xml_document doc;
-	if (!doc.load_file(p_file_name.c_str()))
-		throw std::runtime_error("Could not find board xml");
+kkit::Board kkit::xml::get_board_from_node(pugi::xml_node& p_board_node) {
 
-	pugi::xml_node n_meta = doc.child(XML_TAG_META);
-	auto n_board = n_meta.child(XML_TAG_BOARD);
-
-	int l_player_start_x = n_board.attribute(XML_ATTR_PLAYER_X).as_int();
-	int l_player_start_y = n_board.attribute(XML_ATTR_PLAYER_Y).as_int();
-	kkit::Player_direction l_player_dir = kkit::Board::get_player_direction_from_string(n_board.attribute(XML_ATTR_PLAYER_DIR).as_string());
+	int l_player_start_x = p_board_node.attribute(XML_ATTR_PLAYER_X).as_int();
+	int l_player_start_y = p_board_node.attribute(XML_ATTR_PLAYER_Y).as_int();
+	kkit::Player_direction l_player_dir = kkit::Board::get_player_direction_from_string(p_board_node.attribute(XML_ATTR_PLAYER_DIR).as_string());
 
 	std::vector<std::vector<kkit::Map_tile>> l_board(c::MAP_W, std::vector<kkit::Map_tile>(c::MAP_H, kkit::Map_tile()));
 	std::size_t x{ 0 }, y{ 0 };
 
-	for (auto n_br_node = n_board.child(XML_TAG_ROW); n_br_node; n_br_node = n_br_node.next_sibling(XML_TAG_ROW)) {
+	for (auto n_br_node = p_board_node.child(XML_TAG_ROW); n_br_node; n_br_node = n_br_node.next_sibling(XML_TAG_ROW)) {
 
 		for (auto n_bc_node = n_br_node.child(XML_TAG_TILE); n_bc_node; n_bc_node = n_bc_node.next_sibling(XML_TAG_TILE)) {
 			int l_tile_no = n_bc_node.attribute(XML_ATTR_WALL_NO).as_int() - 1;
 			bool l_blast = (strcmp(n_bc_node.attribute(XML_ATTR_DESTRUCTIBLE).as_string(), XML_VALUE_TRUE) == 0);
 			bool l_inside = (strcmp(n_bc_node.attribute(XML_ATTR_CLIP).as_string(), XML_VALUE_TRUE) == 0);
 			bool l_vertical = (strcmp(n_bc_node.attribute(XML_ATTR_VERTICAL).as_string(), XML_VALUE_TRUE) == 0);
+			bool l_bit1 = n_bc_node.attribute(XML_ATTR_BIT1).as_bool();
+			bool l_bit2 = n_bc_node.attribute(XML_ATTR_BIT2).as_bool();
 
-			l_board[y][x] = kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical);
+			l_board[y][x] = kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical, l_bit1, l_bit2);
 			++y;
 		}
 
@@ -43,6 +39,115 @@ kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
 	}
 
 	return kkit::Board(l_board, l_player_start_x, l_player_start_y, l_player_dir);
+}
+
+kkit::Board kkit::xml::load_board_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::runtime_error("Could not load " + p_file_name);
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+	auto n_board = n_meta.child(XML_TAG_BOARD);
+
+	return get_board_from_node(n_board);
+}
+
+kkit::Savegame kkit::xml::load_savefile_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::runtime_error("Could not load " + p_file_name);
+
+	std::map<std::string, std::vector<unsigned int>> l_var_values;
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+
+	auto n_hname{ n_meta.child(XML_TAG_PLAYER_NAME) };
+
+	std::string l_hname;
+	if (n_hname)
+		l_hname = n_hname.attribute(XML_ATTR_VALUE).as_string();
+
+	auto n_board = n_meta.child(XML_TAG_BOARD);
+	kkit::Board l_board{ get_board_from_node(n_board) };
+
+	auto l_unk_bytes{
+		klib::util::string_split<byte>(
+			n_meta.child(XML_TAG_UNK_BYTES).attribute(XML_ATTR_VALUE).as_string(),
+			',')
+	};
+
+	const auto& lr_vars{ kkit::Savegame::get_variables() };
+
+	for (const auto& l_var : lr_vars) {
+		std::string l_key{ l_var.m_var_name };
+		auto l_node{ n_meta.child(l_key.c_str()) };
+
+		if (l_node)
+			l_var_values[l_key] = klib::util::string_split<unsigned int>(
+				l_node.attribute(XML_ATTR_VALUE).as_string(),
+				',');
+	}
+
+	return kkit::Savegame(l_hname, l_var_values, l_board, l_unk_bytes);
+}
+
+kkit::Hiscore kkit::xml::load_hiscore_xml(const std::string& p_file_name) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_file_name.c_str()))
+		throw std::runtime_error("Could not load " + p_file_name);
+
+	std::vector<std::vector<std::pair<std::string, unsigned int>>> l_scores;
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+
+	for (auto n_brd = n_meta.child(XML_TAG_BOARD); n_brd;
+		n_brd = n_brd.next_sibling(XML_TAG_BOARD)) {
+
+		std::vector<std::pair<std::string, unsigned int>> l_bscores;
+		for (auto n_sco = n_brd.child(XML_TAG_SCORE); n_sco;
+			n_sco = n_sco.next_sibling(XML_TAG_SCORE)) {
+			l_bscores.push_back(std::make_pair(
+				n_sco.attribute(XML_TAG_PLAYER_NAME).as_string(),
+				n_sco.attribute(XML_TAG_SCORE).as_uint()
+			));
+		}
+		l_scores.push_back(l_bscores);
+	}
+
+	return kkit::Hiscore(l_scores);
+}
+
+std::vector<kkit::Savegame_variable> kkit::xml::get_savegame_variables(const pugi::xml_node& p_root_node,
+	int p_config_no) {
+	std::vector<kkit::Savegame_variable> result;
+
+	auto l_node = p_root_node.child(XML_TAG_SAVE_FILE_CONFIGS);
+	if (l_node) {
+		for (auto l_cnode = l_node.child(XML_TAG_SAVE_FILE_CONFIG); l_cnode;
+			l_cnode = l_cnode.next_sibling(XML_TAG_SAVE_FILE_CONFIG)) {
+			auto l_cnfg_list{ klib::util::string_split<int>(
+			l_cnode.attribute(XML_ATTR_CONFIG_NO).as_string(), ',') };
+
+			bool l_is_match{
+				std::find(begin(l_cnfg_list), end(l_cnfg_list), p_config_no) != end(l_cnfg_list)
+			};
+
+			if (l_is_match) {
+				for (auto l_vnode = l_cnode.child(XML_TAG_VARIABLE); l_vnode;
+					l_vnode = l_vnode.next_sibling(XML_TAG_VARIABLE)) {
+					std::string l_var_name{ l_vnode.attribute(XML_ATTR_NAME).as_string() };
+					std::size_t l_var_size{ l_vnode.attribute(XML_ATTR_SIZE).as_uint() };
+					std::string l_count{ l_vnode.attribute(XML_ATTR_COUNT).as_string() };
+
+					result.push_back(kkit::Savegame_variable(l_var_name,
+						l_var_size == 0 ? 2 : l_var_size,
+						l_count));
+				}
+			}
+		}
+	}
+
+	return result;
 }
 
 kkit::Wall kkit::xml::load_wall_xml(const std::string& p_file_name) {
@@ -154,8 +259,8 @@ kkit::Project_config kkit::xml::read_config_xml(const std::string& p_file_name) 
 				l_clip_overrides,
 				l_tile_picker,
 				l_floor_rgb_t,
-				l_tile_overlays);
-
+				l_tile_overlays,
+				get_savegame_variables(n_meta, l_config_no));
 		}
 
 		throw std::runtime_error("Invalid value for default_config_no in the configuration xml");
@@ -223,14 +328,93 @@ void kkit::xml::save_wall_xml(const kkit::Wall& p_wall, const std::string& p_dir
 		throw std::runtime_error("Could not save XML");
 }
 
-void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version) {
+void kkit::xml::save_savefile_xml(const kkit::Savegame& p_save,
+	const std::string& p_directory, const std::string& p_filename,
+	const std::string& p_klab_version) {
+
 	std::filesystem::create_directories(p_directory);
 	std::string l_full_file_path = p_directory + "/" + p_filename;
 
 	pugi::xml_document doc;
 	auto n_root = create_header(doc);
-	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_BOARD);
 	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_SAVEFILE);
+
+	const auto l_vars{ p_save.get_variable_order() };
+	const auto& lr_values{ p_save.get_variable_values() };
+
+	for (const auto& l_var : l_vars) {
+
+		std::string l_attr_name{ l_var };
+
+		if (l_attr_name == c::SAVE_CODE_BOARD) {
+			add_board_to_node(n_root, p_save.get_board());
+		}
+		else if (l_attr_name == c::SAVE_CODE_HISCORENAME) {
+			auto l_hn = n_root.append_child(XML_TAG_PLAYER_NAME);
+			l_hn.append_attribute(XML_ATTR_VALUE);
+			l_hn.attribute(XML_ATTR_VALUE).set_value(p_save.get_hiscore_name().c_str());
+		}
+		else {
+			auto iter{ lr_values.find(l_var) };
+			if (iter != end(lr_values)) {
+				auto l_attr_vals{ klib::util::string_join<unsigned int>(iter->second, ',') };
+
+				auto l_node{ n_root.append_child(l_attr_name.c_str()) };
+				l_node.append_attribute(XML_ATTR_VALUE);
+				l_node.attribute(XML_ATTR_VALUE).set_value(l_attr_vals.c_str());
+			}
+		}
+	}
+
+	auto l_unknown = n_root.append_child(XML_TAG_UNK_BYTES);
+	l_unknown.append_attribute(XML_ATTR_VALUE);
+	l_unknown.attribute(XML_ATTR_VALUE).set_value(
+		klib::util::string_join<byte>(p_save.get_unknown_bytes(), ',').c_str()
+	);
+
+	if (!doc.save_file(l_full_file_path.c_str()))
+		throw std::runtime_error("Could not save XML");
+}
+
+void kkit::xml::save_hiscore_xml(const kkit::Hiscore& p_hiscore, const std::string& p_directory,
+	const std::string& p_filename, const std::string& p_klab_version) {
+
+	std::filesystem::create_directories(p_directory);
+	std::string l_full_file_path = p_directory + "/" + p_filename;
+
+	pugi::xml_document doc;
+	auto n_root = create_header(doc);
+	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_HISCORE);
+
+	for (std::size_t i{ 0 }; i < p_hiscore.size(); ++i) {
+		auto n_brd = n_root.append_child(XML_TAG_BOARD);
+		n_brd.append_attribute(XML_ATTR_NO);
+		n_brd.attribute(XML_ATTR_NO).set_value(i);
+
+		for (std::size_t j{ 0 }; j < p_hiscore.size(i); ++j) {
+			auto n_sco = n_brd.append_child(XML_TAG_SCORE);
+			n_sco.append_attribute(XML_ATTR_NO);
+			n_sco.attribute(XML_ATTR_NO).set_value(j);
+
+			n_sco.append_attribute(XML_TAG_PLAYER_NAME);
+			n_sco.attribute(XML_TAG_PLAYER_NAME).set_value(
+				p_hiscore.get_score(i, j).first.c_str()
+			);
+
+			n_sco.append_attribute(XML_TAG_SCORE);
+			n_sco.attribute(XML_TAG_SCORE).set_value(
+				p_hiscore.get_score(i, j).second
+			);
+		}
+	}
+
+	if (!doc.save_file(l_full_file_path.c_str()))
+		throw std::runtime_error("Could not save XML");
+}
+
+void kkit::xml::add_board_to_node(pugi::xml_node& n_root, const kkit::Board& p_board) {
 
 	auto n_board = n_root.append_child(XML_TAG_BOARD);
 	n_board.append_attribute(XML_ATTR_PLAYER_X);
@@ -258,21 +442,38 @@ void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_
 				n_tile.append_attribute(XML_ATTR_DESTRUCTIBLE);
 				n_tile.attribute(XML_ATTR_DESTRUCTIBLE).set_value(XML_VALUE_TRUE);
 			}
-
 			if (p_board.is_inside(x, y)) {
 				n_tile.append_attribute(XML_ATTR_CLIP);
 				n_tile.attribute(XML_ATTR_CLIP).set_value(XML_VALUE_TRUE);
 			}
-
 			if (p_board.is_vertical(x, y)) {
 				n_tile.append_attribute(XML_ATTR_VERTICAL);
 				n_tile.attribute(XML_ATTR_VERTICAL).set_value(XML_VALUE_TRUE);
 			}
+			if (p_board.is_bit_1(x, y)) {
+				n_tile.append_attribute(XML_ATTR_BIT1);
+				n_tile.attribute(XML_ATTR_BIT1).set_value(XML_VALUE_TRUE);
+			}
+			if (p_board.is_bit_2(x, y)) {
+				n_tile.append_attribute(XML_ATTR_BIT2);
+				n_tile.attribute(XML_ATTR_BIT2).set_value(XML_VALUE_TRUE);
+			}
 
 		}
 	}
+}
+
+void kkit::xml::save_board_xml(const kkit::Board& p_board, const std::string& p_directory, const std::string& p_filename, const std::string& p_klab_version) {
+	std::filesystem::create_directories(p_directory);
+	std::string l_full_file_path = p_directory + "/" + p_filename;
+
+	pugi::xml_document doc;
+	auto n_root = create_header(doc);
+	n_root.attribute(XML_ATTR_LAB3D_V).set_value(p_klab_version.c_str());
+	n_root.attribute(XML_ATTR_FTYPE).set_value(XML_VALUE_FTYPE_BOARD);
+
+	add_board_to_node(n_root, p_board);
 
 	if (!doc.save_file(l_full_file_path.c_str()))
 		throw std::runtime_error("Could not save XML");
-
 }

@@ -4,6 +4,50 @@
 
 using byte = unsigned char;
 
+kkit::Board::Board(const std::vector<byte>& p_bytes, const std::vector<Wall>& p_walls) {
+	this->tiles = std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
+	player_x = 0;
+	player_y = 0;
+
+	int l_px{ 0 };
+	int l_py{ 0 };
+	this->player_direction = kkit::Player_direction::Up;
+
+	for (int j{ 0 }; j < 4096; ++j) {
+		int l_x = j / 64;
+		int l_y = j % 64;
+		int l_tile_no = p_bytes.at(j);
+
+		bool l_inside{ false };
+
+		if (l_tile_no >= 252) {
+			this->player_x = l_x;
+			this->player_y = l_y;
+			if (l_tile_no == 252)
+				this->player_direction = kkit::Player_direction::Right;
+			else if (l_tile_no == 253)
+				this->player_direction = kkit::Player_direction::Down;
+			else if (l_tile_no == 254)
+				this->player_direction = kkit::Player_direction::Left;
+
+			l_tile_no = 0;
+			l_inside = true;
+		}
+		else if (l_tile_no >= 128) {
+			l_tile_no -= 128;
+			l_inside = (l_tile_no != 0);
+
+		}
+		else if (l_tile_no == 0)
+			l_inside = true;
+
+		if (l_tile_no > 0)
+			l_inside |= (l_tile_no == 0 ? true : p_walls.at(l_tile_no - 1).is_inside());
+
+		tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
+	}
+}
+
 kkit::Board::Board(const std::vector<byte>& p_bytes) {
 
 	for (int j{ 0 }; j < c::MAP_H; ++j) {
@@ -26,6 +70,10 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 			bool l_player_sq = (l_value & 0b1000000000000) >> 12;
 			// 14th bit is vertical indicator
 			bool l_vertical = (l_value & 0b10000000000000) >> 13;
+			// second bit from the left
+			bool l_bit_2 = (l_value & 0b100000000000000) >> 14;
+			// first bit from the left
+			bool l_bit_1 = (l_value & 0b1000000000000000) >> 15;
 
 			if (l_player_sq) {
 				this->player_x = j;
@@ -46,7 +94,7 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 				l_vertical = false;
 			}
 
-			l_tiles.push_back(kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical));
+			l_tiles.push_back(kkit::Map_tile(l_tile_no, l_inside, l_blast, l_vertical, l_bit_1, l_bit_2));
 		}
 
 		this->tiles.push_back(l_tiles);
@@ -55,6 +103,11 @@ kkit::Board::Board(const std::vector<byte>& p_bytes) {
 
 kkit::Board::Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int p_player_x, int p_player_y, kkit::Player_direction p_player_dir) :
 	tiles{ p_tiles }, player_x{ p_player_x }, player_y{ p_player_y }, player_direction{ p_player_dir }
+{ }
+
+kkit::Board::Board(void) :
+	kkit::Board(std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, 0)),
+		0, 0, kkit::Player_direction::Up)
 { }
 
 bool kkit::Board::is_empty_tile(int p_x, int p_y) const {
@@ -75,6 +128,14 @@ bool kkit::Board::is_blast(int p_x, int p_y) const {
 
 bool kkit::Board::is_vertical(int p_x, int p_y) const {
 	return this->tiles.at(p_x).at(p_y).is_vertical();
+}
+
+bool kkit::Board::is_bit_1(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_bit_1();
+}
+
+bool kkit::Board::is_bit_2(int p_x, int p_y) const {
+	return this->tiles.at(p_x).at(p_y).is_bit_2();
 }
 
 int kkit::Board::get_player_start_x(void) const {
@@ -104,13 +165,14 @@ std::string kkit::Board::get_player_direction_as_string(void) const {
 		return PLAYER_DIR_LEFT;
 }
 
-std::vector<byte> kkit::Board::get_bytes(void) const {
+std::vector<byte> kkit::Board::get_bytes(bool p_incl_player_start) const {
 	std::vector<byte> result;
 
 	for (int j{ 0 }; j < this->tiles.size(); ++j)
 		for (int i{ 0 }; i < this->tiles[j].size(); ++i) {
 
-			if (j == this->player_x && i == this->player_y) {
+			if (p_incl_player_start &&
+				(j == this->player_x && i == this->player_y)) {
 
 				int l_result = 0b1000000000000;
 				if (this->player_direction == Player_direction::Down)
@@ -135,6 +197,10 @@ std::vector<byte> kkit::Board::get_bytes(void) const {
 					l_result |= 0b100000000000;
 				if (tiles[j][i].is_vertical())
 					l_result |= 0b10000000000000;
+				if (tiles[j][i].is_bit_2())
+					l_result |= 0b100000000000000;
+				if (tiles[j][i].is_bit_1())
+					l_result |= 0b1000000000000000;
 
 				byte b1 = static_cast<byte>(l_result % 256);
 				byte b2 = static_cast<byte>(l_result / 256);
@@ -145,6 +211,42 @@ std::vector<byte> kkit::Board::get_bytes(void) const {
 
 
 		}
+
+	return result;
+}
+
+std::vector<byte> kkit::Board::get_bytes(const std::vector<kkit::Wall>& p_walls,
+	bool p_incl_player_start) const {
+	std::vector<byte> result;
+
+	int l_p_index = 64 * get_player_start_x() + get_player_start_y();
+
+	byte l_pbyte{ 252 };
+	if (get_player_start_direction() == kkit::Player_direction::Down)
+		l_pbyte = 253;
+	else if (get_player_start_direction() == kkit::Player_direction::Left)
+		l_pbyte = 254;
+	else if (get_player_start_direction() == kkit::Player_direction::Up)
+		l_pbyte = 255;
+
+	kkit::Player_direction l_sdir = get_player_start_direction();
+
+	for (int x = 0; x < 64; ++x)
+		for (int y = 0; y < 64; ++y) {
+			int l_tile_no = get_tile_no(x, y);
+
+			bool l_clip_override = (l_tile_no != -1) && (is_inside(x, y) && !p_walls.at(l_tile_no).is_inside());
+			l_clip_override |= (l_tile_no == -1 && !is_inside(x, y));
+
+			if (l_clip_override)
+				l_tile_no += 128;
+
+			result.push_back(static_cast<byte>(l_tile_no + 1));
+		}
+
+	// overwrite the start direction tile
+	if (p_incl_player_start)
+		result.at(l_p_index) = l_pbyte;
 
 	return result;
 }

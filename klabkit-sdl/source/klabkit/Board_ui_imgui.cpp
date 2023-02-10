@@ -25,6 +25,10 @@ void kkit::Board_ui::draw_ui(SDL_Renderer* p_rnd,
 	draw_ui_tile_picker(p_rnd, p_project, p_gfx);
 	if (m_show_meta_editor)
 		draw_ui_gfx_editor(p_rnd, p_input, p_project, p_gfx);
+	if (m_show_save_editor)
+		draw_ui_savefile_editor(p_rnd, p_input, p_project, p_gfx);
+	if (m_show_hiscore_editor)
+		draw_ui_hiscore_editor(p_rnd, p_project, p_gfx);
 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
@@ -136,8 +140,15 @@ void kkit::Board_ui::draw_ui_main(SDL_Renderer* p_rnd,
 	ImGui::NewLine();
 
 	ImGui::Separator();
-	ImGui::Text("Graphics Metadata Editor");
-	ImGui::Checkbox("Enable", &m_show_meta_editor);
+
+	ImGui::Text("Other Editors");
+
+	ImGui::Checkbox("Gfx Metadata", &m_show_meta_editor);
+	ImGui::SameLine();
+	ImGui::Checkbox("Savefiles", &m_show_save_editor);
+	ImGui::SameLine();
+	ImGui::Checkbox("Hiscores", &m_show_hiscore_editor);
+
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
@@ -473,5 +484,156 @@ void kkit::Board_ui::draw_ui_gfx_editor(SDL_Renderer* p_rnd, const klib::User_in
 	if (imgui::button("Close", c::COLOR_STYLE_NORMAL)) {
 		m_show_meta_editor = false;
 	}
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_savefile_editor(SDL_Renderer* p_rnd, const klib::User_input& p_input,
+	kkit::Project& p_project, kkit::Project_gfx& p_gfx) {
+	bool l_ctrl{ p_input.is_ctrl_pressed() };
+
+	imgui::window("Savefile Editor", c::WIN_SF_X, c::WIN_SF_Y, c::WIN_SF_W, c::WIN_SF_H);
+
+	auto l_nidx{ imgui::slider<std::size_t>("Save Slot", m_sel_save_file, 0, 7) };
+	if (l_nidx)
+		m_sel_save_file = l_nidx.value();
+
+	ImGui::Separator();
+
+	bool l_has_save{ p_project.has_savegame(m_sel_save_file) };
+
+	if (l_has_save) {
+		std::string l_lbl_player{ "Player: " + p_project.get_savegame_player_name(m_sel_save_file) };
+		std::string l_lbl_board{ " Board: " + std::to_string(p_project.get_savegame_board_num(m_sel_save_file) + 1) };
+
+		ImGui::Text(l_lbl_player.c_str());
+		ImGui::Text(l_lbl_board.c_str());
+
+		ImGui::Separator();
+
+		ImGui::Text("Board Editing");
+
+		if (imgui::button("Savefile Board to Editor",
+			c::COLOR_STYLE_NORMAL,
+			"Bring the board from the savefile into the editor (hold Ctrl to use)")
+			&& l_ctrl) {
+			p_project.load_saveboard(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
+			this->board_changed(p_rnd, p_project, p_gfx);
+		}
+		ImGui::SameLine();
+		if (imgui::button("Editor Board to Savefile",
+			c::COLOR_STYLE_NORMAL,
+			"Bring the board from the editor into the savefile (hold Ctrl to use)")
+			&& l_ctrl)
+			p_project.export_board_to_save(static_cast<std::size_t>(m_board_ind), m_sel_save_file);
+	}
+	else {
+		std::string l_descr{ "Savegame " + std::to_string(m_sel_save_file) + " not loaded" };
+		ImGui::Text(l_descr.c_str());
+	}
+
+	ImGui::Separator();
+	ImGui::Text("File Operations");
+
+	if (imgui::button("Load DAT")) try {
+		p_project.load_savefile_dat(m_sel_save_file);
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+	ImGui::SameLine();
+	if (imgui::button(c::TXT_IMPORT_XML)) try {
+		p_project.load_savefile_xml(m_sel_save_file);
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+
+	if (l_has_save) {
+		if (imgui::button(c::TXT_SAVE_DAT)) try {
+			p_project.save_savefile_dat(m_sel_save_file);
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+		ImGui::SameLine();
+		if (imgui::button(c::TXT_EXPORT_XML)) try {
+			p_project.save_savefile_xml(m_sel_save_file);
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+	}
+
+	ImGui::Separator();
+	if (imgui::button("Close"))
+		m_show_save_editor = false;
+
+	ImGui::End();
+}
+
+void kkit::Board_ui::draw_ui_hiscore_editor(SDL_Renderer* p_rnd, kkit::Project& p_project,
+	kkit::Project_gfx& p_gfx) {
+	imgui::window("Hiscore Editor", c::WIN_HS_X, c::WIN_HS_Y, c::WIN_HS_W, c::WIN_HS_H);
+
+	bool l_has_hiscore{ p_project.has_hiscore() };
+
+	if (l_has_hiscore) {
+		const auto& lr_hiscore{ p_project.get_hiscore() };
+
+		auto l_nidx{ imgui::slider<std::size_t>("Board", m_sel_hiscore + 1, 1,
+			lr_hiscore.size()) };
+		if (l_nidx)
+			m_sel_hiscore = l_nidx.value() - 1;
+
+		ImGui::Separator();
+
+		for (std::size_t i{ 0 }; i < lr_hiscore.size(m_sel_hiscore); ++i) {
+			const auto& lr_hi{ lr_hiscore.get_score(m_sel_hiscore, i) };
+			std::string l_lbl{ lr_hi.first + ": " + std::to_string(lr_hi.second) };
+			ImGui::Text(l_lbl.c_str());
+		}
+
+	}
+	else {
+		ImGui::Text("Hiscore file not loaded");
+	}
+
+	ImGui::Separator();
+	ImGui::Text("File Operations");
+
+	if (imgui::button("Load DAT")) try {
+		p_project.load_hiscore_dat();
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+	ImGui::SameLine();
+	if (imgui::button(c::TXT_IMPORT_XML)) try {
+		p_project.load_hiscore_xml();
+	}
+	catch (const std::exception& ex) {
+		p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+	}
+
+	if (l_has_hiscore) {
+		if (imgui::button(c::TXT_SAVE_DAT)) try {
+			p_project.save_hiscore_dat();
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+		ImGui::SameLine();
+		if (imgui::button(c::TXT_EXPORT_XML)) try {
+			p_project.save_hiscore_xml();
+		}
+		catch (const std::exception& ex) {
+			p_project.add_message(ex.what(), c::MSG_CODE_ERROR);
+		}
+	}
+
+	ImGui::Separator();
+	if (imgui::button("Close"))
+		m_show_hiscore_editor = false;
+
 	ImGui::End();
 }

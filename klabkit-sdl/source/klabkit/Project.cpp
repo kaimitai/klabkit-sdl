@@ -6,7 +6,9 @@
 
 using byte = unsigned char;
 
-kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config }, kzp_walls{ false }, kzp_boards{ false } {
+kkit::Project::Project(const kkit::Project_config& p_config) :
+	config{ p_config }, kzp_walls{ false }, kzp_boards{ false }, m_saves(8, std::nullopt)
+{
 	initialize_palette();
 
 	if (this->is_walken())
@@ -18,6 +20,8 @@ kkit::Project::Project(const kkit::Project_config& p_config) : config{ p_config 
 		initialize_maps_walken();
 	else
 		initialize_maps();
+
+	kkit::Savegame::set_variables(config.m_savegame_variables);
 }
 
 void kkit::Project::add_message(const std::string& p_message, int p_status_code) {
@@ -197,50 +201,10 @@ void kkit::Project::initialize_maps_walken(void) {
 
 	// calculate the entire board here
 	for (int i{ 0 }; i < config.board_count; ++i) {
-		std::vector<std::vector<kkit::Map_tile>> tiles(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
-		int l_px{ 0 };
-		int l_py{ 0 };
-		kkit::Player_direction l_pdir = kkit::Player_direction::Up;
-
-		for (int j{ 0 }; j < 4096; ++j) {
-			int l_x = j / 64;
-			int l_y = j % 64;
-			int l_tile_no = map_bytes.at(i * 4096 + j);
-
-			bool l_inside{ false };
-
-			if (l_tile_no >= 252) {
-				l_px = l_x;
-				l_py = l_y;
-				if (l_tile_no == 252)
-					l_pdir = kkit::Player_direction::Right;
-				else if (l_tile_no == 253)
-					l_pdir = kkit::Player_direction::Down;
-				else if (l_tile_no == 254)
-					l_pdir = kkit::Player_direction::Left;
-				else
-					l_pdir = kkit::Player_direction::Up;
-
-				l_tile_no = 0;
-				l_inside = true;
-			}
-			else if (l_tile_no >= 128) {
-				l_tile_no -= 128;
-				l_inside = (l_tile_no != 0);
-
-			}
-			else if (l_tile_no == 0)
-				l_inside = true;
-
-			if (l_tile_no > 0)
-				l_inside |= this->is_inside(l_tile_no - 1);
-
-			tiles[l_x][l_y] = kkit::Map_tile(l_tile_no - 1, l_inside, false, false);
-		}
-
-		maps.push_back(kkit::Board(tiles, l_px, l_py, l_pdir));
+		std::vector<byte> l_map_bytes(begin(map_bytes) + i * 4096,
+			begin(map_bytes) + (i + 1) * 4096);
+		maps.push_back(kkit::Board(l_map_bytes, walls));
 	}
-
 }
 
 // walken-specific save boards to file
@@ -249,37 +213,7 @@ int kkit::Project::save_boards_dat_walken() const {
 
 	// traverse all boards, and translate the board bytes based on clip indicators and player start position
 	for (int i{ 0 }; i < this->get_board_count(); ++i) {
-		std::vector<byte> l_brd_bytes;
-
-		const auto& l_brd = this->get_board(i);
-		int l_p_index = 64 * l_brd.get_player_start_x() + l_brd.get_player_start_y();
-
-		byte l_pbyte{ 252 };
-		if (l_brd.get_player_start_direction() == kkit::Player_direction::Down)
-			l_pbyte = 253;
-		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Left)
-			l_pbyte = 254;
-		else if (l_brd.get_player_start_direction() == kkit::Player_direction::Up)
-			l_pbyte = 255;
-
-		kkit::Player_direction l_sdir = l_brd.get_player_start_direction();
-
-		for (int x = 0; x < 64; ++x)
-			for (int y = 0; y < 64; ++y) {
-				int l_tile_no = l_brd.get_tile_no(x, y);
-
-				bool l_clip_override = (l_tile_no != -1) && (l_brd.is_inside(x, y) && !is_inside(l_tile_no));
-				l_clip_override |= (l_tile_no == -1 && !l_brd.is_inside(x, y));
-
-				if (l_clip_override)
-					l_tile_no += 128;
-
-				l_brd_bytes.push_back(static_cast<byte>(l_tile_no + 1));
-			}
-
-		// overwrite the start direction tile
-
-		l_brd_bytes.at(l_p_index) = l_pbyte;
+		std::vector<byte> l_brd_bytes{ get_board(i).get_bytes(walls) };
 		l_bytes.insert(end(l_bytes), begin(l_brd_bytes), end(l_brd_bytes));
 	}
 
@@ -328,6 +262,10 @@ std::string kkit::Project::get_file_name(const std::string& p_filename, const st
 
 std::string kkit::Project::get_file_full_path(const std::string& p_filename, const std::string& p_extension, int p_frame_no) const {
 	return this->get_file_directory(p_extension, p_frame_no) + "/" + this->get_file_name(p_filename, p_extension, p_frame_no);
+}
+
+std::string kkit::Project::get_savegame_filename(std::size_t p_slot_no) {
+	return c::FILE_SAVEGAME + std::to_string(p_slot_no);
 }
 
 std::string  kkit::Project::get_bmp_file_path(const std::string& p_file_prefix, int p_frame_no) const {
@@ -497,6 +435,113 @@ void kkit::Project::set_wall_image(int p_wall_no, const std::vector<std::vector<
 	walls.at(p_wall_no).set_image(p_bytes);
 }
 
+// savegames
+bool kkit::Project::has_savegame(std::size_t p_slot) const {
+	return m_saves.at(p_slot).has_value();
+}
+
+const kkit::Savegame& kkit::Project::get_savegame(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value();
+}
+
+void kkit::Project::load_saveboard(std::size_t p_board_slot, std::size_t p_save_slot) {
+	maps.at(p_board_slot) = m_saves.at(p_save_slot).value().get_board();
+	add_message("Moved board from savegame #" + std::to_string(p_save_slot) + " into editor board #" + std::to_string(p_board_slot + 1));
+}
+
+void kkit::Project::export_board_to_save(std::size_t p_board_slot, std::size_t p_save_slot) {
+	m_saves.at(p_save_slot).value().set_board(maps.at(p_board_slot));
+	add_message("Moved editor board #" + std::to_string(p_board_slot + 1) + " into savegame #" + std::to_string(p_save_slot));
+}
+
+void kkit::Project::load_savefile_dat(std::size_t p_save_slot) {
+	const auto l_filepath{ get_dat_file_name(c::FILE_SAVEGAME + std::to_string(p_save_slot)) };
+	auto l_bytes{ klib::file::read_file_as_bytes(l_filepath) };
+
+	m_saves.at(p_save_slot) = is_walken() ? Savegame(l_bytes, walls) : Savegame(l_bytes);
+
+	add_message("Loaded " + l_filepath, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::save_savefile_dat(std::size_t p_save_slot) {
+	const auto l_filepath{ get_dat_file_name(c::FILE_SAVEGAME + std::to_string(p_save_slot)) };
+
+	if (is_walken())
+		klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(walls),
+			l_filepath);
+	else
+		klib::file::write_bytes_to_file(m_saves.at(p_save_slot).value().get_bytes(),
+			l_filepath);
+
+	add_message("Saved " + l_filepath, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::load_savefile_xml(std::size_t p_save_slot) {
+	std::string l_in_xml_file{ c::FILE_SAVEGAME + std::to_string(p_save_slot) + "." + c::FILE_EXT_XML };
+	std::string l_full_xml_path{ get_file_directory(c::FILE_EXT_XML, 0) + "/" + l_in_xml_file };
+
+	m_saves.at(p_save_slot) = xml::load_savefile_xml(l_full_xml_path);
+
+	add_message("Loaded " + l_full_xml_path, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::save_savefile_xml(std::size_t p_save_slot) {
+	std::string l_out_xml_file{ c::FILE_SAVEGAME + std::to_string(p_save_slot) + "." + c::FILE_EXT_XML };
+
+	xml::save_savefile_xml(m_saves.at(p_save_slot).value(),
+		this->get_file_directory(c::FILE_EXT_XML, static_cast<int>(p_save_slot)),
+		l_out_xml_file,
+		config.label);
+
+	add_message(l_out_xml_file + " saved", c::MSG_CODE_SUCCESS);
+}
+
+// hiscore
+bool kkit::Project::has_hiscore(void) const {
+	return m_hiscore.has_value();
+}
+
+const kkit::Hiscore& kkit::Project::get_hiscore(void) const {
+	return m_hiscore.value();
+}
+
+void kkit::Project::load_hiscore_dat(void) {
+	std::string l_file_path{ get_dat_file_name(c::FILE_HISCORE) };
+
+	m_hiscore = kkit::Hiscore(klib::file::read_file_as_bytes(
+		l_file_path
+	));
+
+	add_message("Loaded " + l_file_path, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::save_hiscore_dat(void) {
+	std::string l_file_path{ get_dat_file_name(c::FILE_HISCORE) };
+
+	klib::file::write_bytes_to_file(m_hiscore.value().get_bytes(),
+		l_file_path);
+
+	add_message("Saved " + l_file_path, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::load_hiscore_xml(void) {
+	std::string l_file_path{ get_file_directory(c::FILE_EXT_XML, 0) +
+		'/' + c::FILE_HISCORE + std::string(".xml") };
+
+	m_hiscore = xml::load_hiscore_xml(l_file_path);
+
+	add_message("Loaded " + l_file_path, c::MSG_CODE_SUCCESS);
+}
+
+void kkit::Project::save_hiscore_xml(void) {
+	std::string l_filename{ c::FILE_HISCORE + std::string(".xml") };
+
+	xml::save_hiscore_xml(m_hiscore.value(), get_file_directory(c::FILE_EXT_XML, 0),
+		l_filename, config.label);
+
+	add_message("Saved " + l_filename, c::MSG_CODE_SUCCESS);
+}
+
 // wall attribute getters
 bool kkit::Project::is_blast(int p_wall_no) const {
 	return (p_wall_no == -1 ? false : walls.at(p_wall_no).is_blast());
@@ -530,4 +575,12 @@ const kkit::Project_config& kkit::Project::get_config(void) const {
 
 const std::deque<std::pair<std::string, int>>& kkit::Project::get_messages(void) const {
 	return m_messages;
+}
+
+const std::string& kkit::Project::get_savegame_player_name(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value().get_hiscore_name();
+}
+
+unsigned int kkit::Project::get_savegame_board_num(std::size_t p_slot) const {
+	return m_saves.at(p_slot).value().get_board_num();
 }

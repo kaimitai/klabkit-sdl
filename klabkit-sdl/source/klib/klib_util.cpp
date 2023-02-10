@@ -2,6 +2,32 @@
 
 using byte = unsigned char;
 
+void klib::util::write_uint_le(std::vector<byte>& p_bytes,
+	unsigned int p_value, std::size_t p_byte_size) {
+	unsigned int mod{ 256 };
+
+	for (std::size_t i{ 0 }; i < p_byte_size; ++i) {
+		p_bytes.push_back(static_cast<byte>(
+			p_value % 256
+			));
+		p_value /= 256;
+	}
+}
+
+unsigned int klib::util::read_uint_le(const std::vector<byte>& p_bytes,
+	std::size_t p_byte_size,
+	std::size_t p_offset) {
+	unsigned int result{ 0 };
+	unsigned int l_mult{ 1 };
+
+	for (std::size_t i{ 0 }; i < p_byte_size; ++i) {
+		result += l_mult * static_cast<unsigned int>(p_bytes.at(p_offset++));
+		l_mult *= 256;
+	}
+
+	return result;
+}
+
 bool klib::util::is_p_in_rect(int p_x, int p_y, int r_x, int r_y, int r_w, int r_h) {
 	return (p_x >= r_x && p_x < r_x + r_w && p_y >= r_y && p_y < r_y + r_h);
 }

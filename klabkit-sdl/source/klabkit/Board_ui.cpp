@@ -21,7 +21,8 @@ kkit::Board_ui::Board_ui(SDL_Renderer* p_rnd, const Project_config& p_config) :
 	m_mouse_drag_active{ false }, m_mouse_drag_pos{ std::make_pair(0,0) },
 	m_toggles{ std::vector<bool>(5, false) },
 	m_sel_tp_tile_no{ -1 },
-	m_show_meta_editor{ false }
+	m_sel_save_file{ 0 }, m_sel_hiscore{ 0 },
+	m_show_meta_editor{ false }, m_show_save_editor{ false }, m_show_hiscore_editor{ false }
 {
 	// tile flash timer
 	m_timers.push_back(klib::Timer(70, 10, true));
@@ -344,6 +345,24 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 		// R: rotate clipboard counter-clockwise, if shift held: rotate clockwise
 		else if (p_input.is_pressed(SDL_SCANCODE_R))
 			this->rotate_selection(p_project, l_shift);
+		// ctrl+Plus/Minus: Zoom in/out (centered)
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_KP_MINUS)) {
+			if (m_cam_zoom < ZOOM_MAX)
+				zoom_camera(p_w / 2, p_h / 2, 0.1f, p_w, p_h);
+		}
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_KP_PLUS)) {
+			if (m_cam_zoom > ZOOM_MIN)
+				zoom_camera(p_w / 2, p_h / 2, -0.1f, p_w, p_h);
+		}
+		// keyboard arrows - navigate
+		else if (p_input.is_pressed(SDL_SCANCODE_UP))
+			add_cam_y(-64 * (l_ctrl ? 4 : 1), p_h);
+		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
+			add_cam_y(64 * (l_ctrl ? 4 : 1), p_h);
+		else if (p_input.is_pressed(SDL_SCANCODE_LEFT))
+			add_cam_x(-64 * (l_ctrl ? 4 : 1), p_w);
+		else if (p_input.is_pressed(SDL_SCANCODE_RIGHT))
+			add_cam_x(64 * (l_ctrl ? 4 : 1), p_w);
 	}
 }
 
