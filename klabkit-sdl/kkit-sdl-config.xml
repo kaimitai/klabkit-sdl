@@ -201,15 +201,16 @@
       <variable name="firepowers_1" />
       <variable name="firepowers_2" />
       <variable name="bulchoose" />
-      <variable name="keys_0" size="4" />
-      <variable name="unknown_0" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
+      <variable name="coins" />
       <variable name="compass" />
       <variable name="cheated" />
       <variable name="heatpos" />
       <variable name="fanpos" />
       <variable name="warpos" />
+      <variable name="unknown" />
       <variable name="kenpos" />
-      <variable name="unknown_1" />
       <variable name="ballpos" />
       <variable name="rogermode" />
       <variable name="statusbar" />
@@ -230,29 +231,29 @@
       <variable name="oldposx" />
       <variable name="oldposy" />
       <variable name="bulnum" />
-      <variable name="bulang_0" count="bulnum" />
-      <variable name="bulkind_0" count="bulnum" />
-      <variable name="bulx_0" count="bulnum" />
-      <variable name="buly_0" count="bulnum" />
-      <variable name="bulstat_0" size="4" count="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
       <variable name="lastbulshoot" size="4" />
       <variable name="mnum" />
-      <variable name="mposx_0" count="mnum" />
-      <variable name="mposy_0" count="mnum" />
-      <variable name="mgolx_0" count="mnum" />
-      <variable name="mgoly_0" count="mnum" />
-      <variable name="moldx_0" count="mnum" />
-      <variable name="moldy_0" count="mnum" />
-      <variable name="mstat_0" size="1" count="mnum" />
-      <variable name="mshock_0" count="mnum" />
-      <variable name="mshot_0" size="1" count="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
       <variable name="doorx" />
       <variable name="doory" />
       <variable name="doorstat" />
       <variable name="numwarps" size="1" />
       <variable name="justwarped" size="1" />
-      <variable name="xwarp_0" size="1" count="numwarps" />
-      <variable name="ywarp_0" size="1" count="numwarps" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
       <variable name="totalclock" size="4" />
       <variable name="scoreclock" size="4" />
       <variable name="scorecount" size="4" />
@@ -282,7 +283,8 @@
       <variable name="firepowers_1" />
       <variable name="firepowers_2" />
       <variable name="bulchoose" />
-      <variable name="keys_0" size="4" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
       <variable name="compass" />
       <variable name="cheated" />
       <variable name="heatpos" />
@@ -309,29 +311,29 @@
       <variable name="oldposx" />
       <variable name="oldposy" />
       <variable name="bulnum" />
-      <variable name="bulang_0" count="bulnum" />
-      <variable name="bulkind_0" count="bulnum" />
-      <variable name="bulx_0" count="bulnum" />
-      <variable name="buly_0" count="bulnum" />
-      <variable name="bulstat_0" size="4" count="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
       <variable name="lastbulshoot" size="4" />
       <variable name="mnum" />
-      <variable name="mposx_0" count="mnum" />
-      <variable name="mposy_0" count="mnum" />
-      <variable name="mgolx_0" count="mnum" />
-      <variable name="mgoly_0" count="mnum" />
-      <variable name="moldx_0" count="mnum" />
-      <variable name="moldy_0" count="mnum" />
-      <variable name="mstat_0" size="1" count="mnum" />
-      <variable name="mshock_0" count="mnum" />
-      <variable name="mshot_0" size="1" count="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
       <variable name="doorx" />
       <variable name="doory" />
       <variable name="doorstat" />
       <variable name="numwarps" size="1" />
       <variable name="justwarped" size="1" />
-      <variable name="xwarp_0" size="1" count="numwarps" />
-      <variable name="ywarp_0" size="1" count="numwarps" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
       <variable name="totalclock" size="4" />
       <variable name="scoreclock" size="4" />
       <variable name="scorecount" size="4" />
