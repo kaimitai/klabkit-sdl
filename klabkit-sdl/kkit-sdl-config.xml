@@ -2,408 +2,408 @@
 <!--KKIT/SDL xml file (https://github.com/kaimitai/klabkit-sdl)-->
 <kkit_sdl app_version="0.9" file_type="config" active_config_no="0">
 
-	<config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
-		<!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
-			<row no="2" description="Doors" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
-			<row no="3" description="Walls" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
-			<row no="4" description="Powerups and Items" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
-			<row no="5" description="Consumed Items" value="175,177,179,181,183,187,189,192,209" />
-			<row no="6" description="Decorative" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="82,123,419,420" />
-		<tile_overlays value="168:169" />
-	</config>
+  <config no="0" label="2.1" project_directory="./gamedata/Ken2.1" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
+      <row no="2" description="Doors" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
+      <row no="3" description="Walls" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
+      <row no="4" description="Powerups and Items" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
+      <row no="5" description="Consumed Items" value="175,177,179,181,183,187,189,192,209" />
+      <row no="6" description="Decorative" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="82,123,419,420" />
+    <tile_overlays value="168:169" />
+  </config>
 
-	<config no="1" label="2.0" project_directory="./gamedata/Ken2.0" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
-		<!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
-			<row no="2" description="Doors" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
-			<row no="3" description="Walls" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
-			<row no="4" description="Powerups and Items" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
-			<row no="5" description="Consumed Items" value="175,177,179,181,183,187,189,192,209" />
-			<row no="6" description="Decorative" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="82,123,419,420" />
-		<tile_overlays value="168:169" />
-	</config>
+  <config no="1" label="2.0" project_directory="./gamedata/Ken2.0" board_count="30" wall_count="448" lzw_header_type="2" ext_boards="KZP" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="311,76,167,168,285,286,245,268,223,280,303,251,215,239,229,273,290,234,226,262,293,407,278,376,341,370,356" />
+      <row no="2" description="Doors" value="80,81,108,88,93,94,99,100,101,107,115,122,123,124,125,126,127,128,129,132,133,145" />
+      <row no="3" description="Walls" value="1,2,3,4,5,85,6,7,8,9,10,11,12,15,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,63,64,65,66,67,68,69,70,71,72,73,74,77,78,79,82,83,84,86,87,130,131,406,419,420,425,426,427" />
+      <row no="4" description="Powerups and Items" value="141,170,134,138,171,172,173,174,176,178,222,180,182,184,185,186,188,190,191,193,197,200,210,211,212" />
+      <row no="5" description="Consumed Items" value="175,177,179,181,183,187,189,192,209" />
+      <row no="6" description="Decorative" value="136,140,142,143,147,148,149,150,151,152,156,157,158,159,160,161,162,163,165,166,169,405,421,422,423,424,428,429,442,443,444,62" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="82,123,419,420" />
+    <tile_overlays value="168:169" />
+  </config>
 
-	<config no="2" label="1.1" project_directory="./gamedata/Ken1.1" board_count="27" wall_count="224" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
-		<!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
-			<row no="2" description="Doors" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
-			<row no="3" description="Walls" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
-			<row no="4" description="Powerups and Items" value="63,123,179,37,107,56,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
-			<row no="5" description="Consumed Items" value="84,83,81,82,87,92,89,192,29" />
-			<row no="6" description="Decorative" value="197,33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="23,64,180" />
-	</config>
+  <config no="2" label="1.1" project_directory="./gamedata/Ken1.1" board_count="27" wall_count="224" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
+      <row no="2" description="Doors" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
+      <row no="3" description="Walls" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
+      <row no="4" description="Powerups and Items" value="63,123,179,37,107,56,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
+      <row no="5" description="Consumed Items" value="84,83,81,82,87,92,89,192,29" />
+      <row no="6" description="Decorative" value="197,33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,64,180" />
+  </config>
 
-	<config no="3" label="1.0" project_directory="./gamedata/Ken1.0" board_count="5" wall_count="192" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
-		<!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
-			<row no="2" description="Doors" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
-			<row no="3" description="Walls" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
-			<row no="4" description="Powerups and Items" value="63,123,179,37,107,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
-			<row no="5" description="Consumed Items" value="84,83,81,82,87,92,89,192,29" />
-			<row no="6" description="Decorative" value="33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="23,64,180" />
-	</config>
+  <config no="3" label="1.0" project_directory="./gamedata/Ken1.0" board_count="5" wall_count="192" lzw_header_type="1" ext_boards="DAT" ext_walls="KZP">
+    <!-- define the rows of the tile picker here. tiles not declared here will be added automatically at the end -->
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="15,40,49,66,160,73,98,68,38,54,165,187,94,109" />
+      <row no="2" description="Doors" value="21,31,152,157,168,173,180,48,183,184,190,167,176" />
+      <row no="3" description="Walls" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,30,45,80,115,116,121,122,127,128,131,132,133,134,135,136,137,138,142,149,150,151,177,185,189" />
+      <row no="4" description="Powerups and Items" value="63,123,179,37,107,59,46,60,86,91,88,129,181,191,28,75,34,36,130,32" />
+      <row no="5" description="Consumed Items" value="84,83,81,82,87,92,89,192,29" />
+      <row no="6" description="Decorative" value="33,35,41,42,43,47,52,58,62,74,102,103,162,163,164,166,175,178,64,104,105,106" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,64,180" />
+  </config>
 
-	<config no="4" label="Walken" project_directory="./gamedata/Walken" board_count="10" wall_count="80" lzw_header_type="0" ext_boards="DAT" ext_walls="KZP">
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="40,49,73,68,66,38,54" />
-			<row no="2" description="Doors" value="21,48" />
-			<row no="3" description="Walls" value="22,23,80,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,31" />
-			<row no="4" description="Powerups and Items" value="63,45,59,46,60,32,39,36" />
-			<row no="6" description="Decorative" value="47,33,35,41,42,43,58,62,37" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="23,47" />
-	</config>
+  <config no="4" label="Walken" project_directory="./gamedata/Walken" board_count="10" wall_count="80" lzw_header_type="0" ext_boards="DAT" ext_walls="KZP">
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="40,49,73,68,66,38,54" />
+      <row no="2" description="Doors" value="21,48" />
+      <row no="3" description="Walls" value="22,23,80,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,24,25,26,31" />
+      <row no="4" description="Powerups and Items" value="63,45,59,46,60,32,39,36" />
+      <row no="6" description="Decorative" value="47,33,35,41,42,43,58,62,37" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="23,47" />
+  </config>
 
-	<config no="5" label="Walken 1992-08-23" project_directory="./gamedata/Walken_08_23_1992" board_count="7" wall_count="64" lzw_header_type="0" ext_boards="DAT" ext_walls="DAT">
-		<tile_picker>
-			<row no="0" description="Basic" value="0,-1" />
-			<row no="1" description="Monsters" value="34,38,52,37,40" />
-			<row no="2" description="Doors" value="21,29,63" />
-			<row no="3" description="Walls" value="22,48,51,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28" />
-			<row no="4" description="Powerups and Items" value="32,36,39,46,49,45" />
-			<row no="6" description="Decorative" value="64,33,35,41,42,43,47,50,58,59" />
-		</tile_picker>
-		<!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-		<clip_overrides value="22,23,24,25,26,27,28,29,51" />
-	</config>
+  <config no="5" label="Walken 1992-08-23" project_directory="./gamedata/Walken_08_23_1992" board_count="7" wall_count="64" lzw_header_type="0" ext_boards="DAT" ext_walls="DAT">
+    <tile_picker>
+      <row no="0" description="Basic" value="0,-1" />
+      <row no="1" description="Monsters" value="34,38,52,37,40" />
+      <row no="2" description="Doors" value="21,29,63" />
+      <row no="3" description="Walls" value="22,48,51,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28" />
+      <row no="4" description="Powerups and Items" value="32,36,39,46,49,45" />
+      <row no="6" description="Decorative" value="64,33,35,41,42,43,47,50,58,59" />
+    </tile_picker>
+    <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
+    <clip_overrides value="22,23,24,25,26,27,28,29,51" />
+  </config>
 
-	<saveconfigs>
-		<saveconfig config_no="0,1">
-			<variable name="hiscorename" size="16" />
-			<variable name="hiscorenamstat" size="1" />
-			<variable name="boardnum" />
-			<variable name="scorecount" size="4" />
-			<variable name="scoreclock" size="4" />
-			<variable name="board" size="8192" />
-			<variable name="skilevel" />
-			<variable name="life" />
-			<variable name="death" />
-			<variable name="lifevests" />
-			<variable name="lightnings" />
-			<variable name="firepowers_0" />
-			<variable name="firepowers_1" />
-			<variable name="firepowers_2" />
-			<variable name="bulchoose" />
-			<variable name="keys_0" />
-			<variable name="keys_1" />
-			<variable name="coins" />
-			<variable name="compass" />
-			<variable name="cheated" />
-			<variable name="animate2" />
-			<variable name="animate3" />
-			<variable name="animate4" />
-			<variable name="oscillate3" />
-			<variable name="oscillate5" />
-			<variable name="animate6" />
-			<variable name="animate7" />
-			<variable name="animate8" />
-			<variable name="animate10" />
-			<variable name="animate11" />
-			<variable name="animate15" />
-			<variable name="statusbar" />
-			<variable name="statusbargoal" />
-			<variable name="posx" />
-			<variable name="posy" />
-			<variable name="posz" />
-			<variable name="ang" />
-			<variable name="startx" />
-			<variable name="starty" />
-			<variable name="startang" />
-			<variable name="angvel" />
-			<variable name="vel" />
-			<variable name="mxvel" />
-			<variable name="myvel" />
-			<variable name="svel" />
-			<variable name="hvel" />
-			<variable name="oldposx" />
-			<variable name="oldposy" />
-			<variable name="bulnum" />
-			<variable name="bulang" count="bulnum" />
-			<variable name="bultype" count="bulnum" />
-			<variable name="bulx" count="bulnum" />
-			<variable name="buly" count="bulnum" />
-			<variable name="bulstat" size="4" count="bulnum" />
-			<variable name="lastbulshoot" size="4" />
-			<variable name="mnum" />
-			<variable name="mposx" count="mnum" />
-			<variable name="mposy" count="mnum" />
-			<variable name="mgolx" count="mnum" />
-			<variable name="mgoly" count="mnum" />
-			<variable name="moldx" count="mnum" />
-			<variable name="moldy" count="mnum" />
-			<variable name="mstat" count="mnum" />
-			<variable name="mshock" count="mnum" />
-			<variable name="mshot" size="1" count="mnum" />
-			<variable name="doorx" />
-			<variable name="doory" />
-			<variable name="doorstat" />
-			<variable name="numwarps" size="1" />
-			<variable name="justwarped" size="1" />
-			<variable name="xwarp" size="1" count="numwarps" />
-			<variable name="ywarp" size="1" count="numwarps" />
-			<variable name="totalclock" size="4" />
-			<variable name="purpletime" size="4" />
-			<variable name="greentime" size="4" />
-			<variable name="capetime_0" size="4" />
-			<variable name="capetime_1" size="4" />
-			<variable name="musicstatus" size="4" />
-			<variable name="clockspeed" />
-			<variable name="count" size="4" />
-			<variable name="countstop" size="4" />
-			<variable name="nownote" />
-			<variable name="junk" />
-			<variable name="chanage" size="4" count="18" />
-			<variable name="chanfreq" size="1" count="18" />
-			<variable name="midiinst" />
-			<variable name="mute" />
-			<variable name="namrememberstat" size="1" />
-			<variable name="fadewarpval" />
-			<variable name="fadehurtval" />
-			<variable name="slottime" />
-			<variable name="slotpos_0" />
-			<variable name="slotpos_1" />
-			<variable name="slotpos_2" />
-			<variable name="owecoins" />
-			<variable name="owecoinwait" />
-		</saveconfig>
-		<saveconfig config_no="2">
-			<variable name="board" size="8192" />
-			<variable name="mboard" size="1" count="4096" />
-			<variable name="boardnum" />
-			<variable name="life" />
-			<variable name="death" />
-			<variable name="lifevests" />
-			<variable name="lightnings" />
-			<variable name="firepowers_0" />
-			<variable name="firepowers_1" />
-			<variable name="firepowers_2" />
-			<variable name="bulchoose" />
-			<variable name="keys_0" size="4" />
-			<variable name="unknown_0" />
-			<variable name="compass" />
-			<variable name="cheated" />
-			<variable name="heatpos" />
-			<variable name="fanpos" />
-			<variable name="warpos" />
-			<variable name="kenpos" />
-			<variable name="unknown_1" />
-			<variable name="ballpos" />
-			<variable name="rogermode" />
-			<variable name="statusbar" />
-			<variable name="statusbargoal" />
-			<variable name="posx" />
-			<variable name="posy" />
-			<variable name="posz" />
-			<variable name="ang" />
-			<variable name="startx" />
-			<variable name="starty" />
-			<variable name="startang" />
-			<variable name="angvel" />
-			<variable name="vel" />
-			<variable name="mxvel" />
-			<variable name="myvel" />
-			<variable name="svel" />
-			<variable name="hvel" />
-			<variable name="oldposx" />
-			<variable name="oldposy" />
-			<variable name="bulnum" />
-			<variable name="bulang_0" count="bulnum" />
-			<variable name="bulkind_0" count="bulnum" />
-			<variable name="bulx_0" count="bulnum" />
-			<variable name="buly_0" count="bulnum" />
-			<variable name="bulstat_0" size="4" count="bulnum" />
-			<variable name="lastbulshoot" size="4" />
-			<variable name="mnum" />
-			<variable name="mposx_0" count="mnum" />
-			<variable name="mposy_0" count="mnum" />
-			<variable name="mgolx_0" count="mnum" />
-			<variable name="mgoly_0" count="mnum" />
-			<variable name="moldx_0" count="mnum" />
-			<variable name="moldy_0" count="mnum" />
-			<variable name="mstat_0" size="1" count="mnum" />
-			<variable name="mshock_0" count="mnum" />
-			<variable name="mshot_0" size="1" count="mnum" />
-			<variable name="doorx" />
-			<variable name="doory" />
-			<variable name="doorstat" />
-			<variable name="numwarps" size="1" />
-			<variable name="justwarped" size="1" />
-			<variable name="xwarp_0" size="1" count="numwarps" />
-			<variable name="ywarp_0" size="1" count="numwarps" />
-			<variable name="totalclock" size="4" />
-			<variable name="scoreclock" size="4" />
-			<variable name="scorecount" size="4" />
-			<variable name="purpletime" size="4" />
-			<variable name="greentime" size="4" />
-			<variable name="capetime_0" size="4" />
-			<variable name="capetime_1" size="4" />
-			<variable name="hiscorename" size="16" />
-			<variable name="hiscorenamstat" size="1" />
-			<variable name="musicstatus" size="4" />
-			<variable name="clockspeed" />
-			<variable name="count" size="4" />
-			<variable name="countstop" size="4" />
-			<variable name="nownote" size="4" />
-			<variable name="chanage" size="4" count="18" />
-			<variable name="chanfreq" size="1" count="18" />
-		</saveconfig>
-		<saveconfig config_no="3">
-			<variable name="board" size="8192" />
-			<variable name="mboard" size="1" count="4096" />
-			<variable name="boardnum" />
-			<variable name="life" />
-			<variable name="death" />
-			<variable name="lifevests" />
-			<variable name="lightnings" />
-			<variable name="firepowers_0" />
-			<variable name="firepowers_1" />
-			<variable name="firepowers_2" />
-			<variable name="bulchoose" />
-			<variable name="keys_0" size="4" />
-			<variable name="compass" />
-			<variable name="cheated" />
-			<variable name="heatpos" />
-			<variable name="fanpos" />
-			<variable name="warpos" />
-			<variable name="kenpos" />
-			<variable name="ballpos" />
-			<variable name="rogermode" />
-			<variable name="statusbar" />
-			<variable name="statusbargoal" />
-			<variable name="posx" />
-			<variable name="posy" />
-			<variable name="posz" />
-			<variable name="ang" />
-			<variable name="startx" />
-			<variable name="starty" />
-			<variable name="startang" />
-			<variable name="angvel" />
-			<variable name="vel" />
-			<variable name="mxvel" />
-			<variable name="myvel" />
-			<variable name="svel" />
-			<variable name="hvel" />
-			<variable name="oldposx" />
-			<variable name="oldposy" />
-			<variable name="bulnum" />
-			<variable name="bulang_0" count="bulnum" />
-			<variable name="bulkind_0" count="bulnum" />
-			<variable name="bulx_0" count="bulnum" />
-			<variable name="buly_0" count="bulnum" />
-			<variable name="bulstat_0" size="4" count="bulnum" />
-			<variable name="lastbulshoot" size="4" />
-			<variable name="mnum" />
-			<variable name="mposx_0" count="mnum" />
-			<variable name="mposy_0" count="mnum" />
-			<variable name="mgolx_0" count="mnum" />
-			<variable name="mgoly_0" count="mnum" />
-			<variable name="moldx_0" count="mnum" />
-			<variable name="moldy_0" count="mnum" />
-			<variable name="mstat_0" size="1" count="mnum" />
-			<variable name="mshock_0" count="mnum" />
-			<variable name="mshot_0" size="1" count="mnum" />
-			<variable name="doorx" />
-			<variable name="doory" />
-			<variable name="doorstat" />
-			<variable name="numwarps" size="1" />
-			<variable name="justwarped" size="1" />
-			<variable name="xwarp_0" size="1" count="numwarps" />
-			<variable name="ywarp_0" size="1" count="numwarps" />
-			<variable name="totalclock" size="4" />
-			<variable name="scoreclock" size="4" />
-			<variable name="scorecount" size="4" />
-			<variable name="purpletime" size="4" />
-			<variable name="greentime" size="4" />
-			<variable name="capetime_0" size="4" />
-			<variable name="capetime_1" size="4" />
-			<variable name="hiscorename" size="16" />
-			<variable name="hiscorenamstat" size="1" />
-			<variable name="musicstatus" size="4" />
-			<variable name="clockspeed" />
-			<variable name="count" size="4" />
-			<variable name="countstop" size="4" />
-			<variable name="nownote" size="4" />
-			<variable name="chanage" size="4" count="18" />
-			<variable name="chanfreq" size="1" count="18" />
-		</saveconfig>
-		<saveconfig config_no="4">
-			<variable name="board" size="4096" />
-			<variable name="mboard" size="1" count="4096" />
-			<variable name="boardnum" />
-			<variable name="life" />
-			<variable name="death" />
-			<variable name="lifevests" />
-			<variable name="lightnings" />
-			<variable name="firepowers" />
-			<variable name="keys" />
-			<variable name="flowerpos" />
-			<variable name="kenpos" />
-			<variable name="ballpos" />
-			<variable name="rogermode" />
-			<variable name="statusbar" />
-			<variable name="statusbargoal" />
-			<variable name="posx" />
-			<variable name="posy" />
-			<variable name="posz" />
-			<variable name="ang" />
-			<variable name="startx" />
-			<variable name="starty" />
-			<variable name="startang" />
-			<variable name="angvel" />
-			<variable name="vel" />
-			<variable name="hvel" />
-			<variable name="oldposx" />
-			<variable name="oldposy" />
-			<variable name="youbulnum" />
-			<variable name="bulnum" />
-			<variable name="bulang" count="bulnum" />
-			<variable name="bulkind" count="bulnum" />
-			<variable name="bulx" count="bulnum" />
-			<variable name="buly" count="bulnum" />
-			<variable name="bulstat" size="4" count="bulnum" />
-			<variable name="lastbulshoot" size="4" />
-			<variable name="mnum" />
-			<variable name="mposx" count="mnum" />
-			<variable name="mposy" count="mnum" />
-			<variable name="mgolx" count="mnum" />
-			<variable name="mgoly" count="mnum" />
-			<variable name="moldx" count="mnum" />
-			<variable name="moldy" count="mnum" />
-			<variable name="mstat" size="1" count="mnum" />
-			<variable name="mshock" count="mnum" />
-			<variable name="mshot" size="1" count="mnum" />
-			<variable name="totalclock" size="4" />
-			<variable name="musicstatus" size="4" />
-			<variable name="clockspeed" />
-			<variable name="count" size="4" />
-			<variable name="countstop" size="4" />
-			<variable name="nownote" size="4" />
-			<variable name="chanage" size="4" count="18" />
-			<variable name="chanfreq" size="1" count="18" />
-		</saveconfig>
-	</saveconfigs>
+  <saveconfigs>
+    <saveconfig config_no="0,1">
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="boardnum" />
+      <variable name="scorecount" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="board" size="8192" />
+      <variable name="skilevel" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" />
+      <variable name="keys_1" />
+      <variable name="coins" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="animate2" />
+      <variable name="animate3" />
+      <variable name="animate4" />
+      <variable name="oscillate3" />
+      <variable name="oscillate5" />
+      <variable name="animate6" />
+      <variable name="animate7" />
+      <variable name="animate8" />
+      <variable name="animate10" />
+      <variable name="animate11" />
+      <variable name="animate15" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bultype" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp" size="1" count="numwarps" />
+      <variable name="ywarp" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" />
+      <variable name="junk" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+      <variable name="midiinst" />
+      <variable name="mute" />
+      <variable name="namrememberstat" size="1" />
+      <variable name="fadewarpval" />
+      <variable name="fadehurtval" />
+      <variable name="slottime" />
+      <variable name="slotpos_0" />
+      <variable name="slotpos_1" />
+      <variable name="slotpos_2" />
+      <variable name="owecoins" />
+      <variable name="owecoinwait" />
+    </saveconfig>
+    <saveconfig config_no="2">
+      <variable name="board" size="8192" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" size="4" />
+      <variable name="unknown_0" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="heatpos" />
+      <variable name="fanpos" />
+      <variable name="warpos" />
+      <variable name="kenpos" />
+      <variable name="unknown_1" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang_0" count="bulnum" />
+      <variable name="bulkind_0" count="bulnum" />
+      <variable name="bulx_0" count="bulnum" />
+      <variable name="buly_0" count="bulnum" />
+      <variable name="bulstat_0" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx_0" count="mnum" />
+      <variable name="mposy_0" count="mnum" />
+      <variable name="mgolx_0" count="mnum" />
+      <variable name="mgoly_0" count="mnum" />
+      <variable name="moldx_0" count="mnum" />
+      <variable name="moldy_0" count="mnum" />
+      <variable name="mstat_0" size="1" count="mnum" />
+      <variable name="mshock_0" count="mnum" />
+      <variable name="mshot_0" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp_0" size="1" count="numwarps" />
+      <variable name="ywarp_0" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="scorecount" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+    <saveconfig config_no="3">
+      <variable name="board" size="8192" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers_0" />
+      <variable name="firepowers_1" />
+      <variable name="firepowers_2" />
+      <variable name="bulchoose" />
+      <variable name="keys_0" size="4" />
+      <variable name="compass" />
+      <variable name="cheated" />
+      <variable name="heatpos" />
+      <variable name="fanpos" />
+      <variable name="warpos" />
+      <variable name="kenpos" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="mxvel" />
+      <variable name="myvel" />
+      <variable name="svel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="bulnum" />
+      <variable name="bulang_0" count="bulnum" />
+      <variable name="bulkind_0" count="bulnum" />
+      <variable name="bulx_0" count="bulnum" />
+      <variable name="buly_0" count="bulnum" />
+      <variable name="bulstat_0" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx_0" count="mnum" />
+      <variable name="mposy_0" count="mnum" />
+      <variable name="mgolx_0" count="mnum" />
+      <variable name="mgoly_0" count="mnum" />
+      <variable name="moldx_0" count="mnum" />
+      <variable name="moldy_0" count="mnum" />
+      <variable name="mstat_0" size="1" count="mnum" />
+      <variable name="mshock_0" count="mnum" />
+      <variable name="mshot_0" size="1" count="mnum" />
+      <variable name="doorx" />
+      <variable name="doory" />
+      <variable name="doorstat" />
+      <variable name="numwarps" size="1" />
+      <variable name="justwarped" size="1" />
+      <variable name="xwarp_0" size="1" count="numwarps" />
+      <variable name="ywarp_0" size="1" count="numwarps" />
+      <variable name="totalclock" size="4" />
+      <variable name="scoreclock" size="4" />
+      <variable name="scorecount" size="4" />
+      <variable name="purpletime" size="4" />
+      <variable name="greentime" size="4" />
+      <variable name="capetime_0" size="4" />
+      <variable name="capetime_1" size="4" />
+      <variable name="hiscorename" size="16" />
+      <variable name="hiscorenamstat" size="1" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+    <saveconfig config_no="4">
+      <variable name="board" size="4096" />
+      <variable name="mboard" size="1" count="4096" />
+      <variable name="boardnum" />
+      <variable name="life" />
+      <variable name="death" />
+      <variable name="lifevests" />
+      <variable name="lightnings" />
+      <variable name="firepowers" />
+      <variable name="keys" />
+      <variable name="flowerpos" />
+      <variable name="kenpos" />
+      <variable name="ballpos" />
+      <variable name="rogermode" />
+      <variable name="statusbar" />
+      <variable name="statusbargoal" />
+      <variable name="posx" />
+      <variable name="posy" />
+      <variable name="posz" />
+      <variable name="ang" />
+      <variable name="startx" />
+      <variable name="starty" />
+      <variable name="startang" />
+      <variable name="angvel" />
+      <variable name="vel" />
+      <variable name="hvel" />
+      <variable name="oldposx" />
+      <variable name="oldposy" />
+      <variable name="youbulnum" />
+      <variable name="bulnum" />
+      <variable name="bulang" count="bulnum" />
+      <variable name="bulkind" count="bulnum" />
+      <variable name="bulx" count="bulnum" />
+      <variable name="buly" count="bulnum" />
+      <variable name="bulstat" size="4" count="bulnum" />
+      <variable name="lastbulshoot" size="4" />
+      <variable name="mnum" />
+      <variable name="mposx" count="mnum" />
+      <variable name="mposy" count="mnum" />
+      <variable name="mgolx" count="mnum" />
+      <variable name="mgoly" count="mnum" />
+      <variable name="moldx" count="mnum" />
+      <variable name="moldy" count="mnum" />
+      <variable name="mstat" size="1" count="mnum" />
+      <variable name="mshock" count="mnum" />
+      <variable name="mshot" size="1" count="mnum" />
+      <variable name="totalclock" size="4" />
+      <variable name="musicstatus" size="4" />
+      <variable name="clockspeed" />
+      <variable name="count" size="4" />
+      <variable name="countstop" size="4" />
+      <variable name="nownote" size="4" />
+      <variable name="chanage" size="4" count="18" />
+      <variable name="chanfreq" size="1" count="18" />
+    </saveconfig>
+  </saveconfigs>
 
 </kkit_sdl>
