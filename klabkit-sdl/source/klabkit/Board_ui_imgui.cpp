@@ -178,8 +178,8 @@ void kkit::Board_ui::draw_ui_minimap(SDL_Renderer* p_rnd,
 	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
 	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
 
-	constexpr float l_ow{ static_cast<float>(64) };
-	constexpr float l_oh{ static_cast<float>(64) };
+	constexpr float l_ow{ static_cast<float>(c::MAP_W) };
+	constexpr float l_oh{ static_cast<float>(c::MAP_H) };
 	float l_iw = (l_wmax.x - l_wmin.x);
 	float l_ih = (l_wmax.y - l_wmin.y);
 
@@ -300,8 +300,11 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 		imgui::button(c::TXT_CLIP, p_project.is_inside(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
 		ImGui::SameLine();
 		imgui::button(c::TXT_DESTR, p_project.is_blast(m_sel_tp_tile_no) ? c::COLOR_STYLE_GREEN : c::COLOR_STYLE_GRAY);
-		ImGui::SameLine();
-		imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE);
+		// the empty tile can not be said to be of any type
+		if (m_sel_tp_tile_no != -1) {
+			ImGui::SameLine();
+			imgui::button(get_wall_metadata_string(p_project.get_wall_type(m_sel_tp_tile_no)), c::COLOR_STYLE_ORANGE);
+		}
 	}
 
 	ImGui::Separator();
@@ -320,7 +323,7 @@ void kkit::Board_ui::draw_ui_tile_picker(SDL_Renderer* p_rnd, kkit::Project& p_p
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
 			ImGui::PushID(n);
 
-			if (ImGui::ImageButton(l_texture, { 32, 32 })) {
+			if (ImGui::ImageButton(l_texture, { c::WALL_IMG_W / 2, c::WALL_IMG_H / 2 })) {
 				m_sel_tp_tile_no = n;
 			}
 

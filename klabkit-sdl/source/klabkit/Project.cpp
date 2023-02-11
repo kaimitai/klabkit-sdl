@@ -22,6 +22,37 @@ kkit::Project::Project(const kkit::Project_config& p_config) :
 		initialize_maps();
 
 	kkit::Savegame::set_variables(config.m_savegame_variables);
+
+	// DEBUG - Check tile picker entries; unused but categorized, and used but uncategorized, tiles
+	/*
+	const auto& tp{ p_config.get_tile_picker() };
+	std::vector<int> used_uncategorized;
+	std::vector<int> unused_categorized;
+
+	bool l_cat{ true };
+	for (const auto& ltp : tp) {
+		if (ltp.first == "Uncategorized")
+			l_cat = false;
+
+		for (int p_tile_no : ltp.second) {
+			int result{ 0 };
+
+			for (int i{ 0 }; i < get_board_count(); ++i) {
+				const auto& l_brd = get_board(i);
+				for (int x{ 0 }; x < c::MAP_W; ++x)
+					for (int y{ 0 }; y < c::MAP_H; ++y)
+						if (l_brd.get_tile_no(x, y) == p_tile_no)
+							++result;
+			}
+
+			if (l_cat && result == 0)
+				unused_categorized.push_back(p_tile_no + 1);
+			else if (!l_cat && result != 0)
+				used_uncategorized.push_back(p_tile_no + 1);
+		}
+
+	}
+	*/
 }
 
 void kkit::Project::add_message(const std::string& p_message, int p_status_code) {
@@ -201,8 +232,8 @@ void kkit::Project::initialize_maps_walken(void) {
 
 	// calculate the entire board here
 	for (int i{ 0 }; i < config.board_count; ++i) {
-		std::vector<byte> l_map_bytes(begin(map_bytes) + i * 4096,
-			begin(map_bytes) + (i + 1) * 4096);
+		std::vector<byte> l_map_bytes(begin(map_bytes) + i * c::MAP_BYTES_WALKEN,
+			begin(map_bytes) + (i + 1) * c::MAP_BYTES_WALKEN);
 		maps.push_back(kkit::Board(l_map_bytes, walls));
 	}
 }

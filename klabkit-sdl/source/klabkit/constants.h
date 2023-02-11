@@ -105,7 +105,10 @@ namespace kkit {
 		// level files
 		constexpr int MAP_W{ 64 };
 		constexpr int MAP_H{ 64 };
+		constexpr int MAP_GFX_W{ MAP_W * WALL_IMG_W };
+		constexpr int MAP_GFX_H{ MAP_H * WALL_IMG_H };
 		constexpr int MAP_BYTES_PER_TILE{ 2 };
+		constexpr int MAP_BYTES_WALKEN{ MAP_W * MAP_H };
 		constexpr int MAP_BYTES{ MAP_W * MAP_H * MAP_BYTES_PER_TILE };
 
 		// gfx constants - indexes to project graphic map entries

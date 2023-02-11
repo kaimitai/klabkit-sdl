@@ -80,14 +80,14 @@
   <config no="5" label="Walken 1992-08-23" project_directory="./gamedata/Walken_08_23_1992" board_count="7" wall_count="64" lzw_header_type="0" ext_boards="DAT" ext_walls="DAT">
     <tile_picker>
       <row no="0" description="Basic" value="0,-1" />
-      <row no="1" description="Monsters" value="34,38,52,37,40" />
+      <row no="1" description="Monsters" value="34,38,37,40" />
       <row no="2" description="Doors" value="21,29,63" />
       <row no="3" description="Walls" value="22,48,51,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,24,25,26,27,28" />
-      <row no="4" description="Powerups and Items" value="32,36,39,46,49,45" />
-      <row no="6" description="Decorative" value="64,33,35,41,42,43,47,50,58,59" />
+      <row no="4" description="Powerups and Items" value="64,32,36,39,46,45" />
+      <row no="6" description="Decorative" value="33,35,41,42,43,47,50,58,59,49" />
     </tile_picker>
     <!-- define which noclip-tiles will flash on the board grid, even if it is not a metadata override  -->
-    <clip_overrides value="22,23,24,25,26,27,28,29,51" />
+    <clip_overrides value="22,23,24,25,26,27,28,29,47,51" />
   </config>
 
   <saveconfigs>

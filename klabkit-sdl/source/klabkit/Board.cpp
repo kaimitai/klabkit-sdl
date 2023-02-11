@@ -5,7 +5,8 @@
 using byte = unsigned char;
 
 kkit::Board::Board(const std::vector<byte>& p_bytes, const std::vector<Wall>& p_walls) {
-	this->tiles = std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, kkit::Map_tile()));
+	this->tiles = std::vector<std::vector<kkit::Map_tile>>(
+		c::MAP_H, std::vector<kkit::Map_tile>(c::MAP_W, kkit::Map_tile()));
 	player_x = 0;
 	player_y = 0;
 
@@ -13,9 +14,9 @@ kkit::Board::Board(const std::vector<byte>& p_bytes, const std::vector<Wall>& p_
 	int l_py{ 0 };
 	this->player_direction = kkit::Player_direction::Up;
 
-	for (int j{ 0 }; j < 4096; ++j) {
-		int l_x = j / 64;
-		int l_y = j % 64;
+	for (int j{ 0 }; j < c::MAP_BYTES_WALKEN; ++j) {
+		int l_x = j / c::MAP_W;
+		int l_y = j % c::MAP_W;
 		int l_tile_no = p_bytes.at(j);
 
 		bool l_inside{ false };
@@ -106,7 +107,8 @@ kkit::Board::Board(const std::vector<std::vector<kkit::Map_tile>>& p_tiles, int 
 { }
 
 kkit::Board::Board(void) :
-	kkit::Board(std::vector<std::vector<kkit::Map_tile>>(64, std::vector<kkit::Map_tile>(64, 0)),
+	kkit::Board(std::vector<std::vector<kkit::Map_tile>>(
+		c::MAP_H, std::vector<kkit::Map_tile>(c::MAP_W, 0)),
 		0, 0, kkit::Player_direction::Up)
 { }
 
@@ -219,7 +221,7 @@ std::vector<byte> kkit::Board::get_bytes(const std::vector<kkit::Wall>& p_walls,
 	bool p_incl_player_start) const {
 	std::vector<byte> result;
 
-	int l_p_index = 64 * get_player_start_x() + get_player_start_y();
+	int l_p_index = c::MAP_H * get_player_start_x() + get_player_start_y();
 
 	byte l_pbyte{ 252 };
 	if (get_player_start_direction() == kkit::Player_direction::Down)
@@ -231,8 +233,8 @@ std::vector<byte> kkit::Board::get_bytes(const std::vector<kkit::Wall>& p_walls,
 
 	kkit::Player_direction l_sdir = get_player_start_direction();
 
-	for (int x = 0; x < 64; ++x)
-		for (int y = 0; y < 64; ++y) {
+	for (int x = 0; x < c::MAP_W; ++x)
+		for (int y = 0; y < c::MAP_H; ++y) {
 			int l_tile_no = get_tile_no(x, y);
 
 			bool l_clip_override = (l_tile_no != -1) && (is_inside(x, y) && !p_walls.at(l_tile_no).is_inside());

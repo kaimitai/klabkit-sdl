@@ -48,7 +48,7 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 	SDL_RenderClear(p_rnd);
 	klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_MM_TEXTURES, m_board_ind), 0, 0);
 
-	klib::gfx::draw_rect(p_rnd, m_cam_x / 64, m_cam_y / 64, l_s_pixels_w / 64, l_s_pixels_h / 64, c::COL_YELLOW, 1);
+	klib::gfx::draw_rect(p_rnd, m_cam_x / c::MAP_W, m_cam_y / c::MAP_H, l_s_pixels_w / c::MAP_W, l_s_pixels_h / c::MAP_H, c::COL_YELLOW, 1);
 	/* minimap stuff end */
 
 	SDL_SetRenderTarget(p_rnd, nullptr);
@@ -56,8 +56,8 @@ void kkit::Board_ui::draw(SDL_Renderer* p_rnd,
 	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
 	SDL_RenderClear(p_rnd);
 
-	int l_rest_w = std::max(0, 4096 - m_cam_x);
-	int l_rest_h = std::max(0, 4096 - m_cam_y);
+	int l_rest_w = std::max(0, c::MAP_GFX_W - m_cam_x);
+	int l_rest_h = std::max(0, c::MAP_GFX_H - m_cam_y);
 
 	l_rest_w = std::min(l_rest_w, l_s_pixels_w);
 	l_rest_h = std::min(l_rest_h, l_s_pixels_h);
@@ -97,8 +97,8 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 
 	const auto& lr_tile_overlays{ p_project.get_config().get_tile_overlays() };
 
-	for (int i{ 0 }; i < 64; ++i)
-		for (int j{ 0 }; j < 64; ++j) {
+	for (int i{ 0 }; i < c::MAP_W; ++i)
+		for (int j{ 0 }; j < c::MAP_H; ++j) {
 			int l_tile_no = board.get_tile_no(i, j);
 
 			bool l_flash = m_toggles[1] && board.is_blast(i, j);
@@ -111,21 +111,21 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 			l_flash |= m_toggles[3] && (l_tile_no == m_sel_tp_tile_no);
 
 			if (l_tile_no >= 0) {
-				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), 64 * i, 64 * j);
+				klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, l_tile_no), c::WALL_IMG_W * i, c::WALL_IMG_H * j);
 				auto iter{ lr_tile_overlays.find(l_tile_no) };
 				if (iter != end(lr_tile_overlays))
-					klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, iter->second), 64 * i, 64 * j);
+					klib::gfx::blit(p_rnd, p_gfx.get_texture(c::INDEX_WALL_TEXTURES, iter->second), c::WALL_IMG_W * i, c::WALL_IMG_H * j);
 			}
 
 			if (m_toggles[0] && p_project.is_directional(l_tile_no))
-				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, board.is_vertical(i, j) ? 1 : 0), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, board.is_vertical(i, j) ? 1 : 0), c::WALL_IMG_W * i + 32, c::WALL_IMG_H * j + 32, l_shrink_factor);
 			if (l_flash)
-				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, 6), 64 * i + 32, 64 * j + 32, l_shrink_factor);
+				klib::gfx::blit_factor(p_rnd, p_gfx.get_texture(c::INDEX_APP_TEXTURES, 6), c::WALL_IMG_W * i + 32, c::WALL_IMG_H * j + 32, l_shrink_factor);
 		}
 
 	// draw player start
-	int l_px = 64 * board.get_player_start_x() + 32;
-	int l_py = 64 * board.get_player_start_y() + 32;
+	int l_px = c::WALL_IMG_W * board.get_player_start_x() + 32;
+	int l_py = c::WALL_IMG_H * board.get_player_start_y() + 32;
 	kkit::Player_direction l_pdir = board.get_player_start_direction();
 	int l_pstart_sprite_no{ 2 };
 	if (l_pdir == kkit::Player_direction::Left)
@@ -151,17 +151,18 @@ void kkit::Board_ui::generate_board_texture(SDL_Renderer* p_rnd,
 	}
 
 	// draw selected tile
-	klib::gfx::draw_rect(p_rnd, m_sel_tile_x * 64, m_sel_tile_y * 64, 64, 64,
+	klib::gfx::draw_rect(p_rnd, m_sel_tile_x * c::WALL_IMG_W, m_sel_tile_y * c::WALL_IMG_H,
+		c::WALL_IMG_W, c::WALL_IMG_H,
 		kkit::gfx::get_pulse_color(0, m_timers[1].get_frame()),
 		4);
 
 	// draw full selection
 	if (m_sel_tile_2_x >= 0)
 		klib::gfx::draw_rect(p_rnd,
-			std::min(m_sel_tile_x, m_sel_tile_2_x) * 64,
-			std::min(m_sel_tile_y, m_sel_tile_2_y) * 64,
-			64 * (1 + abs(m_sel_tile_x - m_sel_tile_2_x)),
-			64 * (1 + abs(m_sel_tile_y - m_sel_tile_2_y)),
+			std::min(m_sel_tile_x, m_sel_tile_2_x) * c::WALL_IMG_W,
+			std::min(m_sel_tile_y, m_sel_tile_2_y) * c::WALL_IMG_H,
+			c::WALL_IMG_W * (1 + abs(m_sel_tile_x - m_sel_tile_2_x)),
+			c::WALL_IMG_H * (1 + abs(m_sel_tile_y - m_sel_tile_2_y)),
 			klib::gc::COL_ORANGE, 4);
 
 	SDL_SetRenderTarget(p_rnd, nullptr);
@@ -211,9 +212,9 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 					zoom_camera(l_mx, l_my, 0.1f, p_w, p_h);
 			}
 			else if (l_shift)
-				add_cam_x(-64, p_w);
+				add_cam_x(-c::WALL_IMG_W, p_w);
 			else
-				add_cam_y(64, p_h);
+				add_cam_y(c::WALL_IMG_H, p_h);
 		}
 		else if (p_input.mw_up()) {
 			if (l_ctrl) {
@@ -221,9 +222,9 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 					zoom_camera(l_mx, l_my, -0.1f, p_w, p_h);
 			}
 			else if (l_shift)
-				add_cam_x(64, p_w);
+				add_cam_x(c::WALL_IMG_W, p_w);
 			else
-				add_cam_y(-64, p_h);
+				add_cam_y(-c::WALL_IMG_H, p_h);
 		}
 		// right click on board grid: paint (set board grid tile to selected tile picker tile)
 		else if (p_input.mouse_held(false)) {
@@ -356,13 +357,13 @@ void kkit::Board_ui::move(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 		}
 		// keyboard arrows - navigate
 		else if (p_input.is_pressed(SDL_SCANCODE_UP))
-			add_cam_y(-64 * (l_ctrl ? 4 : 1), p_h);
+			add_cam_y(-c::WALL_IMG_H * (l_ctrl ? 4 : 1), p_h);
 		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
-			add_cam_y(64 * (l_ctrl ? 4 : 1), p_h);
+			add_cam_y(c::WALL_IMG_H * (l_ctrl ? 4 : 1), p_h);
 		else if (p_input.is_pressed(SDL_SCANCODE_LEFT))
-			add_cam_x(-64 * (l_ctrl ? 4 : 1), p_w);
+			add_cam_x(-c::WALL_IMG_W * (l_ctrl ? 4 : 1), p_w);
 		else if (p_input.is_pressed(SDL_SCANCODE_RIGHT))
-			add_cam_x(64 * (l_ctrl ? 4 : 1), p_w);
+			add_cam_x(c::WALL_IMG_W * (l_ctrl ? 4 : 1), p_w);
 	}
 }
 
@@ -407,19 +408,19 @@ void kkit::Board_ui::add_cam_zoom(float p_dz) {
 
 int kkit::Board_ui::get_cam_x_max(int p_w) const {
 	int l_pixel_w{ static_cast<int>(m_cam_zoom * p_w) };
-	return std::max(4096 - l_pixel_w, 0);
+	return std::max(c::MAP_GFX_W - l_pixel_w, 0);
 }
 
 int kkit::Board_ui::get_cam_y_max(int p_h) const {
 	int l_pixel_h{ static_cast<int>(m_cam_zoom * p_h) };
-	return std::max(4096 - l_pixel_h, 0);
+	return std::max(c::MAP_GFX_H - l_pixel_h, 0);
 }
 
 std::pair<int, int> kkit::Board_ui::get_tile_pos_from_mouse_coords(int p_mx, int p_my) const {
 	int l_mx = m_cam_x + static_cast<int>(m_cam_zoom * p_mx);
 	int l_my = m_cam_y + static_cast<int>(m_cam_zoom * p_my);
 
-	return std::make_pair(l_mx / 64, l_my / 64);
+	return std::make_pair(l_mx / c::WALL_IMG_W, l_my / c::WALL_IMG_H);
 }
 
 std::pair<int, int> kkit::Board_ui::get_map_pixel_pos_from_mouse_coords(int p_mx, int p_my) const {
@@ -436,8 +437,10 @@ std::pair<int, int> kkit::Board_ui::get_screen_coords_from_map_pos(int p_bx, int
 }
 
 bool kkit::Board_ui::is_valid_tile_pos(const std::pair<int, int>& p_pos) {
-	return p_pos.first >= 0 && p_pos.second >= 0 &&
-		p_pos.first < 64 && p_pos.second < 64;
+	return p_pos.first >= 0 &&
+		p_pos.second >= 0 &&
+		p_pos.first < c::MAP_W
+		&& p_pos.second < c::MAP_H;
 }
 
 void kkit::Board_ui::center_offset(int p_w, int p_h) {
@@ -524,8 +527,8 @@ void kkit::Board_ui::cut_selection(kkit::Project& p_project) {
 
 void kkit::Board_ui::paste_from_clipboard(kkit::Project& p_project) {
 	if (this->selection_fits()) {
-		for (int j{ 0 }; j < m_clipboard.size() && (m_sel_tile_x + j < 64); ++j)
-			for (int i{ 0 }; i < m_clipboard[j].size() && (m_sel_tile_y + i < 64); ++i) {
+		for (int j{ 0 }; j < m_clipboard.size() && (m_sel_tile_x + j < c::MAP_W); ++j)
+			for (int i{ 0 }; i < m_clipboard[j].size() && (m_sel_tile_y + i < c::MAP_H); ++i) {
 				p_project.set_tile(m_board_ind, m_sel_tile_x + j, m_sel_tile_y + i, m_clipboard[j][i]);
 			}
 
@@ -534,7 +537,7 @@ void kkit::Board_ui::paste_from_clipboard(kkit::Project& p_project) {
 }
 
 bool kkit::Board_ui::selection_fits(void) const {
-	return (m_sel_tile_x + m_clipboard.size() <= 64) && (m_clipboard.size() == 0 || (m_sel_tile_y + m_clipboard[0].size() <= 64));
+	return (m_sel_tile_x + m_clipboard.size() <= c::MAP_W) && (m_clipboard.size() == 0 || (m_sel_tile_y + m_clipboard[0].size() <= c::MAP_H));
 }
 
 void kkit::Board_ui::show_selection_rectangle(void) {
