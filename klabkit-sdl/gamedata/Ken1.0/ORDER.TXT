@@ -1,0 +1,39 @@
+                       Ken's Labyrinth Order Form
+
+        
+Name    _____________________________________________________
+
+Address _____________________________________________________
+
+City    ________________________ State _______ ZIP __________
+
+Country _____________________________________________________
+
+Disk size (Check one):   
+           
+         (__) 5 1/4" high density
+         
+         (__) 3 1/2" high density
+         
+Package Selection:               
+
+       (__) Game Pack One -------------------------- $15.00
+       
+       (__) Game Pack Two -------------------------- $15.00
+
+       (__) Game Pack One and Game Pack Two -------- $25.00
+
+       (__) Developer's Toolkit -------------------- $35.00
+
+
+                                          Total:   $____.__ 
+
+Please send cash, check, or money order made out to:
+     
+                     Ken Silverman
+
+                 
+       Mail to:  Advanced Systems
+                 50 Cindyann Drive
+                 East Greenwich, RI  02818
+                 Attn: Ken Silverman
