@@ -1,0 +1,35 @@
+August 23, 1992. This is one of the earliest versions of Walken I have that could be considered a complete game.
+
+I like to classify each version by its EXE date. Yes, there some 3 files in this archive that have a later date. The reason is: this came from Andy's archives. I used to visit his house about once a week - usually on the weekend. During that time, we would give each other our latest work. I would give him my latest exe, while he would give me his latest maps and stuff. Andy must have made a few modifications since my last visit. Usually he would modify boards, but he would sometimes add some wall textures to support his latest ideas.
+
+I rather like the gameplay. I've found that when you can die instantly (no health bar yet), it really gives you a sense of fear - a kind of suspense that later versions of the game lacked. You'll understand what I mean after playing for a while. Better collect those extra lives! Also, good luck passing level 5 as it's a real monster of a map. If you can find the key, which is hidden inside an unmarked walk-through wall (*sigh*), and find your way to the end, I will say that there's a really clever room just before the stairs.
+
+Unfortunately, I do not have the source code to this exact date of WALKEN.EXE. The closest sources I have are from: 08/18/1992 and 09/10/1992. I looked into reverse compiling for a bit, but found that my versions simply weren't close enough to make it worth my time.
+
+All files that are dated from 1992 are authentic and have not been modified for this release. However, I did remove a bunch of irrelevant files from Andy's original archive.
+
+Enjoy!
+
+File listing:
+	WALKEN.EXE: Arrows:move/turn, Ctrl:shoot, Space:unlock, A/Z:uselessly move up/down. No cheats - sorry.
+	SPRIDRAW.EXE: Silly tile viewer. Press , or . to select tile, PGUP/PGDN to change size.
+	PLAYKSM.EXE: Use to play old music format in DosBox. Likes to not quit (i.e. stuck) randomly.
+
+	TABLES.DAT: 8KBy sine table, 8KBy tangent table, 640By arctangent table.
+	BOARDS.DAT: contains 5 maps, which later became levels: 1, 5, 9, 22, and 26 respectively.
+	WALLS.DAT: contains 64 tiles (5 blank)
+
+	*.WAV: all basically the same as the September 1992 Walken release.
+
+	WALSNG00.KSM: It's a small world. Obviously removed later for copyright reasons.
+	WALSNG01.KSM: Notegain.
+	WALSNG02.KSM: Unfinished GREASONG.KSM: no percussion / messy timing.
+	WALSNG03.KSM: Later renamed to WALSNG04.KSM.
+	WALSNG04.KSM: Unfinished SOKESONG.KSM: no percussion / messy timing.
+	INSTS.DAT: Instrument definitions for KSM songs.
+
+	EDITDATA.BAS: Map (BOARDS) & Art (WALLS) viewer & editor. To view, use: PGUP/PGDN to select which map or tile, and Enter to toggle between map & art mode. Press 'v' to view all tiles (NOTE: requires TSENG ET4000 mode in DosBox).
+	LINCHECK.BAS: Requires DosBox to be configured with TSENG ET4000 mode. I'm guessing this was a test program to determine which sprites were visible?
+	CLIPTRY.BAS: Silly collision test program. I used to call this 'clipping' for some reason. I must have found the silly sounds entertaining. More fun when you comment out the ang = INT(360*RND) and init vel = 0 instead of 25.
+
+-Ken S.
